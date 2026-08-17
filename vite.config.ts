@@ -106,6 +106,16 @@ export default defineConfig({
   plugins: [devScreenshotPlugin()],
   test: {
     exclude: ['e2e/**', 'node_modules/**'],
+    /**
+     * 30s rather than the 5s default.
+     *
+     * Not every test here is a pure unit test any more. `architecture.test.ts` parses every
+     * tracked file with the TypeScript compiler, and `public-repo-lint.test.ts` builds scratch
+     * repositories and shells out to git. Run side by side on a two-core runner they take each
+     * other's CPU, and the guard tests were failing on time rather than on a finding — the worst
+     * kind of red, because it says nothing about the code.
+     */
+    testTimeout: 30_000,
     coverage: {
       provider: 'v8',
       // Vitest 4: the `all` option is gone; specifying `include` automatically covers files that

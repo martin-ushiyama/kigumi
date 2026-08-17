@@ -285,7 +285,20 @@ export function checkStateTypeImports(srcRoot = SRC_ROOT) {
  * @returns {string[]} the violation messages (empty when there are none)
  */
 const DISPLAY_LAYERS = ['input', 'ui', 'project', 'export', 'services'];
-const JAPANESE = /[぀-ゟ゠-ヿ一-鿿]/;
+// Hiragana, katakana and Han, by Unicode script extensions rather than by hand-written ranges.
+// Spelled out as ranges this kept missing things: half-width katakana, the ideographic zero, the
+// extension blocks, the kanji outside the basic plane.
+//
+// Script *extensions* rather than Script, because several marks Japanese is written with — the
+// prolonged sound mark, the closing mark, the ideographic full stop — have Common as their
+// primary script and a bare Script= test lets them through on their own.
+//
+// U+00B7, the middle dot, is taken back out. Its extensions include Han, but it turns up in
+// ordinary English and failing a change for it would be a puzzle rather than a finding.
+//
+// The characters themselves are not written here. This guard rejects them in a comment, and
+// naming them would make the file that defines the rule the only one to break it.
+const JAPANESE = /[[\p{scx=Han}\p{scx=Hiragana}\p{scx=Katakana}]--[·]]/v;
 const ALLOW_MARKER = 'i18n-allow';
 const LITERAL_ALLOWED_FILES = [join('ui', 'help.ts')];
 
@@ -542,6 +555,10 @@ const HASH_COMMENT_NAMES = new Set(['.gitignore', '.gitattributes', '.nvmrc']);
 const BLOCK_COMMENT_DELIMITERS = new Map([
   ['.css', ['/*', '*/', true]],
   ['.html', ['<!--', '-->', false]],
+  // SVG uses the same comment syntax as HTML. Without this entry a Japanese comment in a tracked
+  // graphic would be read by nothing: this guard would skip the file, and the document guard
+  // treats SVG as markup rather than prose.
+  ['.svg', ['<!--', '-->', false]],
 ]);
 
 /**
