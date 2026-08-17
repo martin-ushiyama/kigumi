@@ -1,0 +1,27 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>blocksmith</title>
+    <link rel="stylesheet" href="/src/style.css" />
+  </head>
+  <body>
+    <div id="app-grid">
+      <nav id="sidebar-rail" data-i18n-aria="aria.rail"></nav>
+      <aside id="sidebar-left"></aside>
+      <div id="editor-area">
+        <canvas id="viewport"></canvas>
+      </div>
+      <aside id="right-panel">
+        <section id="world-controls" data-i18n-aria="aria.worldControls"></section>
+        <div id="inspector"></div>
+        <section id="block-usage" data-i18n-aria="aria.blockUsage"></section>
+      </aside>
+    </div>
+    <nav id="toolbar" data-i18n-aria="aria.toolbar"></nav>
+    <footer id="statusbar"></footer>
+    <div id="help" hidden></div>
+    <script type="module" src="/src/main.ts"></script>
+  </body>
+</html>

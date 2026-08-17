@@ -1,0 +1,2060 @@
+[
+  {
+    "id": "minecraft:stone",
+    "nameJa": "石",
+    "nameEn": "Stone",
+    "category": "stone",
+    "shape": "full",
+    "materialGroup": "stone"
+  },
+  {
+    "id": "minecraft:smooth_stone",
+    "nameJa": "滑らかな石",
+    "nameEn": "Smooth Stone",
+    "category": "stone",
+    "shape": "full",
+    "materialGroup": "smooth_stone"
+  },
+  {
+    "id": "minecraft:cobblestone",
+    "nameJa": "丸石",
+    "nameEn": "Cobblestone",
+    "category": "stone",
+    "shape": "full",
+    "materialGroup": "cobblestone"
+  },
+  {
+    "id": "minecraft:mossy_cobblestone",
+    "nameJa": "苔むした丸石",
+    "nameEn": "Mossy Cobblestone",
+    "category": "stone",
+    "shape": "full",
+    "materialGroup": "mossy_cobblestone"
+  },
+  {
+    "id": "minecraft:stone_bricks",
+    "nameJa": "石レンガ",
+    "nameEn": "Stone Bricks",
+    "category": "stone",
+    "shape": "full",
+    "materialGroup": "stone_bricks"
+  },
+  {
+    "id": "minecraft:mossy_stone_bricks",
+    "nameJa": "苔むした石レンガ",
+    "nameEn": "Mossy Stone Bricks",
+    "category": "stone",
+    "shape": "full",
+    "materialGroup": "mossy_stone_bricks"
+  },
+  {
+    "id": "minecraft:cracked_stone_bricks",
+    "nameJa": "ひび割れた石レンガ",
+    "nameEn": "Cracked Stone Bricks",
+    "category": "stone",
+    "shape": "full",
+    "materialGroup": "cracked_stone_bricks"
+  },
+  {
+    "id": "minecraft:chiseled_stone_bricks",
+    "nameJa": "模様入りの石レンガ",
+    "nameEn": "Chiseled Stone Bricks",
+    "category": "stone",
+    "shape": "full",
+    "materialGroup": "chiseled_stone_bricks"
+  },
+  {
+    "id": "minecraft:granite",
+    "nameJa": "花崗岩",
+    "nameEn": "Granite",
+    "category": "stone",
+    "shape": "full",
+    "materialGroup": "granite"
+  },
+  {
+    "id": "minecraft:polished_granite",
+    "nameJa": "磨かれた花崗岩",
+    "nameEn": "Polished Granite",
+    "category": "stone",
+    "shape": "full",
+    "materialGroup": "polished_granite"
+  },
+  {
+    "id": "minecraft:diorite",
+    "nameJa": "閃緑岩",
+    "nameEn": "Diorite",
+    "category": "stone",
+    "shape": "full",
+    "materialGroup": "diorite"
+  },
+  {
+    "id": "minecraft:polished_diorite",
+    "nameJa": "磨かれた閃緑岩",
+    "nameEn": "Polished Diorite",
+    "category": "stone",
+    "shape": "full",
+    "materialGroup": "polished_diorite"
+  },
+  {
+    "id": "minecraft:andesite",
+    "nameJa": "安山岩",
+    "nameEn": "Andesite",
+    "category": "stone",
+    "shape": "full",
+    "materialGroup": "andesite"
+  },
+  {
+    "id": "minecraft:polished_andesite",
+    "nameJa": "磨かれた安山岩",
+    "nameEn": "Polished Andesite",
+    "category": "stone",
+    "shape": "full",
+    "materialGroup": "polished_andesite"
+  },
+  {
+    "id": "minecraft:deepslate",
+    "nameJa": "深層岩",
+    "nameEn": "Deepslate",
+    "category": "stone",
+    "shape": "full",
+    "materialGroup": "deepslate",
+    "states": {
+      "pillar_axis": "y"
+    }
+  },
+  {
+    "id": "minecraft:cobbled_deepslate",
+    "nameJa": "深層岩の丸石",
+    "nameEn": "Cobbled Deepslate",
+    "category": "stone",
+    "shape": "full",
+    "materialGroup": "cobbled_deepslate"
+  },
+  {
+    "id": "minecraft:polished_deepslate",
+    "nameJa": "磨かれた深層岩",
+    "nameEn": "Polished Deepslate",
+    "category": "stone",
+    "shape": "full",
+    "materialGroup": "polished_deepslate"
+  },
+  {
+    "id": "minecraft:deepslate_bricks",
+    "nameJa": "深層岩レンガ",
+    "nameEn": "Deepslate Bricks",
+    "category": "stone",
+    "shape": "full",
+    "materialGroup": "deepslate_bricks"
+  },
+  {
+    "id": "minecraft:cracked_deepslate_bricks",
+    "nameJa": "ひび割れた深層岩レンガ",
+    "nameEn": "Cracked Deepslate Bricks",
+    "category": "stone",
+    "shape": "full",
+    "materialGroup": "cracked_deepslate_bricks"
+  },
+  {
+    "id": "minecraft:deepslate_tiles",
+    "nameJa": "深層岩タイル",
+    "nameEn": "Deepslate Tiles",
+    "category": "stone",
+    "shape": "full",
+    "materialGroup": "deepslate_tiles"
+  },
+  {
+    "id": "minecraft:cracked_deepslate_tiles",
+    "nameJa": "ひび割れた深層岩タイル",
+    "nameEn": "Cracked Deepslate Tiles",
+    "category": "stone",
+    "shape": "full",
+    "materialGroup": "cracked_deepslate_tiles"
+  },
+  {
+    "id": "minecraft:chiseled_deepslate",
+    "nameJa": "模様入りの深層岩",
+    "nameEn": "Chiseled Deepslate",
+    "category": "stone",
+    "shape": "full",
+    "materialGroup": "chiseled_deepslate"
+  },
+  {
+    "id": "minecraft:tuff",
+    "nameJa": "凝灰岩",
+    "nameEn": "Tuff",
+    "category": "stone",
+    "shape": "full",
+    "materialGroup": "tuff"
+  },
+  {
+    "id": "minecraft:polished_tuff",
+    "nameJa": "磨かれた凝灰岩",
+    "nameEn": "Polished Tuff",
+    "category": "stone",
+    "shape": "full",
+    "materialGroup": "polished_tuff"
+  },
+  {
+    "id": "minecraft:tuff_bricks",
+    "nameJa": "凝灰岩レンガ",
+    "nameEn": "Tuff Bricks",
+    "category": "stone",
+    "shape": "full",
+    "materialGroup": "tuff_bricks"
+  },
+  {
+    "id": "minecraft:chiseled_tuff",
+    "nameJa": "模様入りの凝灰岩",
+    "nameEn": "Chiseled Tuff",
+    "category": "stone",
+    "shape": "full",
+    "materialGroup": "chiseled_tuff"
+  },
+  {
+    "id": "minecraft:chiseled_tuff_bricks",
+    "nameJa": "模様入りの凝灰岩レンガ",
+    "nameEn": "Chiseled Tuff Bricks",
+    "category": "stone",
+    "shape": "full",
+    "materialGroup": "chiseled_tuff_bricks"
+  },
+  {
+    "id": "minecraft:calcite",
+    "nameJa": "方解石",
+    "nameEn": "Calcite",
+    "category": "stone",
+    "shape": "full",
+    "materialGroup": "calcite"
+  },
+  {
+    "id": "minecraft:dripstone_block",
+    "nameJa": "鍾乳石ブロック",
+    "nameEn": "Dripstone Block",
+    "category": "stone",
+    "shape": "full",
+    "materialGroup": "dripstone_block"
+  },
+  {
+    "id": "minecraft:basalt",
+    "nameJa": "玄武岩",
+    "nameEn": "Basalt",
+    "category": "stone",
+    "shape": "full",
+    "materialGroup": "basalt",
+    "states": {
+      "pillar_axis": "y"
+    }
+  },
+  {
+    "id": "minecraft:polished_basalt",
+    "nameJa": "磨かれた玄武岩",
+    "nameEn": "Polished Basalt",
+    "category": "stone",
+    "shape": "full",
+    "materialGroup": "polished_basalt",
+    "states": {
+      "pillar_axis": "y"
+    }
+  },
+  {
+    "id": "minecraft:smooth_basalt",
+    "nameJa": "滑らかな玄武岩",
+    "nameEn": "Smooth Basalt",
+    "category": "stone",
+    "shape": "full",
+    "materialGroup": "smooth_basalt"
+  },
+  {
+    "id": "minecraft:blackstone",
+    "nameJa": "ブラックストーン",
+    "nameEn": "Blackstone",
+    "category": "stone",
+    "shape": "full",
+    "materialGroup": "blackstone"
+  },
+  {
+    "id": "minecraft:polished_blackstone",
+    "nameJa": "磨かれたブラックストーン",
+    "nameEn": "Polished Blackstone",
+    "category": "stone",
+    "shape": "full",
+    "materialGroup": "polished_blackstone"
+  },
+  {
+    "id": "minecraft:polished_blackstone_bricks",
+    "nameJa": "磨かれたブラックストーンレンガ",
+    "nameEn": "Polished Blackstone Bricks",
+    "category": "stone",
+    "shape": "full",
+    "materialGroup": "polished_blackstone_bricks"
+  },
+  {
+    "id": "minecraft:cracked_polished_blackstone_bricks",
+    "nameJa": "ひび割れた磨かれたブラックストーンレンガ",
+    "nameEn": "Cracked Polished Blackstone Bricks",
+    "category": "stone",
+    "shape": "full",
+    "materialGroup": "cracked_polished_blackstone_bricks"
+  },
+  {
+    "id": "minecraft:chiseled_polished_blackstone",
+    "nameJa": "模様入りの磨かれたブラックストーン",
+    "nameEn": "Chiseled Polished Blackstone",
+    "category": "stone",
+    "shape": "full",
+    "materialGroup": "chiseled_polished_blackstone"
+  },
+  {
+    "id": "minecraft:gilded_blackstone",
+    "nameJa": "きらめくブラックストーン",
+    "nameEn": "Gilded Blackstone",
+    "category": "stone",
+    "shape": "full",
+    "materialGroup": "gilded_blackstone"
+  },
+  {
+    "id": "minecraft:brick_block",
+    "nameJa": "レンガ",
+    "nameEn": "Bricks",
+    "category": "stone",
+    "shape": "full",
+    "materialGroup": "brick_block"
+  },
+  {
+    "id": "minecraft:mud_bricks",
+    "nameJa": "泥レンガ",
+    "nameEn": "Mud Bricks",
+    "category": "stone",
+    "shape": "full",
+    "materialGroup": "mud_bricks"
+  },
+  {
+    "id": "minecraft:packed_mud",
+    "nameJa": "固めた泥",
+    "nameEn": "Packed Mud",
+    "category": "stone",
+    "shape": "full",
+    "materialGroup": "packed_mud"
+  },
+  {
+    "id": "minecraft:sandstone",
+    "nameJa": "砂岩",
+    "nameEn": "Sandstone",
+    "category": "stone",
+    "shape": "full",
+    "materialGroup": "sandstone"
+  },
+  {
+    "id": "minecraft:chiseled_sandstone",
+    "nameJa": "模様入りの砂岩",
+    "nameEn": "Chiseled Sandstone",
+    "category": "stone",
+    "shape": "full",
+    "materialGroup": "chiseled_sandstone"
+  },
+  {
+    "id": "minecraft:cut_sandstone",
+    "nameJa": "研がれた砂岩",
+    "nameEn": "Cut Sandstone",
+    "category": "stone",
+    "shape": "full",
+    "materialGroup": "cut_sandstone"
+  },
+  {
+    "id": "minecraft:smooth_sandstone",
+    "nameJa": "滑らかな砂岩",
+    "nameEn": "Smooth Sandstone",
+    "category": "stone",
+    "shape": "full",
+    "materialGroup": "smooth_sandstone"
+  },
+  {
+    "id": "minecraft:red_sandstone",
+    "nameJa": "赤い砂岩",
+    "nameEn": "Red Sandstone",
+    "category": "stone",
+    "shape": "full",
+    "materialGroup": "red_sandstone"
+  },
+  {
+    "id": "minecraft:chiseled_red_sandstone",
+    "nameJa": "模様入りの赤い砂岩",
+    "nameEn": "Chiseled Red Sandstone",
+    "category": "stone",
+    "shape": "full",
+    "materialGroup": "chiseled_red_sandstone"
+  },
+  {
+    "id": "minecraft:cut_red_sandstone",
+    "nameJa": "研がれた赤い砂岩",
+    "nameEn": "Cut Red Sandstone",
+    "category": "stone",
+    "shape": "full",
+    "materialGroup": "cut_red_sandstone"
+  },
+  {
+    "id": "minecraft:smooth_red_sandstone",
+    "nameJa": "滑らかな赤い砂岩",
+    "nameEn": "Smooth Red Sandstone",
+    "category": "stone",
+    "shape": "full",
+    "materialGroup": "smooth_red_sandstone"
+  },
+  {
+    "id": "minecraft:quartz_block",
+    "nameJa": "クォーツブロック",
+    "nameEn": "Block of Quartz",
+    "category": "stone",
+    "shape": "full",
+    "materialGroup": "quartz_block",
+    "states": {
+      "pillar_axis": "y"
+    }
+  },
+  {
+    "id": "minecraft:chiseled_quartz_block",
+    "nameJa": "模様入りのクォーツブロック",
+    "nameEn": "Chiseled Quartz Block",
+    "category": "stone",
+    "shape": "full",
+    "materialGroup": "chiseled_quartz_block",
+    "states": {
+      "pillar_axis": "y"
+    }
+  },
+  {
+    "id": "minecraft:quartz_pillar",
+    "nameJa": "クォーツの柱",
+    "nameEn": "Quartz Pillar",
+    "category": "stone",
+    "shape": "full",
+    "materialGroup": "quartz_pillar",
+    "states": {
+      "pillar_axis": "y"
+    }
+  },
+  {
+    "id": "minecraft:smooth_quartz",
+    "nameJa": "滑らかなクォーツ",
+    "nameEn": "Smooth Quartz",
+    "category": "stone",
+    "shape": "full",
+    "materialGroup": "smooth_quartz",
+    "states": {
+      "pillar_axis": "y"
+    }
+  },
+  {
+    "id": "minecraft:prismarine",
+    "nameJa": "プリズマリン",
+    "nameEn": "Prismarine",
+    "category": "stone",
+    "shape": "full",
+    "materialGroup": "prismarine"
+  },
+  {
+    "id": "minecraft:prismarine_bricks",
+    "nameJa": "プリズマリンレンガ",
+    "nameEn": "Prismarine Bricks",
+    "category": "stone",
+    "shape": "full",
+    "materialGroup": "prismarine_bricks"
+  },
+  {
+    "id": "minecraft:dark_prismarine",
+    "nameJa": "ダークプリズマリン",
+    "nameEn": "Dark Prismarine",
+    "category": "stone",
+    "shape": "full",
+    "materialGroup": "dark_prismarine"
+  },
+  {
+    "id": "minecraft:end_stone",
+    "nameJa": "エンドストーン",
+    "nameEn": "End Stone",
+    "category": "stone",
+    "shape": "full",
+    "materialGroup": "end_stone"
+  },
+  {
+    "id": "minecraft:end_bricks",
+    "nameJa": "エンドストーンレンガ",
+    "nameEn": "End Stone Bricks",
+    "category": "stone",
+    "shape": "full",
+    "materialGroup": "end_bricks"
+  },
+  {
+    "id": "minecraft:purpur_block",
+    "nameJa": "プルプァブロック",
+    "nameEn": "Purpur Block",
+    "category": "stone",
+    "shape": "full",
+    "materialGroup": "purpur_block",
+    "states": {
+      "pillar_axis": "y"
+    }
+  },
+  {
+    "id": "minecraft:netherrack",
+    "nameJa": "ネザーラック",
+    "nameEn": "Netherrack",
+    "category": "stone",
+    "shape": "full",
+    "materialGroup": "netherrack"
+  },
+  {
+    "id": "minecraft:nether_brick",
+    "nameJa": "ネザーレンガ",
+    "nameEn": "Nether Bricks",
+    "category": "stone",
+    "shape": "full",
+    "materialGroup": "nether_brick"
+  },
+  {
+    "id": "minecraft:red_nether_brick",
+    "nameJa": "赤いネザーレンガ",
+    "nameEn": "Red Nether Bricks",
+    "category": "stone",
+    "shape": "full",
+    "materialGroup": "red_nether_brick"
+  },
+  {
+    "id": "minecraft:cracked_nether_bricks",
+    "nameJa": "ひび割れたネザーレンガ",
+    "nameEn": "Cracked Nether Bricks",
+    "category": "stone",
+    "shape": "full",
+    "materialGroup": "cracked_nether_bricks"
+  },
+  {
+    "id": "minecraft:chiseled_nether_bricks",
+    "nameJa": "模様入りのネザーレンガ",
+    "nameEn": "Chiseled Nether Bricks",
+    "category": "stone",
+    "shape": "full",
+    "materialGroup": "chiseled_nether_bricks"
+  },
+  {
+    "id": "minecraft:obsidian",
+    "nameJa": "黒曜石",
+    "nameEn": "Obsidian",
+    "category": "stone",
+    "shape": "full",
+    "materialGroup": "obsidian"
+  },
+  {
+    "id": "minecraft:crying_obsidian",
+    "nameJa": "泣く黒曜石",
+    "nameEn": "Crying Obsidian",
+    "category": "stone",
+    "shape": "full",
+    "materialGroup": "crying_obsidian"
+  },
+  {
+    "id": "minecraft:oak_planks",
+    "nameJa": "オークの板材",
+    "nameEn": "Oak Planks",
+    "category": "wood",
+    "shape": "full",
+    "materialGroup": "oak_planks"
+  },
+  {
+    "id": "minecraft:oak_log",
+    "nameJa": "オークの原木",
+    "nameEn": "Oak Log",
+    "category": "wood",
+    "shape": "full",
+    "materialGroup": "oak_log",
+    "states": {
+      "pillar_axis": "y"
+    }
+  },
+  {
+    "id": "minecraft:stripped_oak_log",
+    "nameJa": "樹皮を剥いだオークの原木",
+    "nameEn": "Stripped Oak Log",
+    "category": "wood",
+    "shape": "full",
+    "materialGroup": "stripped_oak_log",
+    "states": {
+      "pillar_axis": "y"
+    }
+  },
+  {
+    "id": "minecraft:oak_wood",
+    "nameJa": "オークの木",
+    "nameEn": "Oak Wood",
+    "category": "wood",
+    "shape": "full",
+    "materialGroup": "oak_wood",
+    "states": {
+      "pillar_axis": "y"
+    }
+  },
+  {
+    "id": "minecraft:stripped_oak_wood",
+    "nameJa": "樹皮を剥いだオークの木",
+    "nameEn": "Stripped Oak Wood",
+    "category": "wood",
+    "shape": "full",
+    "materialGroup": "stripped_oak_wood",
+    "states": {
+      "pillar_axis": "y"
+    }
+  },
+  {
+    "id": "minecraft:spruce_planks",
+    "nameJa": "トウヒの板材",
+    "nameEn": "Spruce Planks",
+    "category": "wood",
+    "shape": "full",
+    "materialGroup": "spruce_planks"
+  },
+  {
+    "id": "minecraft:spruce_log",
+    "nameJa": "トウヒの原木",
+    "nameEn": "Spruce Log",
+    "category": "wood",
+    "shape": "full",
+    "materialGroup": "spruce_log",
+    "states": {
+      "pillar_axis": "y"
+    }
+  },
+  {
+    "id": "minecraft:stripped_spruce_log",
+    "nameJa": "樹皮を剥いだトウヒの原木",
+    "nameEn": "Stripped Spruce Log",
+    "category": "wood",
+    "shape": "full",
+    "materialGroup": "stripped_spruce_log",
+    "states": {
+      "pillar_axis": "y"
+    }
+  },
+  {
+    "id": "minecraft:spruce_wood",
+    "nameJa": "トウヒの木",
+    "nameEn": "Spruce Wood",
+    "category": "wood",
+    "shape": "full",
+    "materialGroup": "spruce_wood",
+    "states": {
+      "pillar_axis": "y"
+    }
+  },
+  {
+    "id": "minecraft:stripped_spruce_wood",
+    "nameJa": "樹皮を剥いだトウヒの木",
+    "nameEn": "Stripped Spruce Wood",
+    "category": "wood",
+    "shape": "full",
+    "materialGroup": "stripped_spruce_wood",
+    "states": {
+      "pillar_axis": "y"
+    }
+  },
+  {
+    "id": "minecraft:birch_planks",
+    "nameJa": "シラカバの板材",
+    "nameEn": "Birch Planks",
+    "category": "wood",
+    "shape": "full",
+    "materialGroup": "birch_planks"
+  },
+  {
+    "id": "minecraft:birch_log",
+    "nameJa": "シラカバの原木",
+    "nameEn": "Birch Log",
+    "category": "wood",
+    "shape": "full",
+    "materialGroup": "birch_log",
+    "states": {
+      "pillar_axis": "y"
+    }
+  },
+  {
+    "id": "minecraft:stripped_birch_log",
+    "nameJa": "樹皮を剥いだシラカバの原木",
+    "nameEn": "Stripped Birch Log",
+    "category": "wood",
+    "shape": "full",
+    "materialGroup": "stripped_birch_log",
+    "states": {
+      "pillar_axis": "y"
+    }
+  },
+  {
+    "id": "minecraft:birch_wood",
+    "nameJa": "シラカバの木",
+    "nameEn": "Birch Wood",
+    "category": "wood",
+    "shape": "full",
+    "materialGroup": "birch_wood",
+    "states": {
+      "pillar_axis": "y"
+    }
+  },
+  {
+    "id": "minecraft:stripped_birch_wood",
+    "nameJa": "樹皮を剥いだシラカバの木",
+    "nameEn": "Stripped Birch Wood",
+    "category": "wood",
+    "shape": "full",
+    "materialGroup": "stripped_birch_wood",
+    "states": {
+      "pillar_axis": "y"
+    }
+  },
+  {
+    "id": "minecraft:jungle_planks",
+    "nameJa": "ジャングルの板材",
+    "nameEn": "Jungle Planks",
+    "category": "wood",
+    "shape": "full",
+    "materialGroup": "jungle_planks"
+  },
+  {
+    "id": "minecraft:jungle_log",
+    "nameJa": "ジャングルの原木",
+    "nameEn": "Jungle Log",
+    "category": "wood",
+    "shape": "full",
+    "materialGroup": "jungle_log",
+    "states": {
+      "pillar_axis": "y"
+    }
+  },
+  {
+    "id": "minecraft:stripped_jungle_log",
+    "nameJa": "樹皮を剥いだジャングルの原木",
+    "nameEn": "Stripped Jungle Log",
+    "category": "wood",
+    "shape": "full",
+    "materialGroup": "stripped_jungle_log",
+    "states": {
+      "pillar_axis": "y"
+    }
+  },
+  {
+    "id": "minecraft:jungle_wood",
+    "nameJa": "ジャングルの木",
+    "nameEn": "Jungle Wood",
+    "category": "wood",
+    "shape": "full",
+    "materialGroup": "jungle_wood",
+    "states": {
+      "pillar_axis": "y"
+    }
+  },
+  {
+    "id": "minecraft:stripped_jungle_wood",
+    "nameJa": "樹皮を剥いだジャングルの木",
+    "nameEn": "Stripped Jungle Wood",
+    "category": "wood",
+    "shape": "full",
+    "materialGroup": "stripped_jungle_wood",
+    "states": {
+      "pillar_axis": "y"
+    }
+  },
+  {
+    "id": "minecraft:acacia_planks",
+    "nameJa": "アカシアの板材",
+    "nameEn": "Acacia Planks",
+    "category": "wood",
+    "shape": "full",
+    "materialGroup": "acacia_planks"
+  },
+  {
+    "id": "minecraft:acacia_log",
+    "nameJa": "アカシアの原木",
+    "nameEn": "Acacia Log",
+    "category": "wood",
+    "shape": "full",
+    "materialGroup": "acacia_log",
+    "states": {
+      "pillar_axis": "y"
+    }
+  },
+  {
+    "id": "minecraft:stripped_acacia_log",
+    "nameJa": "樹皮を剥いだアカシアの原木",
+    "nameEn": "Stripped Acacia Log",
+    "category": "wood",
+    "shape": "full",
+    "materialGroup": "stripped_acacia_log",
+    "states": {
+      "pillar_axis": "y"
+    }
+  },
+  {
+    "id": "minecraft:acacia_wood",
+    "nameJa": "アカシアの木",
+    "nameEn": "Acacia Wood",
+    "category": "wood",
+    "shape": "full",
+    "materialGroup": "acacia_wood",
+    "states": {
+      "pillar_axis": "y"
+    }
+  },
+  {
+    "id": "minecraft:stripped_acacia_wood",
+    "nameJa": "樹皮を剥いだアカシアの木",
+    "nameEn": "Stripped Acacia Wood",
+    "category": "wood",
+    "shape": "full",
+    "materialGroup": "stripped_acacia_wood",
+    "states": {
+      "pillar_axis": "y"
+    }
+  },
+  {
+    "id": "minecraft:dark_oak_planks",
+    "nameJa": "ダークオークの板材",
+    "nameEn": "Dark Oak Planks",
+    "category": "wood",
+    "shape": "full",
+    "materialGroup": "dark_oak_planks"
+  },
+  {
+    "id": "minecraft:dark_oak_log",
+    "nameJa": "ダークオークの原木",
+    "nameEn": "Dark Oak Log",
+    "category": "wood",
+    "shape": "full",
+    "materialGroup": "dark_oak_log",
+    "states": {
+      "pillar_axis": "y"
+    }
+  },
+  {
+    "id": "minecraft:stripped_dark_oak_log",
+    "nameJa": "樹皮を剥いだダークオークの原木",
+    "nameEn": "Stripped Dark Oak Log",
+    "category": "wood",
+    "shape": "full",
+    "materialGroup": "stripped_dark_oak_log",
+    "states": {
+      "pillar_axis": "y"
+    }
+  },
+  {
+    "id": "minecraft:dark_oak_wood",
+    "nameJa": "ダークオークの木",
+    "nameEn": "Dark Oak Wood",
+    "category": "wood",
+    "shape": "full",
+    "materialGroup": "dark_oak_wood",
+    "states": {
+      "pillar_axis": "y"
+    }
+  },
+  {
+    "id": "minecraft:stripped_dark_oak_wood",
+    "nameJa": "樹皮を剥いだダークオークの木",
+    "nameEn": "Stripped Dark Oak Wood",
+    "category": "wood",
+    "shape": "full",
+    "materialGroup": "stripped_dark_oak_wood",
+    "states": {
+      "pillar_axis": "y"
+    }
+  },
+  {
+    "id": "minecraft:mangrove_planks",
+    "nameJa": "マングローブの板材",
+    "nameEn": "Mangrove Planks",
+    "category": "wood",
+    "shape": "full",
+    "materialGroup": "mangrove_planks"
+  },
+  {
+    "id": "minecraft:mangrove_log",
+    "nameJa": "マングローブの原木",
+    "nameEn": "Mangrove Log",
+    "category": "wood",
+    "shape": "full",
+    "materialGroup": "mangrove_log",
+    "states": {
+      "pillar_axis": "y"
+    }
+  },
+  {
+    "id": "minecraft:stripped_mangrove_log",
+    "nameJa": "樹皮を剥いだマングローブの原木",
+    "nameEn": "Stripped Mangrove Log",
+    "category": "wood",
+    "shape": "full",
+    "materialGroup": "stripped_mangrove_log",
+    "states": {
+      "pillar_axis": "y"
+    }
+  },
+  {
+    "id": "minecraft:mangrove_wood",
+    "nameJa": "マングローブの木",
+    "nameEn": "Mangrove Wood",
+    "category": "wood",
+    "shape": "full",
+    "materialGroup": "mangrove_wood",
+    "states": {
+      "pillar_axis": "y"
+    }
+  },
+  {
+    "id": "minecraft:stripped_mangrove_wood",
+    "nameJa": "樹皮を剥いだマングローブの木",
+    "nameEn": "Stripped Mangrove Wood",
+    "category": "wood",
+    "shape": "full",
+    "materialGroup": "stripped_mangrove_wood",
+    "states": {
+      "pillar_axis": "y"
+    }
+  },
+  {
+    "id": "minecraft:cherry_planks",
+    "nameJa": "サクラの板材",
+    "nameEn": "Cherry Planks",
+    "category": "wood",
+    "shape": "full",
+    "materialGroup": "cherry_planks"
+  },
+  {
+    "id": "minecraft:cherry_log",
+    "nameJa": "サクラの原木",
+    "nameEn": "Cherry Log",
+    "category": "wood",
+    "shape": "full",
+    "materialGroup": "cherry_log",
+    "states": {
+      "pillar_axis": "y"
+    }
+  },
+  {
+    "id": "minecraft:stripped_cherry_log",
+    "nameJa": "樹皮を剥いだサクラの原木",
+    "nameEn": "Stripped Cherry Log",
+    "category": "wood",
+    "shape": "full",
+    "materialGroup": "stripped_cherry_log",
+    "states": {
+      "pillar_axis": "y"
+    }
+  },
+  {
+    "id": "minecraft:cherry_wood",
+    "nameJa": "サクラの木",
+    "nameEn": "Cherry Wood",
+    "category": "wood",
+    "shape": "full",
+    "materialGroup": "cherry_wood",
+    "states": {
+      "pillar_axis": "y"
+    }
+  },
+  {
+    "id": "minecraft:stripped_cherry_wood",
+    "nameJa": "樹皮を剥いだサクラの木",
+    "nameEn": "Stripped Cherry Wood",
+    "category": "wood",
+    "shape": "full",
+    "materialGroup": "stripped_cherry_wood",
+    "states": {
+      "pillar_axis": "y"
+    }
+  },
+  {
+    "id": "minecraft:pale_oak_planks",
+    "nameJa": "ペールオークの板材",
+    "nameEn": "Pale Oak Planks",
+    "category": "wood",
+    "shape": "full",
+    "materialGroup": "pale_oak_planks"
+  },
+  {
+    "id": "minecraft:pale_oak_log",
+    "nameJa": "ペールオークの原木",
+    "nameEn": "Pale Oak Log",
+    "category": "wood",
+    "shape": "full",
+    "materialGroup": "pale_oak_log",
+    "states": {
+      "pillar_axis": "y"
+    }
+  },
+  {
+    "id": "minecraft:stripped_pale_oak_log",
+    "nameJa": "樹皮を剥いだペールオークの原木",
+    "nameEn": "Stripped Pale Oak Log",
+    "category": "wood",
+    "shape": "full",
+    "materialGroup": "stripped_pale_oak_log",
+    "states": {
+      "pillar_axis": "y"
+    }
+  },
+  {
+    "id": "minecraft:pale_oak_wood",
+    "nameJa": "ペールオークの木",
+    "nameEn": "Pale Oak Wood",
+    "category": "wood",
+    "shape": "full",
+    "materialGroup": "pale_oak_wood",
+    "states": {
+      "pillar_axis": "y"
+    }
+  },
+  {
+    "id": "minecraft:stripped_pale_oak_wood",
+    "nameJa": "樹皮を剥いだペールオークの木",
+    "nameEn": "Stripped Pale Oak Wood",
+    "category": "wood",
+    "shape": "full",
+    "materialGroup": "stripped_pale_oak_wood",
+    "states": {
+      "pillar_axis": "y"
+    }
+  },
+  {
+    "id": "minecraft:crimson_planks",
+    "nameJa": "真紅の板材",
+    "nameEn": "Crimson Planks",
+    "category": "wood",
+    "shape": "full",
+    "materialGroup": "crimson_planks"
+  },
+  {
+    "id": "minecraft:crimson_stem",
+    "nameJa": "真紅の幹",
+    "nameEn": "Crimson Stem",
+    "category": "wood",
+    "shape": "full",
+    "materialGroup": "crimson_stem",
+    "states": {
+      "pillar_axis": "y"
+    }
+  },
+  {
+    "id": "minecraft:stripped_crimson_stem",
+    "nameJa": "表皮を剥いだ真紅の幹",
+    "nameEn": "Stripped Crimson Stem",
+    "category": "wood",
+    "shape": "full",
+    "materialGroup": "stripped_crimson_stem",
+    "states": {
+      "pillar_axis": "y"
+    }
+  },
+  {
+    "id": "minecraft:crimson_hyphae",
+    "nameJa": "真紅の菌糸",
+    "nameEn": "Crimson Hyphae",
+    "category": "wood",
+    "shape": "full",
+    "materialGroup": "crimson_hyphae",
+    "states": {
+      "pillar_axis": "y"
+    }
+  },
+  {
+    "id": "minecraft:stripped_crimson_hyphae",
+    "nameJa": "表皮を剥いだ真紅の菌糸",
+    "nameEn": "Stripped Crimson Hyphae",
+    "category": "wood",
+    "shape": "full",
+    "materialGroup": "stripped_crimson_hyphae",
+    "states": {
+      "pillar_axis": "y"
+    }
+  },
+  {
+    "id": "minecraft:warped_planks",
+    "nameJa": "歪んだ板材",
+    "nameEn": "Warped Planks",
+    "category": "wood",
+    "shape": "full",
+    "materialGroup": "warped_planks"
+  },
+  {
+    "id": "minecraft:warped_stem",
+    "nameJa": "歪んだ幹",
+    "nameEn": "Warped Stem",
+    "category": "wood",
+    "shape": "full",
+    "materialGroup": "warped_stem",
+    "states": {
+      "pillar_axis": "y"
+    }
+  },
+  {
+    "id": "minecraft:stripped_warped_stem",
+    "nameJa": "表皮を剥いだ歪んだ幹",
+    "nameEn": "Stripped Warped Stem",
+    "category": "wood",
+    "shape": "full",
+    "materialGroup": "stripped_warped_stem",
+    "states": {
+      "pillar_axis": "y"
+    }
+  },
+  {
+    "id": "minecraft:warped_hyphae",
+    "nameJa": "歪んだ菌糸",
+    "nameEn": "Warped Hyphae",
+    "category": "wood",
+    "shape": "full",
+    "materialGroup": "warped_hyphae",
+    "states": {
+      "pillar_axis": "y"
+    }
+  },
+  {
+    "id": "minecraft:stripped_warped_hyphae",
+    "nameJa": "表皮を剥いだ歪んだ菌糸",
+    "nameEn": "Stripped Warped Hyphae",
+    "category": "wood",
+    "shape": "full",
+    "materialGroup": "stripped_warped_hyphae",
+    "states": {
+      "pillar_axis": "y"
+    }
+  },
+  {
+    "id": "minecraft:bamboo_planks",
+    "nameJa": "竹の板材",
+    "nameEn": "Bamboo Planks",
+    "category": "wood",
+    "shape": "full",
+    "materialGroup": "bamboo_planks"
+  },
+  {
+    "id": "minecraft:bamboo_mosaic",
+    "nameJa": "竹細工",
+    "nameEn": "Bamboo Mosaic",
+    "category": "wood",
+    "shape": "full",
+    "materialGroup": "bamboo_mosaic"
+  },
+  {
+    "id": "minecraft:bamboo_block",
+    "nameJa": "竹ブロック",
+    "nameEn": "Block of Bamboo",
+    "category": "wood",
+    "shape": "full",
+    "materialGroup": "bamboo_block",
+    "states": {
+      "pillar_axis": "y"
+    }
+  },
+  {
+    "id": "minecraft:stripped_bamboo_block",
+    "nameJa": "表皮を剥いだ竹ブロック",
+    "nameEn": "Block of Stripped Bamboo",
+    "category": "wood",
+    "shape": "full",
+    "materialGroup": "stripped_bamboo_block",
+    "states": {
+      "pillar_axis": "y"
+    }
+  },
+  {
+    "id": "minecraft:sand",
+    "nameJa": "砂",
+    "nameEn": "Sand",
+    "category": "soil",
+    "shape": "full",
+    "materialGroup": "sand"
+  },
+  {
+    "id": "minecraft:red_sand",
+    "nameJa": "赤い砂",
+    "nameEn": "Red Sand",
+    "category": "soil",
+    "shape": "full",
+    "materialGroup": "red_sand"
+  },
+  {
+    "id": "minecraft:gravel",
+    "nameJa": "砂利",
+    "nameEn": "Gravel",
+    "category": "soil",
+    "shape": "full",
+    "materialGroup": "gravel"
+  },
+  {
+    "id": "minecraft:dirt",
+    "nameJa": "土",
+    "nameEn": "Dirt",
+    "category": "soil",
+    "shape": "full",
+    "materialGroup": "dirt"
+  },
+  {
+    "id": "minecraft:coarse_dirt",
+    "nameJa": "粗い土",
+    "nameEn": "Coarse Dirt",
+    "category": "soil",
+    "shape": "full",
+    "materialGroup": "coarse_dirt"
+  },
+  {
+    "id": "minecraft:dirt_with_roots",
+    "nameJa": "根付いた土",
+    "nameEn": "Rooted Dirt",
+    "category": "soil",
+    "shape": "full",
+    "materialGroup": "dirt_with_roots"
+  },
+  {
+    "id": "minecraft:clay",
+    "nameJa": "粘土",
+    "nameEn": "Clay",
+    "category": "soil",
+    "shape": "full",
+    "materialGroup": "clay"
+  },
+  {
+    "id": "minecraft:mud",
+    "nameJa": "泥",
+    "nameEn": "Mud",
+    "category": "soil",
+    "shape": "full",
+    "materialGroup": "mud"
+  },
+  {
+    "id": "minecraft:soul_sand",
+    "nameJa": "ソウルサンド",
+    "nameEn": "Soul Sand",
+    "category": "soil",
+    "shape": "full",
+    "materialGroup": "soul_sand"
+  },
+  {
+    "id": "minecraft:soul_soil",
+    "nameJa": "ソウルソイル",
+    "nameEn": "Soul Soil",
+    "category": "soil",
+    "shape": "full",
+    "materialGroup": "soul_soil"
+  },
+  {
+    "id": "minecraft:snow",
+    "nameJa": "雪ブロック",
+    "nameEn": "Snow Block",
+    "category": "soil",
+    "shape": "full",
+    "materialGroup": "snow"
+  },
+  {
+    "id": "minecraft:normal_stone_slab",
+    "nameJa": "石（ハーフ）",
+    "nameEn": "Stone Slab",
+    "category": "stone",
+    "shape": "slab",
+    "materialGroup": "stone"
+  },
+  {
+    "id": "minecraft:normal_stone_stairs",
+    "nameJa": "石の階段",
+    "nameEn": "Stone Stairs",
+    "category": "stone",
+    "shape": "stairs",
+    "materialGroup": "stone"
+  },
+  {
+    "id": "minecraft:smooth_stone_slab",
+    "nameJa": "滑らかな石（ハーフ）",
+    "nameEn": "Smooth Stone Slab",
+    "category": "stone",
+    "shape": "slab",
+    "materialGroup": "smooth_stone"
+  },
+  {
+    "id": "minecraft:cobblestone_slab",
+    "nameJa": "丸石（ハーフ）",
+    "nameEn": "Cobblestone Slab",
+    "category": "stone",
+    "shape": "slab",
+    "materialGroup": "cobblestone"
+  },
+  {
+    "id": "minecraft:stone_stairs",
+    "nameJa": "丸石の階段",
+    "nameEn": "Cobblestone Stairs",
+    "category": "stone",
+    "shape": "stairs",
+    "materialGroup": "cobblestone"
+  },
+  {
+    "id": "minecraft:mossy_cobblestone_slab",
+    "nameJa": "苔むした丸石（ハーフ）",
+    "nameEn": "Mossy Cobblestone Slab",
+    "category": "stone",
+    "shape": "slab",
+    "materialGroup": "mossy_cobblestone"
+  },
+  {
+    "id": "minecraft:mossy_cobblestone_stairs",
+    "nameJa": "苔むした丸石の階段",
+    "nameEn": "Mossy Cobblestone Stairs",
+    "category": "stone",
+    "shape": "stairs",
+    "materialGroup": "mossy_cobblestone"
+  },
+  {
+    "id": "minecraft:stone_brick_slab",
+    "nameJa": "石レンガ（ハーフ）",
+    "nameEn": "Stone Brick Slab",
+    "category": "stone",
+    "shape": "slab",
+    "materialGroup": "stone_bricks"
+  },
+  {
+    "id": "minecraft:stone_brick_stairs",
+    "nameJa": "石レンガの階段",
+    "nameEn": "Stone Brick Stairs",
+    "category": "stone",
+    "shape": "stairs",
+    "materialGroup": "stone_bricks"
+  },
+  {
+    "id": "minecraft:mossy_stone_brick_slab",
+    "nameJa": "苔むした石レンガ（ハーフ）",
+    "nameEn": "Mossy Stone Brick Slab",
+    "category": "stone",
+    "shape": "slab",
+    "materialGroup": "mossy_stone_bricks"
+  },
+  {
+    "id": "minecraft:mossy_stone_brick_stairs",
+    "nameJa": "苔むした石レンガの階段",
+    "nameEn": "Mossy Stone Brick Stairs",
+    "category": "stone",
+    "shape": "stairs",
+    "materialGroup": "mossy_stone_bricks"
+  },
+  {
+    "id": "minecraft:granite_slab",
+    "nameJa": "花崗岩（ハーフ）",
+    "nameEn": "Granite Slab",
+    "category": "stone",
+    "shape": "slab",
+    "materialGroup": "granite"
+  },
+  {
+    "id": "minecraft:granite_stairs",
+    "nameJa": "花崗岩の階段",
+    "nameEn": "Granite Stairs",
+    "category": "stone",
+    "shape": "stairs",
+    "materialGroup": "granite"
+  },
+  {
+    "id": "minecraft:polished_granite_slab",
+    "nameJa": "磨かれた花崗岩（ハーフ）",
+    "nameEn": "Polished Granite Slab",
+    "category": "stone",
+    "shape": "slab",
+    "materialGroup": "polished_granite"
+  },
+  {
+    "id": "minecraft:polished_granite_stairs",
+    "nameJa": "磨かれた花崗岩の階段",
+    "nameEn": "Polished Granite Stairs",
+    "category": "stone",
+    "shape": "stairs",
+    "materialGroup": "polished_granite"
+  },
+  {
+    "id": "minecraft:diorite_slab",
+    "nameJa": "閃緑岩（ハーフ）",
+    "nameEn": "Diorite Slab",
+    "category": "stone",
+    "shape": "slab",
+    "materialGroup": "diorite"
+  },
+  {
+    "id": "minecraft:diorite_stairs",
+    "nameJa": "閃緑岩の階段",
+    "nameEn": "Diorite Stairs",
+    "category": "stone",
+    "shape": "stairs",
+    "materialGroup": "diorite"
+  },
+  {
+    "id": "minecraft:polished_diorite_slab",
+    "nameJa": "磨かれた閃緑岩（ハーフ）",
+    "nameEn": "Polished Diorite Slab",
+    "category": "stone",
+    "shape": "slab",
+    "materialGroup": "polished_diorite"
+  },
+  {
+    "id": "minecraft:polished_diorite_stairs",
+    "nameJa": "磨かれた閃緑岩の階段",
+    "nameEn": "Polished Diorite Stairs",
+    "category": "stone",
+    "shape": "stairs",
+    "materialGroup": "polished_diorite"
+  },
+  {
+    "id": "minecraft:andesite_slab",
+    "nameJa": "安山岩（ハーフ）",
+    "nameEn": "Andesite Slab",
+    "category": "stone",
+    "shape": "slab",
+    "materialGroup": "andesite"
+  },
+  {
+    "id": "minecraft:andesite_stairs",
+    "nameJa": "安山岩の階段",
+    "nameEn": "Andesite Stairs",
+    "category": "stone",
+    "shape": "stairs",
+    "materialGroup": "andesite"
+  },
+  {
+    "id": "minecraft:polished_andesite_slab",
+    "nameJa": "磨かれた安山岩（ハーフ）",
+    "nameEn": "Polished Andesite Slab",
+    "category": "stone",
+    "shape": "slab",
+    "materialGroup": "polished_andesite"
+  },
+  {
+    "id": "minecraft:polished_andesite_stairs",
+    "nameJa": "磨かれた安山岩の階段",
+    "nameEn": "Polished Andesite Stairs",
+    "category": "stone",
+    "shape": "stairs",
+    "materialGroup": "polished_andesite"
+  },
+  {
+    "id": "minecraft:cobbled_deepslate_slab",
+    "nameJa": "深層岩の丸石のハーフブロック",
+    "nameEn": "Cobbled Deepslate Slab",
+    "category": "stone",
+    "shape": "slab",
+    "materialGroup": "cobbled_deepslate"
+  },
+  {
+    "id": "minecraft:cobbled_deepslate_stairs",
+    "nameJa": "深層岩の丸石の階段",
+    "nameEn": "Cobbled Deepslate Stairs",
+    "category": "stone",
+    "shape": "stairs",
+    "materialGroup": "cobbled_deepslate"
+  },
+  {
+    "id": "minecraft:polished_deepslate_slab",
+    "nameJa": "磨かれた深層岩のハーフブロック",
+    "nameEn": "Polished Deepslate Slab",
+    "category": "stone",
+    "shape": "slab",
+    "materialGroup": "polished_deepslate"
+  },
+  {
+    "id": "minecraft:polished_deepslate_stairs",
+    "nameJa": "磨かれた深層岩の階段",
+    "nameEn": "Polished Deepslate Stairs",
+    "category": "stone",
+    "shape": "stairs",
+    "materialGroup": "polished_deepslate"
+  },
+  {
+    "id": "minecraft:deepslate_brick_slab",
+    "nameJa": "深層岩レンガのハーフブロック",
+    "nameEn": "Deepslate Brick Slab",
+    "category": "stone",
+    "shape": "slab",
+    "materialGroup": "deepslate_bricks"
+  },
+  {
+    "id": "minecraft:deepslate_brick_stairs",
+    "nameJa": "深層岩レンガの階段",
+    "nameEn": "Deepslate Brick Stairs",
+    "category": "stone",
+    "shape": "stairs",
+    "materialGroup": "deepslate_bricks"
+  },
+  {
+    "id": "minecraft:tuff_slab",
+    "nameJa": "凝灰岩のハーフブロック",
+    "nameEn": "Tuff Slab",
+    "category": "stone",
+    "shape": "slab",
+    "materialGroup": "tuff"
+  },
+  {
+    "id": "minecraft:tuff_stairs",
+    "nameJa": "凝灰岩の階段",
+    "nameEn": "Tuff Stairs",
+    "category": "stone",
+    "shape": "stairs",
+    "materialGroup": "tuff"
+  },
+  {
+    "id": "minecraft:polished_tuff_slab",
+    "nameJa": "磨かれた凝灰岩のハーフブロック",
+    "nameEn": "Polished Tuff Slab",
+    "category": "stone",
+    "shape": "slab",
+    "materialGroup": "polished_tuff"
+  },
+  {
+    "id": "minecraft:polished_tuff_stairs",
+    "nameJa": "磨かれた凝灰岩の階段",
+    "nameEn": "Polished Tuff Stairs",
+    "category": "stone",
+    "shape": "stairs",
+    "materialGroup": "polished_tuff"
+  },
+  {
+    "id": "minecraft:tuff_brick_slab",
+    "nameJa": "凝灰岩レンガのハーフブロック",
+    "nameEn": "Tuff Brick Slab",
+    "category": "stone",
+    "shape": "slab",
+    "materialGroup": "tuff_bricks"
+  },
+  {
+    "id": "minecraft:tuff_brick_stairs",
+    "nameJa": "凝灰岩レンガの階段",
+    "nameEn": "Tuff Brick Stairs",
+    "category": "stone",
+    "shape": "stairs",
+    "materialGroup": "tuff_bricks"
+  },
+  {
+    "id": "minecraft:blackstone_slab",
+    "nameJa": "ブラックストーンのハーフブロック",
+    "nameEn": "Blackstone Slab",
+    "category": "stone",
+    "shape": "slab",
+    "materialGroup": "blackstone"
+  },
+  {
+    "id": "minecraft:blackstone_stairs",
+    "nameJa": "ブラックストーンの階段",
+    "nameEn": "Blackstone Stairs",
+    "category": "stone",
+    "shape": "stairs",
+    "materialGroup": "blackstone"
+  },
+  {
+    "id": "minecraft:polished_blackstone_slab",
+    "nameJa": "磨かれたブラックストーンのハーフブロック",
+    "nameEn": "Polished Blackstone Slab",
+    "category": "stone",
+    "shape": "slab",
+    "materialGroup": "polished_blackstone"
+  },
+  {
+    "id": "minecraft:polished_blackstone_stairs",
+    "nameJa": "磨かれたブラックストーンの階段",
+    "nameEn": "Polished Blackstone Stairs",
+    "category": "stone",
+    "shape": "stairs",
+    "materialGroup": "polished_blackstone"
+  },
+  {
+    "id": "minecraft:polished_blackstone_brick_slab",
+    "nameJa": "磨かれたブラックストーンレンガのハーフブロック",
+    "nameEn": "Polished Blackstone Brick Slab",
+    "category": "stone",
+    "shape": "slab",
+    "materialGroup": "polished_blackstone_bricks"
+  },
+  {
+    "id": "minecraft:polished_blackstone_brick_stairs",
+    "nameJa": "磨かれたブラックストーンレンガの階段",
+    "nameEn": "Polished Blackstone Brick Stairs",
+    "category": "stone",
+    "shape": "stairs",
+    "materialGroup": "polished_blackstone_bricks"
+  },
+  {
+    "id": "minecraft:mud_brick_slab",
+    "nameJa": "泥レンガのハーフブロック",
+    "nameEn": "Mud Brick Slab",
+    "category": "stone",
+    "shape": "slab",
+    "materialGroup": "mud_bricks"
+  },
+  {
+    "id": "minecraft:mud_brick_stairs",
+    "nameJa": "泥レンガの階段",
+    "nameEn": "Mud Brick Stairs",
+    "category": "stone",
+    "shape": "stairs",
+    "materialGroup": "mud_bricks"
+  },
+  {
+    "id": "minecraft:sandstone_slab",
+    "nameJa": "砂岩（ハーフ）",
+    "nameEn": "Sandstone Slab",
+    "category": "stone",
+    "shape": "slab",
+    "materialGroup": "sandstone"
+  },
+  {
+    "id": "minecraft:sandstone_stairs",
+    "nameJa": "砂岩の階段",
+    "nameEn": "Sandstone Stairs",
+    "category": "stone",
+    "shape": "stairs",
+    "materialGroup": "sandstone"
+  },
+  {
+    "id": "minecraft:cut_sandstone_slab",
+    "nameJa": "研がれた砂岩（ハーフ）",
+    "nameEn": "Cut Sandstone Slab",
+    "category": "stone",
+    "shape": "slab",
+    "materialGroup": "cut_sandstone"
+  },
+  {
+    "id": "minecraft:smooth_sandstone_slab",
+    "nameJa": "滑らかな砂岩（ハーフ）",
+    "nameEn": "Smooth Sandstone Slab",
+    "category": "stone",
+    "shape": "slab",
+    "materialGroup": "smooth_sandstone"
+  },
+  {
+    "id": "minecraft:smooth_sandstone_stairs",
+    "nameJa": "滑らかな砂岩の階段",
+    "nameEn": "Smooth Sandstone Stairs",
+    "category": "stone",
+    "shape": "stairs",
+    "materialGroup": "smooth_sandstone"
+  },
+  {
+    "id": "minecraft:red_sandstone_slab",
+    "nameJa": "赤い砂岩（ハーフ）",
+    "nameEn": "Red Sandstone Slab",
+    "category": "stone",
+    "shape": "slab",
+    "materialGroup": "red_sandstone"
+  },
+  {
+    "id": "minecraft:red_sandstone_stairs",
+    "nameJa": "赤い砂岩の階段",
+    "nameEn": "Red Sandstone Stairs",
+    "category": "stone",
+    "shape": "stairs",
+    "materialGroup": "red_sandstone"
+  },
+  {
+    "id": "minecraft:cut_red_sandstone_slab",
+    "nameJa": "研がれた赤い砂岩（ハーフ）",
+    "nameEn": "Cut Red Sandstone Slab",
+    "category": "stone",
+    "shape": "slab",
+    "materialGroup": "cut_red_sandstone"
+  },
+  {
+    "id": "minecraft:smooth_red_sandstone_slab",
+    "nameJa": "滑らかな赤い砂岩（ハーフ）",
+    "nameEn": "Smooth Red Sandstone Slab",
+    "category": "stone",
+    "shape": "slab",
+    "materialGroup": "smooth_red_sandstone"
+  },
+  {
+    "id": "minecraft:smooth_red_sandstone_stairs",
+    "nameJa": "滑らかな赤い砂岩の階段",
+    "nameEn": "Smooth Red Sandstone Stairs",
+    "category": "stone",
+    "shape": "stairs",
+    "materialGroup": "smooth_red_sandstone"
+  },
+  {
+    "id": "minecraft:smooth_quartz_slab",
+    "nameJa": "滑らかなクォーツ（ハーフ）",
+    "nameEn": "Smooth Quartz Slab",
+    "category": "stone",
+    "shape": "slab",
+    "materialGroup": "smooth_quartz"
+  },
+  {
+    "id": "minecraft:smooth_quartz_stairs",
+    "nameJa": "滑らかなクォーツの階段",
+    "nameEn": "Smooth Quartz Stairs",
+    "category": "stone",
+    "shape": "stairs",
+    "materialGroup": "smooth_quartz"
+  },
+  {
+    "id": "minecraft:prismarine_slab",
+    "nameJa": "プリズマリン（ハーフ）",
+    "nameEn": "Prismarine Slab",
+    "category": "stone",
+    "shape": "slab",
+    "materialGroup": "prismarine"
+  },
+  {
+    "id": "minecraft:prismarine_stairs",
+    "nameJa": "プリズマリンの階段",
+    "nameEn": "Prismarine Stairs",
+    "category": "stone",
+    "shape": "stairs",
+    "materialGroup": "prismarine"
+  },
+  {
+    "id": "minecraft:prismarine_brick_slab",
+    "nameJa": "プリズマリンレンガ（ハーフ）",
+    "nameEn": "Prismarine Brick Slab",
+    "category": "stone",
+    "shape": "slab",
+    "materialGroup": "prismarine_bricks"
+  },
+  {
+    "id": "minecraft:prismarine_bricks_stairs",
+    "nameJa": "プリズマリンレンガの階段",
+    "nameEn": "Prismarine Brick Stairs",
+    "category": "stone",
+    "shape": "stairs",
+    "materialGroup": "prismarine_bricks"
+  },
+  {
+    "id": "minecraft:dark_prismarine_slab",
+    "nameJa": "ダークプリズマリン（ハーフ）",
+    "nameEn": "Dark Prismarine Slab",
+    "category": "stone",
+    "shape": "slab",
+    "materialGroup": "dark_prismarine"
+  },
+  {
+    "id": "minecraft:dark_prismarine_stairs",
+    "nameJa": "ダークプリズマリンの階段",
+    "nameEn": "Dark Prismarine Stairs",
+    "category": "stone",
+    "shape": "stairs",
+    "materialGroup": "dark_prismarine"
+  },
+  {
+    "id": "minecraft:end_stone_brick_slab",
+    "nameJa": "エンドストーンレンガ（ハーフ）",
+    "nameEn": "End Stone Brick Slab",
+    "category": "stone",
+    "shape": "slab",
+    "materialGroup": "end_bricks"
+  },
+  {
+    "id": "minecraft:end_brick_stairs",
+    "nameJa": "エンドストーンレンガの階段",
+    "nameEn": "End Stone Brick Stairs",
+    "category": "stone",
+    "shape": "stairs",
+    "materialGroup": "end_bricks"
+  },
+  {
+    "id": "minecraft:nether_brick_slab",
+    "nameJa": "ネザーレンガ（ハーフ）",
+    "nameEn": "Nether Brick Slab",
+    "category": "stone",
+    "shape": "slab",
+    "materialGroup": "nether_brick"
+  },
+  {
+    "id": "minecraft:nether_brick_stairs",
+    "nameJa": "ネザーレンガの階段",
+    "nameEn": "Nether Brick Stairs",
+    "category": "stone",
+    "shape": "stairs",
+    "materialGroup": "nether_brick"
+  },
+  {
+    "id": "minecraft:red_nether_brick_slab",
+    "nameJa": "赤いネザーレンガ（ハーフ）",
+    "nameEn": "Red Nether Brick Slab",
+    "category": "stone",
+    "shape": "slab",
+    "materialGroup": "red_nether_brick"
+  },
+  {
+    "id": "minecraft:red_nether_brick_stairs",
+    "nameJa": "赤いネザーレンガの階段",
+    "nameEn": "Red Nether Brick Stairs",
+    "category": "stone",
+    "shape": "stairs",
+    "materialGroup": "red_nether_brick"
+  },
+  {
+    "id": "minecraft:oak_slab",
+    "nameJa": "オークの板材（ハーフ）",
+    "nameEn": "Oak Slab",
+    "category": "wood",
+    "shape": "slab",
+    "materialGroup": "oak_planks"
+  },
+  {
+    "id": "minecraft:oak_stairs",
+    "nameJa": "オークの階段",
+    "nameEn": "Oak Stairs",
+    "category": "wood",
+    "shape": "stairs",
+    "materialGroup": "oak_planks"
+  },
+  {
+    "id": "minecraft:spruce_slab",
+    "nameJa": "トウヒの板材（ハーフ）",
+    "nameEn": "Spruce Slab",
+    "category": "wood",
+    "shape": "slab",
+    "materialGroup": "spruce_planks"
+  },
+  {
+    "id": "minecraft:spruce_stairs",
+    "nameJa": "トウヒの階段",
+    "nameEn": "Spruce Stairs",
+    "category": "wood",
+    "shape": "stairs",
+    "materialGroup": "spruce_planks"
+  },
+  {
+    "id": "minecraft:birch_slab",
+    "nameJa": "シラカバの板材（ハーフ）",
+    "nameEn": "Birch Slab",
+    "category": "wood",
+    "shape": "slab",
+    "materialGroup": "birch_planks"
+  },
+  {
+    "id": "minecraft:birch_stairs",
+    "nameJa": "シラカバの階段",
+    "nameEn": "Birch Stairs",
+    "category": "wood",
+    "shape": "stairs",
+    "materialGroup": "birch_planks"
+  },
+  {
+    "id": "minecraft:jungle_slab",
+    "nameJa": "ジャングルの板材（ハーフ）",
+    "nameEn": "Jungle Slab",
+    "category": "wood",
+    "shape": "slab",
+    "materialGroup": "jungle_planks"
+  },
+  {
+    "id": "minecraft:jungle_stairs",
+    "nameJa": "ジャングルの階段",
+    "nameEn": "Jungle Stairs",
+    "category": "wood",
+    "shape": "stairs",
+    "materialGroup": "jungle_planks"
+  },
+  {
+    "id": "minecraft:acacia_slab",
+    "nameJa": "アカシアの板材（ハーフ）",
+    "nameEn": "Acacia Slab",
+    "category": "wood",
+    "shape": "slab",
+    "materialGroup": "acacia_planks"
+  },
+  {
+    "id": "minecraft:acacia_stairs",
+    "nameJa": "アカシアの階段",
+    "nameEn": "Acacia Stairs",
+    "category": "wood",
+    "shape": "stairs",
+    "materialGroup": "acacia_planks"
+  },
+  {
+    "id": "minecraft:dark_oak_slab",
+    "nameJa": "ダークオークの板材（ハーフ）",
+    "nameEn": "Dark Oak Slab",
+    "category": "wood",
+    "shape": "slab",
+    "materialGroup": "dark_oak_planks"
+  },
+  {
+    "id": "minecraft:dark_oak_stairs",
+    "nameJa": "ダークオークの階段",
+    "nameEn": "Dark Oak Stairs",
+    "category": "wood",
+    "shape": "stairs",
+    "materialGroup": "dark_oak_planks"
+  },
+  {
+    "id": "minecraft:mangrove_slab",
+    "nameJa": "マングローブのハーフブロック",
+    "nameEn": "Mangrove Slab",
+    "category": "wood",
+    "shape": "slab",
+    "materialGroup": "mangrove_planks"
+  },
+  {
+    "id": "minecraft:mangrove_stairs",
+    "nameJa": "マングローブの階段",
+    "nameEn": "Mangrove Stairs",
+    "category": "wood",
+    "shape": "stairs",
+    "materialGroup": "mangrove_planks"
+  },
+  {
+    "id": "minecraft:cherry_slab",
+    "nameJa": "サクラのハーフブロック",
+    "nameEn": "Cherry Slab",
+    "category": "wood",
+    "shape": "slab",
+    "materialGroup": "cherry_planks"
+  },
+  {
+    "id": "minecraft:cherry_stairs",
+    "nameJa": "サクラの階段",
+    "nameEn": "Cherry Stairs",
+    "category": "wood",
+    "shape": "stairs",
+    "materialGroup": "cherry_planks"
+  },
+  {
+    "id": "minecraft:pale_oak_slab",
+    "nameJa": "ペールオークのハーフブロック",
+    "nameEn": "Pale Oak Slab",
+    "category": "wood",
+    "shape": "slab",
+    "materialGroup": "pale_oak_planks"
+  },
+  {
+    "id": "minecraft:pale_oak_stairs",
+    "nameJa": "ペールオークの階段",
+    "nameEn": "Pale Oak Stairs",
+    "category": "wood",
+    "shape": "stairs",
+    "materialGroup": "pale_oak_planks"
+  },
+  {
+    "id": "minecraft:crimson_slab",
+    "nameJa": "真紅のハーフブロック",
+    "nameEn": "Crimson Slab",
+    "category": "wood",
+    "shape": "slab",
+    "materialGroup": "crimson_planks"
+  },
+  {
+    "id": "minecraft:crimson_stairs",
+    "nameJa": "真紅の階段",
+    "nameEn": "Crimson Stairs",
+    "category": "wood",
+    "shape": "stairs",
+    "materialGroup": "crimson_planks"
+  },
+  {
+    "id": "minecraft:warped_slab",
+    "nameJa": "歪んだハーフブロック",
+    "nameEn": "Warped Slab",
+    "category": "wood",
+    "shape": "slab",
+    "materialGroup": "warped_planks"
+  },
+  {
+    "id": "minecraft:warped_stairs",
+    "nameJa": "歪んだ階段",
+    "nameEn": "Warped Stairs",
+    "category": "wood",
+    "shape": "stairs",
+    "materialGroup": "warped_planks"
+  },
+  {
+    "id": "minecraft:bamboo_slab",
+    "nameJa": "竹のハーフブロック",
+    "nameEn": "Bamboo Slab",
+    "category": "wood",
+    "shape": "slab",
+    "materialGroup": "bamboo_planks"
+  },
+  {
+    "id": "minecraft:bamboo_stairs",
+    "nameJa": "竹の階段",
+    "nameEn": "Bamboo Stairs",
+    "category": "wood",
+    "shape": "stairs",
+    "materialGroup": "bamboo_planks"
+  },
+  {
+    "id": "minecraft:bamboo_mosaic_slab",
+    "nameJa": "竹細工のハーフブロック",
+    "nameEn": "Bamboo Mosaic Slab",
+    "category": "wood",
+    "shape": "slab",
+    "materialGroup": "bamboo_mosaic"
+  },
+  {
+    "id": "minecraft:bamboo_mosaic_stairs",
+    "nameJa": "竹細工の階段",
+    "nameEn": "Bamboo Mosaic Stairs",
+    "category": "wood",
+    "shape": "stairs",
+    "materialGroup": "bamboo_mosaic"
+  },
+  {
+    "id": "minecraft:deepslate_tile_slab",
+    "nameJa": "深層岩タイルのハーフブロック",
+    "nameEn": "Deepslate Tile Slab",
+    "category": "stone",
+    "shape": "slab",
+    "materialGroup": "deepslate_tiles"
+  },
+  {
+    "id": "minecraft:deepslate_tile_stairs",
+    "nameJa": "深層岩タイルの階段",
+    "nameEn": "Deepslate Tile Stairs",
+    "category": "stone",
+    "shape": "stairs",
+    "materialGroup": "deepslate_tiles"
+  },
+  {
+    "id": "minecraft:brick_slab",
+    "nameJa": "レンガ（ハーフ）",
+    "nameEn": "Brick Slab",
+    "category": "stone",
+    "shape": "slab",
+    "materialGroup": "brick_block"
+  },
+  {
+    "id": "minecraft:brick_stairs",
+    "nameJa": "レンガの階段",
+    "nameEn": "Brick Stairs",
+    "category": "stone",
+    "shape": "stairs",
+    "materialGroup": "brick_block"
+  },
+  {
+    "id": "minecraft:quartz_slab",
+    "nameJa": "クォーツブロック（ハーフ）",
+    "nameEn": "Quartz Slab",
+    "category": "stone",
+    "shape": "slab",
+    "materialGroup": "quartz_block"
+  },
+  {
+    "id": "minecraft:quartz_stairs",
+    "nameJa": "クォーツの階段",
+    "nameEn": "Quartz Stairs",
+    "category": "stone",
+    "shape": "stairs",
+    "materialGroup": "quartz_block"
+  },
+  {
+    "id": "minecraft:purpur_slab",
+    "nameJa": "プルプァブロック（ハーフ）",
+    "nameEn": "Purpur Slab",
+    "category": "stone",
+    "shape": "slab",
+    "materialGroup": "purpur_block"
+  },
+  {
+    "id": "minecraft:purpur_stairs",
+    "nameJa": "プルプァの階段",
+    "nameEn": "Purpur Stairs",
+    "category": "stone",
+    "shape": "stairs",
+    "materialGroup": "purpur_block"
+  }
+]

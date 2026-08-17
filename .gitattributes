@@ -1,0 +1,9 @@
+# Generated artifacts that scripts compare byte for byte are pinned to LF.
+#
+# The contract is "the same input never changes a single byte", so if line endings are
+# translated at checkout time, a plain clone is enough to make the comparison disagree with the
+# recorded output and fail. (Hit for real on Windows with core.autocrlf=true.)
+#
+# **When you add a new artifact that is compared byte for byte, add it here too.**
+data/bedrock/SOURCE.json text eol=lf
+src/data/texture-frames.json text eol=lf

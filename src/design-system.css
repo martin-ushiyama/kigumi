@@ -1,0 +1,318 @@
+:root {
+  /* Primitive tokens: raw values are defined only in this section. */
+  --bs-color-neutral-0: #ffffff;
+  --bs-color-neutral-50: #f5f6f7;
+  --bs-color-neutral-100: #e8eaed;
+  --bs-color-neutral-200: #d7dbe0;
+  --bs-color-neutral-400: #9aa0a8;
+  --bs-color-neutral-600: #59616c;
+  --bs-color-neutral-900: #1c2025;
+  --bs-color-blue-50: #e5f4ff;
+  --bs-color-blue-600: #0b87e3;
+  --bs-color-blue-700: #0066cc;
+  --bs-color-blue-800: #0057ad;
+  --bs-color-red-600: #dc3b3b;
+
+  /* Dark-side surfaces and text. Simply inverting the light theme's neutrals
+     doesn't work — dark surfaces read with less apparent contrast between
+     each other than light ones do, so space the surfaces further apart */
+  --bs-color-ink-900: #16191d;
+  --bs-color-ink-800: #1d2126;
+  --bs-color-ink-700: #24282e;
+  --bs-color-ink-600: #2c3138;
+  --bs-color-ink-500: #363c44;
+  --bs-color-ink-300: #6b7482;
+  --bs-color-ink-100: #b9c1cc;
+  --bs-color-ink-50: #e6eaf0;
+  --bs-color-blue-300: #6cb8ff;
+  --bs-color-blue-950: #10344f;
+  --bs-color-red-400: #ff7b7b;
+
+  --bs-space-1: 4px;
+  --bs-space-2: 8px;
+  --bs-space-3: 12px;
+  --bs-space-4: 16px;
+  --bs-space-5: 20px;
+  --bs-space-6: 24px;
+
+  --bs-radius-sm: 4px;
+  --bs-radius-md: 6px;
+  --bs-radius-lg: 10px;
+  --bs-radius-xl: 12px;
+
+  --bs-font-size-xs: 11px;
+  --bs-font-size-sm: 12px;
+  --bs-font-size-md: 13px;
+  --bs-font-size-lg: 16px;
+  --bs-line-height-body: 1.5;
+
+  --bs-control-height-sm: 24px;
+  --bs-control-height-md: 30px;
+  --bs-control-height-lg: 34px;
+  --bs-opacity-muted: 0.45;
+
+  --bs-duration-fast: 100ms;
+  --bs-duration-normal: 160ms;
+  --bs-ease-standard: cubic-bezier(0.2, 0, 0, 1);
+  --bs-shadow-panel-light: 0 2px 8px rgb(0 0 0 / 14%);
+  /* Shadows aren't visible on dark surfaces, so make the cast shadow darker to convey elevation through depth instead */
+  --bs-shadow-panel-dark: 0 2px 12px rgb(0 0 0 / 55%);
+  --bs-shadow-popover-light: 0 8px 24px rgb(0 0 0 / 12%);
+  --bs-shadow-popover-dark: 0 8px 28px rgb(0 0 0 / 60%);
+  --bs-shadow-focus-blue: 0 0 0 2px rgb(13 153 255 / 30%);
+  --bs-scrim-light: rgb(0 0 0 / 55%);
+  --bs-scrim-dark: rgb(0 0 0 / 70%);
+
+  /* Semantic tokens: features and components consume aliases, never raw values. */
+  --bs-surface-canvas: var(--bs-color-neutral-100);
+  --bs-surface-panel: var(--bs-color-neutral-0);
+  --bs-surface-raised: var(--bs-color-neutral-50);
+  --bs-surface-control: var(--bs-color-neutral-0);
+  --bs-surface-control-hover: var(--bs-color-neutral-100);
+  --bs-surface-control-pressed: var(--bs-color-blue-50);
+  --bs-surface-input: var(--bs-color-neutral-50);
+  --bs-surface-selection: var(--bs-color-blue-50);
+  --bs-content-primary: var(--bs-color-neutral-900);
+  --bs-content-secondary: var(--bs-color-neutral-600);
+  --bs-content-disabled: var(--bs-color-neutral-400);
+  --bs-content-on-accent: var(--bs-color-neutral-0);
+  --bs-border-default: var(--bs-color-neutral-200);
+  --bs-border-strong: var(--bs-color-neutral-400);
+  /* Border for delineating surfaces whose content can be an arbitrary color
+     (block swatches, etc.). Gray would sink into a dark texture, so outline
+     with the paper color instead of a surface color */
+  --bs-border-on-content: var(--bs-color-neutral-0);
+  --bs-border-focus: var(--bs-color-blue-600);
+  --bs-action-accent: var(--bs-color-blue-700);
+  --bs-action-accent-hover: var(--bs-color-blue-800);
+  --bs-action-danger: var(--bs-color-red-600);
+  --bs-state-hidden-opacity: var(--bs-opacity-muted);
+  --bs-focus-ring: var(--bs-shadow-focus-blue);
+  --bs-panel-shadow: var(--bs-shadow-panel-light);
+  --bs-popover-shadow: var(--bs-shadow-popover-light);
+  --bs-scrim: var(--bs-scrim-light);
+
+  /* Colors for the 3D side (#144). **CSS is the source of truth** — keeping
+     a separate set of constants in three.js could produce a half-broken
+     state where the rest of the screen goes dark but only the viewport stays
+     light. `scene.ts` reads these via getComputedStyle and re-derives them
+     on every theme switch. The grass-theme sky/clouds/grass don't belong
+     here (they don't change with the theme, settled in #144) */
+  --bs-3d-background: #e5e7ea;
+  --bs-3d-ground-neutral: #d2d5da;
+  --bs-3d-grid-main: #858c96;
+  --bs-3d-grid-sub: #b4bac2;
+
+  /* Compatibility aliases while feature CSS moves to semantic names. */
+  --panel-bg: var(--bs-surface-panel);
+  --panel-border: var(--bs-border-default);
+  --text: var(--bs-content-primary);
+  --text-dim: var(--bs-content-secondary);
+  --accent: var(--bs-action-accent);
+}
+
+/**
+ * Dark theme assignments (#144).
+ *
+ * This is kept to **just adding primitives and re-pointing semantics**.
+ * Feature-level CSS only ever reads semantic tokens, so the theme changes
+ * without touching anything outside this block. Once individual screens
+ * start branching on color themselves, some spot is guaranteed to get
+ * fixed for only one theme and forgotten for the other.
+ */
+:root[data-theme='dark'] {
+  color-scheme: dark;
+
+  --bs-surface-canvas: var(--bs-color-ink-900);
+  --bs-surface-panel: var(--bs-color-ink-800);
+  --bs-surface-raised: var(--bs-color-ink-700);
+  --bs-surface-control: var(--bs-color-ink-600);
+  --bs-surface-control-hover: var(--bs-color-ink-500);
+  --bs-surface-control-pressed: var(--bs-color-blue-950);
+  --bs-surface-input: var(--bs-color-ink-700);
+  --bs-surface-selection: var(--bs-color-blue-950);
+  --bs-content-primary: var(--bs-color-ink-50);
+  --bs-content-secondary: var(--bs-color-ink-100);
+  --bs-content-disabled: var(--bs-color-ink-300);
+  /* **On dark surfaces, flip the accent to the lighter side.** Keeping the
+     dark blue would leave insufficient contrast against both the dark paper
+     and white text (both fall below a 4:1 ratio). Since the fill becomes
+     lighter, use dark ink for the text sitting on top of it instead */
+  --bs-content-on-accent: var(--bs-color-ink-900);
+  --bs-border-default: var(--bs-color-ink-500);
+  --bs-border-strong: var(--bs-color-ink-300);
+  /* Border for delineating surfaces whose content can be an arbitrary color. White paper in light mode, black paper in dark mode */
+  --bs-border-on-content: var(--bs-color-ink-900);
+  --bs-border-focus: var(--bs-color-blue-300);
+  --bs-action-accent: var(--bs-color-blue-300);
+  --bs-action-accent-hover: var(--bs-color-blue-50);
+  --bs-action-danger: var(--bs-color-red-400);
+  --bs-panel-shadow: var(--bs-shadow-panel-dark);
+  --bs-popover-shadow: var(--bs-shadow-popover-dark);
+  --bs-scrim: var(--bs-scrim-dark);
+
+  /* 3D. **Make the background darker than the panel** — if it's bright, the container stands out more than the blocks placed in it */
+  --bs-3d-background: #101317;
+  --bs-3d-ground-neutral: #262b31;
+  --bs-3d-grid-main: #4a525c;
+  --bs-3d-grid-sub: #333941;
+}
+
+.bs-button,
+.bs-icon-button,
+.bs-input {
+  font: inherit;
+  transition:
+    background-color var(--bs-duration-fast) var(--bs-ease-standard),
+    border-color var(--bs-duration-fast) var(--bs-ease-standard),
+    color var(--bs-duration-fast) var(--bs-ease-standard),
+    box-shadow var(--bs-duration-fast) var(--bs-ease-standard);
+}
+
+.bs-button {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: var(--bs-space-1);
+  /* `font: inherit` alone would inherit body's 16px, standing out from the 13px
+     surrounding UI. Apply the token explicitly to fix buttons looking oversized (#61) */
+  font-size: var(--bs-font-size-md);
+  min-height: var(--bs-control-height-md);
+  padding: var(--bs-space-1) var(--bs-space-2);
+  border: 1px solid var(--bs-border-default);
+  border-radius: var(--bs-radius-md);
+  background: var(--bs-surface-control);
+  color: var(--bs-content-primary);
+  cursor: pointer;
+}
+
+.bs-button:hover:not(:disabled) {
+  background: var(--bs-surface-control-hover);
+}
+
+.bs-button[data-variant='danger'],
+.bs-icon-button[data-variant='danger'] {
+  color: var(--bs-action-danger);
+}
+
+.bs-button[data-pressed='true'],
+.bs-button[aria-pressed='true'] {
+  border-color: var(--bs-border-focus);
+  background: var(--bs-surface-control-pressed);
+  color: var(--bs-action-accent);
+}
+
+.bs-button[data-variant='primary'] {
+  border-color: var(--bs-action-accent);
+  background: var(--bs-action-accent);
+  color: var(--bs-content-on-accent);
+}
+
+.bs-button[data-variant='primary']:hover:not(:disabled) {
+  border-color: var(--bs-action-accent-hover);
+  background: var(--bs-action-accent-hover);
+}
+
+.bs-icon-button {
+  display: inline-grid;
+  min-width: var(--bs-control-height-sm);
+  min-height: var(--bs-control-height-sm);
+  padding: 2px var(--bs-space-1);
+  place-items: center;
+  border: 0;
+  border-radius: var(--bs-radius-sm);
+  background: transparent;
+  color: var(--bs-content-secondary);
+  cursor: pointer;
+}
+
+.bs-icon-button:hover:not(:disabled) {
+  background: var(--bs-surface-control-hover);
+  color: var(--bs-content-primary);
+}
+
+.bs-icon-button[data-pressed='true'],
+.bs-icon-button[aria-pressed='true'] {
+  color: var(--bs-action-accent);
+}
+
+.bs-button:focus-visible,
+.bs-icon-button:focus-visible,
+.bs-input:focus-visible {
+  outline: none;
+  border-color: var(--bs-border-focus);
+  box-shadow: var(--bs-focus-ring);
+}
+
+.bs-button:disabled,
+.bs-icon-button:disabled,
+.bs-input:disabled {
+  color: var(--bs-content-disabled);
+  cursor: not-allowed;
+  opacity: 0.7;
+}
+
+.bs-input {
+  min-height: var(--bs-control-height-md);
+  width: 100%;
+  padding: var(--bs-space-1) var(--bs-space-2);
+  border: 1px solid var(--bs-border-default);
+  border-radius: var(--bs-radius-md);
+  background: var(--bs-surface-input);
+  color: var(--bs-content-primary);
+}
+
+.bs-input[aria-invalid='true'] {
+  border-color: var(--bs-action-danger);
+}
+
+.bs-tabs {
+  display: flex;
+  gap: var(--bs-space-1);
+  padding: var(--bs-space-1);
+  border-bottom: 1px solid var(--bs-border-default);
+}
+
+.bs-tabs [role='tab'] {
+  min-height: var(--bs-control-height-md);
+  padding: var(--bs-space-1) var(--bs-space-3);
+  border: 0;
+  border-radius: var(--bs-radius-md);
+  background: transparent;
+  color: var(--bs-content-secondary);
+  font: inherit;
+  cursor: pointer;
+}
+
+.bs-tabs [role='tab']:hover {
+  background: var(--bs-surface-control-hover);
+}
+
+.bs-tabs [role='tab'][aria-selected='true'] {
+  background: var(--bs-surface-control-pressed);
+  color: var(--bs-action-accent);
+  font-weight: 600;
+}
+
+.bs-tabs [role='tab']:focus-visible {
+  outline: none;
+  box-shadow: var(--bs-focus-ring);
+}
+
+.bs-divider {
+  flex: 0 0 1px;
+  align-self: stretch;
+  background: var(--bs-border-default);
+}
+
+.bs-icon {
+  display: block;
+  width: 16px;
+  height: 16px;
+  flex: 0 0 16px;
+  fill: none;
+  stroke: currentColor;
+  stroke-width: 1.5;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+}

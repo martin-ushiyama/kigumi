@@ -1,0 +1,133 @@
+{
+  "_note": "Adjudications made when projecting the unified DB onto the texture manifest (#97 stage 3). Pins down decisions that can't be settled from upstream facts alone as an executable contract with a reason attached. Instead of a human eyeballing it on every generation, generation fails if the result diverges from the ruling. Keys: variantIndex (which legacy data-value multiplexed variant to pick) / dropsDownFace (approval to drop the bottom face because the renderer can't distinguish top from bottom) / expect (pinned projection result) / changesAppearance (a ruling that changes the current look) / reason (required). Background on these rulings is in Issue #97.",
+  "entries": {
+    "minecraft:normal_stone_stairs": {
+      "variantIndex": 0,
+      "reason": "Legacy data-value multiplexing. terrain_texture's stone has 7 candidates: stone / granite / polished granite / diorite / polished diorite / andesite / polished andesite. This block ID corresponds to data value 0 (plain stone), so pick the first"
+    },
+    "minecraft:stone_brick_stairs": {
+      "variantIndex": 0,
+      "reason": "Legacy data-value multiplexing. stonebrick has 4 candidates: plain / mossy / cracked / chiseled. This ID is data value 0 (plain stone bricks)"
+    },
+    "minecraft:prismarine_stairs": {
+      "variantIndex": 0,
+      "reason": "Legacy data-value multiplexing. prismarine has 3 candidates: rough / dark / bricks. This ID is data value 0 (rough prismarine)"
+    },
+    "minecraft:sandstone_stairs": {
+      "variantIndex": 0,
+      "dropsDownFace": true,
+      "reason": "Legacy data-value multiplexing (sandstone_side has 4 candidates: normal / chiseled / smooth / top-face; this ID is data value 0, normal sandstone). Additionally, upstream keeps a separate top face (sandstone_top) and bottom face (sandstone_bottom), but the renderer applies `top` to both faces, so the bottom face is dropped"
+    },
+    "minecraft:red_sandstone_stairs": {
+      "variantIndex": 0,
+      "dropsDownFace": true,
+      "reason": "Same shape as sandstone_stairs. Picks data value 0 (normal red sandstone) from redsandstone_side's 4 candidates; the bottom face (red_sandstone_bottom) is dropped due to the renderer's constraint"
+    },
+    "minecraft:sandstone": {
+      "dropsDownFace": true,
+      "reason": "Upstream keeps a separate top face (sandstone_top) and bottom face (sandstone_bottom). The renderer applies `top` to both +y and -y, so the bottom face is dropped. The current manifest is already in this shape, so the appearance doesn't change"
+    },
+    "minecraft:sandstone_slab": {
+      "dropsDownFace": true,
+      "reason": "Drops the bottom face (sandstone_bottom) for the same reason as sandstone"
+    },
+    "minecraft:red_sandstone": {
+      "dropsDownFace": true,
+      "reason": "Same shape as sandstone. Drops the bottom face (red_sandstone_bottom)"
+    },
+    "minecraft:red_sandstone_slab": {
+      "dropsDownFace": true,
+      "reason": "Drops the bottom face for the same reason as red_sandstone"
+    },
+    "minecraft:cracked_polished_blackstone_bricks": {
+      "expect": { "side": "cracked_polished_blackstone_bricks.png" },
+      "changesAppearance": true,
+      "reason": "The current setup was reusing the uncracked polished_blackstone_bricks.png (a handwritten comment noted this was provisional since the existence of a dedicated file couldn't be confirmed). Upstream assigns a dedicated texture"
+    },
+    "minecraft:smooth_sandstone": {
+      "expect": { "side": "sandstone_top.png" },
+      "changesAppearance": true,
+      "reason": "The current sandstone_smooth.png exists as an actual file, but upstream doesn't assign it to this block (sandstone_smooth has no entry in terrain_texture). Upstream uses sandstone_top on all 6 faces"
+    },
+    "minecraft:smooth_sandstone_slab": {
+      "expect": { "side": "sandstone_top.png" },
+      "changesAppearance": true,
+      "reason": "Same ruling as smooth_sandstone. Align the derivative with upstream's assignment too"
+    },
+    "minecraft:smooth_sandstone_stairs": {
+      "expect": { "side": "sandstone_top.png" },
+      "changesAppearance": true,
+      "reason": "Same ruling as smooth_sandstone"
+    },
+    "minecraft:smooth_red_sandstone": {
+      "expect": { "side": "red_sandstone_top.png" },
+      "changesAppearance": true,
+      "reason": "Same shape as smooth_sandstone. red_sandstone_smooth has no entry in terrain_texture; upstream assigns red_sandstone_top"
+    },
+    "minecraft:smooth_red_sandstone_slab": {
+      "expect": { "side": "red_sandstone_top.png" },
+      "changesAppearance": true,
+      "reason": "Same ruling as smooth_red_sandstone"
+    },
+    "minecraft:smooth_red_sandstone_stairs": {
+      "expect": { "side": "red_sandstone_top.png" },
+      "changesAppearance": true,
+      "reason": "Same ruling as smooth_red_sandstone"
+    },
+    "minecraft:smooth_stone_slab": {
+      "expect": { "side": "stone_slab_side.png", "top": "stone_slab_top.png" },
+      "changesAppearance": true,
+      "reason": "The current setup applied the top-face image (stone_slab_top.png) to all 6 faces. Upstream assigns stone_slab_side to the sides"
+    },
+    "minecraft:stripped_mangrove_log": {
+      "expect": { "side": "stripped_mangrove_log_side.png", "top": "stripped_mangrove_log_top.png" },
+      "changesAppearance": true,
+      "reason": "The current setup applied the end-grain image (…_top.png) to the sides (a handwritten comment noted the side file was unconfirmed). Upstream assigns …_side to the sides"
+    },
+    "minecraft:stripped_mangrove_wood": {
+      "expect": { "side": "stripped_mangrove_log_side.png" },
+      "changesAppearance": true,
+      "reason": "Same reason as stripped_mangrove_log. `wood` uses the side texture on all 6 faces"
+    },
+    "minecraft:stripped_cherry_log": {
+      "expect": { "side": "stripped_cherry_log_side.png", "top": "stripped_cherry_log_top.png" },
+      "changesAppearance": true,
+      "reason": "Same shape as stripped_mangrove_log"
+    },
+    "minecraft:stripped_cherry_wood": {
+      "expect": { "side": "stripped_cherry_log_side.png" },
+      "changesAppearance": true,
+      "reason": "Same shape as stripped_mangrove_wood"
+    },
+    "minecraft:stripped_pale_oak_log": {
+      "expect": { "side": "stripped_pale_oak_log_side.png", "top": "stripped_pale_oak_log_top.png" },
+      "changesAppearance": true,
+      "reason": "Same shape as stripped_mangrove_log"
+    },
+    "minecraft:stripped_pale_oak_wood": {
+      "expect": { "side": "stripped_pale_oak_log_side.png" },
+      "changesAppearance": true,
+      "reason": "Same shape as stripped_mangrove_wood"
+    },
+    "minecraft:chiseled_tuff": {
+      "expect": { "side": "chiseled_tuff.png", "top": "chiseled_tuff_top.png" },
+      "changesAppearance": true,
+      "reason": "The current setup was uniform across all 6 faces, but upstream assigns a dedicated chiseled_tuff_top to the top and bottom faces (face info missed when hand-written)"
+    },
+    "minecraft:chiseled_tuff_bricks": {
+      "expect": { "side": "chiseled_tuff_bricks.png", "top": "chiseled_tuff_bricks_top.png" },
+      "changesAppearance": true,
+      "reason": "Same shape as chiseled_tuff. Upstream assigns chiseled_tuff_bricks_top to the top and bottom faces"
+    },
+    "minecraft:blackstone_slab": {
+      "expect": { "side": "blackstone.png" },
+      "changesAppearance": true,
+      "reason": "The current setup copied the base block's (blackstone) { side, top } directly onto the derivative. Upstream assigns uniform blackstone across all 6 faces to blackstone_slab, with no top"
+    },
+    "minecraft:blackstone_stairs": {
+      "expect": { "side": "blackstone.png" },
+      "changesAppearance": true,
+      "reason": "Same reason as blackstone_slab. Upstream is uniform across all 6 faces"
+    }
+  }
+}

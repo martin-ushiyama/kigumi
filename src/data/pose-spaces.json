@@ -1,0 +1,27 @@
+{
+  "full": {
+    "pillar_axis": [
+      "y",
+      "x",
+      "z"
+    ]
+  },
+  "slab": {
+    "minecraft:vertical_half": [
+      "bottom",
+      "top"
+    ]
+  },
+  "stairs": {
+    "weirdo_direction": [
+      0,
+      1,
+      2,
+      3
+    ],
+    "upside_down_bit": [
+      false,
+      true
+    ]
+  }
+}

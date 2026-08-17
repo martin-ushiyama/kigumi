@@ -1,0 +1,60 @@
+name: Regenerate artifacts from the upstream snapshot (manual, needs network)
+
+# The block catalog and the texture manifest are both generated from a snapshot of Mojang's
+# bedrock-samples. Fetching upstream needs network access, so it lives here on its own — the CI
+# that runs on a pull request only inspects the committed artifacts.
+#
+# Nothing is committed automatically. The diff is carried out as an artifact, and a human opens a
+# pull request after looking at it.
+
+on:
+  workflow_dispatch: {}
+
+jobs:
+  regen:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version-file: '.nvmrc'
+          cache: 'npm'
+
+      - run: npm ci
+
+      # The only step that uses the network: bring the snapshot up to the latest upstream main.
+      # (Everything after this only reads the snapshot, so it works offline.)
+      - name: Update the Mojang bedrock-samples snapshot
+        run: npm run fetch-bedrock-snapshot -- --update
+
+      # Representative colours are **not** rebuilt here. Deriving them from the PNGs belongs to
+      # `gen-textures --fetch`, and its output (src/data/texture-colors.json) is committed. This
+      # workflow never fetches the PNGs, so if catalog generation assumed they were present it
+      # would always fail in a clean environment (raised as P1 in the review of #137).
+      # To refresh the colours, run `npm run fetch-textures` locally.
+      - name: Regenerate the block catalog
+        run: npm run gen-blocks
+
+      # Includes rebuilding the unified DB (the manifest is a projection of the DB, so the DB
+      # comes first). Any unresolved ambiguity or lossy projection fails here.
+      - name: Regenerate the texture manifest (rebuilding the unified DB along the way)
+        run: npm run gen-textures
+
+      - name: Show the diff and turn it into a patch (no auto-commit; a human opens the PR)
+        run: |
+          git diff --stat -- src/data/blocks.json src/data/textures.json data/bedrock/SOURCE.json
+          git diff -- src/data/blocks.json src/data/textures.json data/bedrock/SOURCE.json > upstream.patch
+
+      # SOURCE.json goes along with it. Without knowing which upstream change produced them, a
+      # diff in the generated artifacts is not enough to decide whether to take it.
+      - name: Upload the artifacts (so they survive the end of the job)
+        uses: actions/upload-artifact@v4
+        with:
+          name: regen-from-upstream-output
+          path: |
+            src/data/blocks.json
+            src/data/textures.json
+            data/bedrock/SOURCE.json
+            upstream.patch
+          retention-days: 14

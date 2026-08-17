@@ -1,0 +1,51 @@
+{
+  "name": "blocksmith",
+  "private": true,
+  "version": "0.1.0",
+  "license": "MIT",
+  "type": "module",
+  "engines": {
+    "node": ">=24"
+  },
+  "scripts": {
+    "dev": "vite",
+    "build": "tsc --noEmit && vite build",
+    "preview": "vite preview",
+    "typecheck": "tsc --noEmit && tsc --noEmit -p tsconfig.editor.json",
+    "lint": "eslint .",
+    "test": "vitest run",
+    "test:unit": "vitest run",
+    "test:coverage": "vitest run --coverage",
+    "test:e2e": "playwright test",
+    "check:bundle-size": "node scripts/check-bundle-size.mjs",
+    "gen-textures": "node scripts/build-block-db.mjs && node scripts/gen-textures.mjs",
+    "gen-textures:check": "npm run gen-textures && git diff --exit-code -- src/data/textures.json",
+    "fetch-textures": "node scripts/build-block-db.mjs && node scripts/gen-textures.mjs --fetch && node scripts/gen-texture-frames.mjs && node scripts/gen-texture-colors.mjs",
+    "gen-blocks": "node scripts/gen-blocks.mjs",
+    "fetch-bedrock-snapshot": "node scripts/fetch-bedrock-snapshot.mjs",
+    "build:block-db": "node scripts/build-block-db.mjs",
+    "list-uncurated": "node scripts/list-uncurated.mjs",
+    "gen-texture-frames": "node scripts/gen-texture-frames.mjs",
+    "gen-texture-frames:check": "node scripts/gen-texture-frames.mjs --check",
+    "check-block-states": "vite-node scripts/check-block-states.mjs",
+    "gen-texture-colors": "node scripts/gen-texture-colors.mjs"
+  },
+  "dependencies": {
+    "fflate": "^0.8.3",
+    "three": "^0.185.1"
+  },
+  "devDependencies": {
+    "@eslint/js": "^10.0.1",
+    "@playwright/test": "^1.61.1",
+    "@types/node": "^26.1.1",
+    "@types/three": "^0.185.1",
+    "@typescript/native": "npm:typescript@^7.0.2",
+    "@vitest/coverage-v8": "^4.1.10",
+    "eslint": "^10.7.0",
+    "globals": "^17.7.0",
+    "typescript": "npm:@typescript/typescript6@^6.0.2",
+    "typescript-eslint": "^8.64.0",
+    "vite": "^8.1.5",
+    "vitest": "^4.1.10"
+  }
+}

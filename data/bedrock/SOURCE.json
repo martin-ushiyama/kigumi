@@ -1,0 +1,37 @@
+{
+  "_note": "The upstream files themselves are not redistributed (Mojang AB, All rights reserved / Minecraft EULA). data/bedrock/ is gitignored and only this record is committed. Fetch with npm run fetch-bedrock-snapshot. The contents are determined solely by the upstream state (no fetch timestamp; git log is the source of truth for when it was taken in).",
+  "repository": "https://github.com/Mojang/bedrock-samples",
+  "commit": "921fafb05c93abeae56c2f2868cd8f942bdbcc0f",
+  "files": {
+    "en_US.lang": {
+      "path": "resource_pack/texts/en_US.lang",
+      "bytes": 801848,
+      "sha256": "ae1bab8a3ab0055921a9077c8f3244d53bb9a16540510c4f0e0779103c521ede"
+    },
+    "flipbook_textures.json": {
+      "path": "resource_pack/textures/flipbook_textures.json",
+      "bytes": 23201,
+      "sha256": "bc6e227e696002bcc39ce40bde6c4133a3687d08f732b89b054cd047c4fb54d2"
+    },
+    "ja_JP.lang": {
+      "path": "resource_pack/texts/ja_JP.lang",
+      "bytes": 1024510,
+      "sha256": "60affa9fb3427bcdb1f6236462f76ac4bac748c7fdab68f79922c39747a508bc"
+    },
+    "mojang-blocks.json": {
+      "path": "metadata/vanilladata_modules/mojang-blocks.json",
+      "bytes": 342685,
+      "sha256": "683878671a5e55315585580c193a65e8440632260dcddef7a5cd1f349e753c60"
+    },
+    "resource-pack-blocks.json": {
+      "path": "resource_pack/blocks.json",
+      "bytes": 178576,
+      "sha256": "a53c486ba078d5824ae9694bb5ad360d8b64645b935c903cf8b4e410c75c1592"
+    },
+    "terrain_texture.json": {
+      "path": "resource_pack/textures/terrain_texture.json",
+      "bytes": 166529,
+      "sha256": "fe8c2199f6b21c095f5f4612ea183f0ab358c74d6ba5580f3c1cabe00fc29329"
+    }
+  }
+}

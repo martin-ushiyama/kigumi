@@ -1,0 +1,89 @@
+name: CI
+
+on:
+  pull_request:
+  push:
+    branches: [main]
+
+concurrency:
+  group: ci-${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  quality:
+    name: quality (lint / typecheck / unit / build)
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version-file: '.nvmrc'
+          cache: 'npm'
+
+      - run: npm ci
+
+      - name: lint
+        run: npm run lint
+
+      - name: typecheck
+        run: npm run typecheck
+
+      - name: unit tests (with coverage)
+        run: npm run test:coverage
+
+      - name: build
+        run: npm run build
+
+      - name: bundle size budget
+        run: npm run check:bundle-size
+
+      # Regenerating the texture manifest cannot happen here. The manifest is a projection of the
+      # unified DB, and the DB is built from a gitignored snapshot, so CI cannot rebuild it.
+      # Regeneration runs in regen-from-upstream.yml (manual).
+      #
+      # What can be checked from committed files alone is covered by unit tests instead:
+      #   - the catalog and the manifest hold the same set of IDs (tests/textures-manifest.test.ts)
+      #   - the ledger (src/data/texture-ledger.json) agrees with the manifest (same file)
+      #   - the projection rules themselves (tests/texture-manifest.test.ts, fixture based)
+
+      # Neither the upstream snapshot nor the PNGs are committed, so all that is present here are
+      # the committed artifacts (depth 0). That is enough to verify the structural agreement
+      # between the manifest and the record — flipbook membership needs the snapshot, and
+      # checking the real frame count needs the PNGs.
+      - name: 'animated texture frame counts: structural check (depth 0 = committed only)'
+        run: npm run gen-texture-frames:check
+
+  e2e:
+    name: e2e (Playwright/Chromium)
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version-file: '.nvmrc'
+          cache: 'npm'
+
+      - run: npm ci
+
+      - name: install Playwright Chromium
+        run: npx playwright install --with-deps chromium
+
+      - name: build
+        run: npm run build
+
+      - name: e2e tests
+        run: npm run test:e2e
+        env:
+          CI: 'true'
+
+      - name: upload trace/screenshot on failure
+        if: failure()
+        uses: actions/upload-artifact@v4
+        with:
+          name: playwright-report
+          path: |
+            playwright-report/
+            test-results/
+          retention-days: 7

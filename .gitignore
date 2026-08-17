@@ -1,0 +1,27 @@
+node_modules/
+dist/
+.shots/
+*.local
+.DS_Store
+test-results/
+playwright-report/
+coverage/
+blob-report/
+playwright/.cache/
+
+# v2: Mojang textures are fetched locally only (redistribution is not permitted).
+public/textures/
+
+# The Mojang bedrock-samples snapshot is treated the same way (All rights reserved /
+# Minecraft EULA). Fetch it with `npm run fetch-bedrock-snapshot`; SOURCE.json records which
+# upstream commit the checkout was built against.
+data/bedrock/*
+!data/bedrock/SOURCE.json
+
+# The unified DB is a generated artifact that mostly bundles upstream facts as they are.
+# Not committed, to stay consistent with the decision not to redistribute upstream.
+# Rebuild it with `npm run build:block-db`.
+data/block-db.json
+
+# Log of the long-running local dev server (it is started outside of a session).
+.dev-server*.log

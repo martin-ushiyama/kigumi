@@ -1,0 +1,599 @@
+{
+  "_note": "Inclusion policy (#97 stage 4). Category and inclusion decisions are our own judgment, not sourced from Mojang, so they're kept separate from the upstream snapshot. The representative color's source of truth is the texture's average color; `color` is written here only when the average color can't be derived (omit it when it can). The Japanese name's source of truth is the official ja_JP.lang; `nameJa` is written here only to fill in legacy blocks that can't be looked up via tile.<id>.name (omit it when it can). Setting `included` to false removes an entry from the catalog without discarding the decision. Upstream read rules (e.g. resolving cases where a lang key doesn't match the id) live in the generator (scripts/gen-blocks.mjs) — only intentional overrides that deliberately diverge from upstream's presentation belong here. Slabs and stairs are derived from their base material, so they're not written individually (the mapping is in scripts/materials-with-variants.mjs).",
+  "entries": {
+    "minecraft:stone": {
+      "nameJa": "石",
+      "category": "stone",
+      "included": true
+    },
+    "minecraft:smooth_stone": {
+      "category": "stone",
+      "included": true
+    },
+    "minecraft:cobblestone": {
+      "category": "stone",
+      "included": true
+    },
+    "minecraft:mossy_cobblestone": {
+      "category": "stone",
+      "included": true
+    },
+    "minecraft:stone_bricks": {
+      "nameJa": "石レンガ",
+      "category": "stone",
+      "included": true
+    },
+    "minecraft:mossy_stone_bricks": {
+      "nameJa": "苔むした石レンガ",
+      "category": "stone",
+      "included": true
+    },
+    "minecraft:cracked_stone_bricks": {
+      "nameJa": "ひび割れた石レンガ",
+      "category": "stone",
+      "included": true
+    },
+    "minecraft:chiseled_stone_bricks": {
+      "nameJa": "模様入りの石レンガ",
+      "category": "stone",
+      "included": true
+    },
+    "minecraft:granite": {
+      "nameJa": "花崗岩",
+      "category": "stone",
+      "included": true
+    },
+    "minecraft:polished_granite": {
+      "nameJa": "磨かれた花崗岩",
+      "category": "stone",
+      "included": true
+    },
+    "minecraft:diorite": {
+      "nameJa": "閃緑岩",
+      "category": "stone",
+      "included": true
+    },
+    "minecraft:polished_diorite": {
+      "nameJa": "磨かれた閃緑岩",
+      "category": "stone",
+      "included": true
+    },
+    "minecraft:andesite": {
+      "nameJa": "安山岩",
+      "category": "stone",
+      "included": true
+    },
+    "minecraft:polished_andesite": {
+      "nameJa": "磨かれた安山岩",
+      "category": "stone",
+      "included": true
+    },
+    "minecraft:deepslate": {
+      "category": "stone",
+      "included": true
+    },
+    "minecraft:cobbled_deepslate": {
+      "category": "stone",
+      "included": true
+    },
+    "minecraft:polished_deepslate": {
+      "category": "stone",
+      "included": true
+    },
+    "minecraft:deepslate_bricks": {
+      "category": "stone",
+      "included": true
+    },
+    "minecraft:cracked_deepslate_bricks": {
+      "category": "stone",
+      "included": true
+    },
+    "minecraft:deepslate_tiles": {
+      "category": "stone",
+      "included": true
+    },
+    "minecraft:cracked_deepslate_tiles": {
+      "category": "stone",
+      "included": true
+    },
+    "minecraft:chiseled_deepslate": {
+      "category": "stone",
+      "included": true
+    },
+    "minecraft:tuff": {
+      "category": "stone",
+      "included": true
+    },
+    "minecraft:polished_tuff": {
+      "category": "stone",
+      "included": true
+    },
+    "minecraft:tuff_bricks": {
+      "category": "stone",
+      "included": true
+    },
+    "minecraft:chiseled_tuff": {
+      "category": "stone",
+      "included": true
+    },
+    "minecraft:chiseled_tuff_bricks": {
+      "category": "stone",
+      "included": true
+    },
+    "minecraft:calcite": {
+      "category": "stone",
+      "included": true
+    },
+    "minecraft:dripstone_block": {
+      "category": "stone",
+      "included": true
+    },
+    "minecraft:basalt": {
+      "category": "stone",
+      "included": true
+    },
+    "minecraft:polished_basalt": {
+      "category": "stone",
+      "included": true
+    },
+    "minecraft:smooth_basalt": {
+      "category": "stone",
+      "included": true
+    },
+    "minecraft:blackstone": {
+      "category": "stone",
+      "included": true
+    },
+    "minecraft:polished_blackstone": {
+      "category": "stone",
+      "included": true
+    },
+    "minecraft:polished_blackstone_bricks": {
+      "category": "stone",
+      "included": true
+    },
+    "minecraft:cracked_polished_blackstone_bricks": {
+      "category": "stone",
+      "included": true
+    },
+    "minecraft:chiseled_polished_blackstone": {
+      "category": "stone",
+      "included": true
+    },
+    "minecraft:gilded_blackstone": {
+      "category": "stone",
+      "included": true
+    },
+    "minecraft:brick_block": {
+      "category": "stone",
+      "included": true
+    },
+    "minecraft:mud_bricks": {
+      "category": "stone",
+      "included": true
+    },
+    "minecraft:packed_mud": {
+      "category": "stone",
+      "included": true
+    },
+    "minecraft:sandstone": {
+      "category": "stone",
+      "included": true
+    },
+    "minecraft:chiseled_sandstone": {
+      "nameJa": "模様入りの砂岩",
+      "category": "stone",
+      "included": true
+    },
+    "minecraft:cut_sandstone": {
+      "nameJa": "研がれた砂岩",
+      "category": "stone",
+      "included": true
+    },
+    "minecraft:smooth_sandstone": {
+      "nameJa": "滑らかな砂岩",
+      "category": "stone",
+      "included": true
+    },
+    "minecraft:red_sandstone": {
+      "category": "stone",
+      "included": true
+    },
+    "minecraft:chiseled_red_sandstone": {
+      "nameJa": "模様入りの赤い砂岩",
+      "category": "stone",
+      "included": true
+    },
+    "minecraft:cut_red_sandstone": {
+      "nameJa": "研がれた赤い砂岩",
+      "category": "stone",
+      "included": true
+    },
+    "minecraft:smooth_red_sandstone": {
+      "nameJa": "滑らかな赤い砂岩",
+      "category": "stone",
+      "included": true
+    },
+    "minecraft:quartz_block": {
+      "category": "stone",
+      "included": true
+    },
+    "minecraft:chiseled_quartz_block": {
+      "nameJa": "模様入りのクォーツブロック",
+      "category": "stone",
+      "included": true
+    },
+    "minecraft:quartz_pillar": {
+      "nameJa": "クォーツの柱",
+      "category": "stone",
+      "included": true
+    },
+    "minecraft:smooth_quartz": {
+      "nameJa": "滑らかなクォーツ",
+      "category": "stone",
+      "included": true
+    },
+    "minecraft:prismarine": {
+      "nameJa": "プリズマリン",
+      "category": "stone",
+      "included": true
+    },
+    "minecraft:prismarine_bricks": {
+      "nameJa": "プリズマリンレンガ",
+      "category": "stone",
+      "included": true
+    },
+    "minecraft:dark_prismarine": {
+      "nameJa": "ダークプリズマリン",
+      "category": "stone",
+      "included": true
+    },
+    "minecraft:end_stone": {
+      "category": "stone",
+      "included": true
+    },
+    "minecraft:end_bricks": {
+      "category": "stone",
+      "included": true
+    },
+    "minecraft:purpur_block": {
+      "nameJa": "プルプァブロック",
+      "category": "stone",
+      "included": true
+    },
+    "minecraft:netherrack": {
+      "category": "stone",
+      "included": true
+    },
+    "minecraft:nether_brick": {
+      "category": "stone",
+      "included": true
+    },
+    "minecraft:red_nether_brick": {
+      "category": "stone",
+      "included": true
+    },
+    "minecraft:cracked_nether_bricks": {
+      "category": "stone",
+      "included": true
+    },
+    "minecraft:chiseled_nether_bricks": {
+      "category": "stone",
+      "included": true
+    },
+    "minecraft:obsidian": {
+      "category": "stone",
+      "included": true
+    },
+    "minecraft:crying_obsidian": {
+      "category": "stone",
+      "included": true
+    },
+    "minecraft:oak_planks": {
+      "nameJa": "オークの板材",
+      "category": "wood",
+      "included": true
+    },
+    "minecraft:oak_log": {
+      "nameJa": "オークの原木",
+      "category": "wood",
+      "included": true
+    },
+    "minecraft:stripped_oak_log": {
+      "category": "wood",
+      "included": true
+    },
+    "minecraft:oak_wood": {
+      "nameJa": "オークの木",
+      "category": "wood",
+      "included": true
+    },
+    "minecraft:stripped_oak_wood": {
+      "nameJa": "樹皮を剥いだオークの木",
+      "category": "wood",
+      "included": true
+    },
+    "minecraft:spruce_planks": {
+      "nameJa": "トウヒの板材",
+      "category": "wood",
+      "included": true
+    },
+    "minecraft:spruce_log": {
+      "nameJa": "トウヒの原木",
+      "category": "wood",
+      "included": true
+    },
+    "minecraft:stripped_spruce_log": {
+      "category": "wood",
+      "included": true
+    },
+    "minecraft:spruce_wood": {
+      "nameJa": "トウヒの木",
+      "category": "wood",
+      "included": true
+    },
+    "minecraft:stripped_spruce_wood": {
+      "nameJa": "樹皮を剥いだトウヒの木",
+      "category": "wood",
+      "included": true
+    },
+    "minecraft:birch_planks": {
+      "nameJa": "シラカバの板材",
+      "category": "wood",
+      "included": true
+    },
+    "minecraft:birch_log": {
+      "nameJa": "シラカバの原木",
+      "category": "wood",
+      "included": true
+    },
+    "minecraft:stripped_birch_log": {
+      "category": "wood",
+      "included": true
+    },
+    "minecraft:birch_wood": {
+      "nameJa": "シラカバの木",
+      "category": "wood",
+      "included": true
+    },
+    "minecraft:stripped_birch_wood": {
+      "nameJa": "樹皮を剥いだシラカバの木",
+      "category": "wood",
+      "included": true
+    },
+    "minecraft:jungle_planks": {
+      "nameJa": "ジャングルの板材",
+      "category": "wood",
+      "included": true
+    },
+    "minecraft:jungle_log": {
+      "nameJa": "ジャングルの原木",
+      "category": "wood",
+      "included": true
+    },
+    "minecraft:stripped_jungle_log": {
+      "category": "wood",
+      "included": true
+    },
+    "minecraft:jungle_wood": {
+      "nameJa": "ジャングルの木",
+      "category": "wood",
+      "included": true
+    },
+    "minecraft:stripped_jungle_wood": {
+      "nameJa": "樹皮を剥いだジャングルの木",
+      "category": "wood",
+      "included": true
+    },
+    "minecraft:acacia_planks": {
+      "nameJa": "アカシアの板材",
+      "category": "wood",
+      "included": true
+    },
+    "minecraft:acacia_log": {
+      "nameJa": "アカシアの原木",
+      "category": "wood",
+      "included": true
+    },
+    "minecraft:stripped_acacia_log": {
+      "category": "wood",
+      "included": true
+    },
+    "minecraft:acacia_wood": {
+      "nameJa": "アカシアの木",
+      "category": "wood",
+      "included": true
+    },
+    "minecraft:stripped_acacia_wood": {
+      "nameJa": "樹皮を剥いだアカシアの木",
+      "category": "wood",
+      "included": true
+    },
+    "minecraft:dark_oak_planks": {
+      "nameJa": "ダークオークの板材",
+      "category": "wood",
+      "included": true
+    },
+    "minecraft:dark_oak_log": {
+      "nameJa": "ダークオークの原木",
+      "category": "wood",
+      "included": true
+    },
+    "minecraft:stripped_dark_oak_log": {
+      "category": "wood",
+      "included": true
+    },
+    "minecraft:dark_oak_wood": {
+      "nameJa": "ダークオークの木",
+      "category": "wood",
+      "included": true
+    },
+    "minecraft:stripped_dark_oak_wood": {
+      "nameJa": "樹皮を剥いだダークオークの木",
+      "category": "wood",
+      "included": true
+    },
+    "minecraft:mangrove_planks": {
+      "category": "wood",
+      "included": true
+    },
+    "minecraft:mangrove_log": {
+      "category": "wood",
+      "included": true
+    },
+    "minecraft:stripped_mangrove_log": {
+      "category": "wood",
+      "included": true
+    },
+    "minecraft:mangrove_wood": {
+      "category": "wood",
+      "included": true
+    },
+    "minecraft:stripped_mangrove_wood": {
+      "category": "wood",
+      "included": true
+    },
+    "minecraft:cherry_planks": {
+      "category": "wood",
+      "included": true
+    },
+    "minecraft:cherry_log": {
+      "category": "wood",
+      "included": true
+    },
+    "minecraft:stripped_cherry_log": {
+      "category": "wood",
+      "included": true
+    },
+    "minecraft:cherry_wood": {
+      "category": "wood",
+      "included": true
+    },
+    "minecraft:stripped_cherry_wood": {
+      "category": "wood",
+      "included": true
+    },
+    "minecraft:pale_oak_planks": {
+      "category": "wood",
+      "included": true
+    },
+    "minecraft:pale_oak_log": {
+      "category": "wood",
+      "included": true
+    },
+    "minecraft:stripped_pale_oak_log": {
+      "category": "wood",
+      "included": true
+    },
+    "minecraft:pale_oak_wood": {
+      "category": "wood",
+      "included": true
+    },
+    "minecraft:stripped_pale_oak_wood": {
+      "category": "wood",
+      "included": true
+    },
+    "minecraft:crimson_planks": {
+      "category": "wood",
+      "included": true
+    },
+    "minecraft:crimson_stem": {
+      "category": "wood",
+      "included": true
+    },
+    "minecraft:stripped_crimson_stem": {
+      "category": "wood",
+      "included": true
+    },
+    "minecraft:crimson_hyphae": {
+      "category": "wood",
+      "included": true
+    },
+    "minecraft:stripped_crimson_hyphae": {
+      "category": "wood",
+      "included": true
+    },
+    "minecraft:warped_planks": {
+      "category": "wood",
+      "included": true
+    },
+    "minecraft:warped_stem": {
+      "category": "wood",
+      "included": true
+    },
+    "minecraft:stripped_warped_stem": {
+      "category": "wood",
+      "included": true
+    },
+    "minecraft:warped_hyphae": {
+      "category": "wood",
+      "included": true
+    },
+    "minecraft:stripped_warped_hyphae": {
+      "category": "wood",
+      "included": true
+    },
+    "minecraft:bamboo_planks": {
+      "category": "wood",
+      "included": true
+    },
+    "minecraft:bamboo_mosaic": {
+      "category": "wood",
+      "included": true
+    },
+    "minecraft:bamboo_block": {
+      "category": "wood",
+      "included": true
+    },
+    "minecraft:stripped_bamboo_block": {
+      "category": "wood",
+      "included": true
+    },
+    "minecraft:sand": {
+      "category": "soil",
+      "included": true
+    },
+    "minecraft:red_sand": {
+      "nameJa": "赤い砂",
+      "category": "soil",
+      "included": true
+    },
+    "minecraft:gravel": {
+      "category": "soil",
+      "included": true
+    },
+    "minecraft:dirt": {
+      "category": "soil",
+      "included": true
+    },
+    "minecraft:coarse_dirt": {
+      "nameJa": "粗い土",
+      "category": "soil",
+      "included": true
+    },
+    "minecraft:dirt_with_roots": {
+      "category": "soil",
+      "included": true
+    },
+    "minecraft:clay": {
+      "category": "soil",
+      "included": true
+    },
+    "minecraft:mud": {
+      "category": "soil",
+      "included": true
+    },
+    "minecraft:soul_sand": {
+      "category": "soil",
+      "included": true
+    },
+    "minecraft:soul_soil": {
+      "category": "soil",
+      "included": true
+    },
+    "minecraft:snow": {
+      "category": "soil",
+      "included": true
+    }
+  }
+}

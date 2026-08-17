@@ -1,0 +1,10 @@
+export const SRC_ROOT: string;
+export const REPO_ROOT: string;
+export function walkFiles(dir: string, extensions?: string[]): string[];
+export function checkLayerDependencies(srcRoot?: string): string[];
+export function checkPrimitiveDependencies(srcRoot?: string, primitiveRelativePath?: string): string[];
+export function checkStateTypeImports(srcRoot?: string): string[];
+export function checkDisplayLiterals(srcRoot?: string, htmlFile?: string): string[];
+export function checkErrorMessageLeaks(srcRoot?: string): string[];
+export function checkFrozenTranslations(srcRoot?: string): string[];
+export function checkCommentLanguage(repoRoot?: string, relPaths?: readonly string[] | null): string[];
