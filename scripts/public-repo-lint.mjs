@@ -322,13 +322,21 @@ export function checkCommitContents(repoRoot, range) {
 
   const violations = [];
   for (const sha of shas) {
-    const paths = execFileSync('git', ['diff-tree', '-r', '--no-commit-id', '--name-only', '-z', sha], {
-      cwd: repoRoot,
-      encoding: 'utf8',
-      maxBuffer: 64 * 1024 * 1024,
-    })
-      .split('\0')
-      .filter(Boolean);
+    // `-m` and `--root` are both load-bearing. Without `-m` a merge prints nothing at all, so a
+    // conflict resolution that introduced something would be skipped in silence; without
+    // `--root` the first commit of a repository prints nothing either, for want of a parent to
+    // compare against. `-m` lists a merge once per parent, hence the deduplication.
+    const paths = [
+      ...new Set(
+        execFileSync('git', ['diff-tree', '-r', '--no-commit-id', '--name-only', '-z', '-m', '--root', sha], {
+          cwd: repoRoot,
+          encoding: 'utf8',
+          maxBuffer: 64 * 1024 * 1024,
+        })
+          .split('\0')
+          .filter(Boolean),
+      ),
+    ];
     if (paths.length === 0) continue;
 
     const short = sha.slice(0, 8);

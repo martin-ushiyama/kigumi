@@ -284,6 +284,32 @@ describe('checkCommitContents', () => {
     expect(violations[0]).toContain('Japanese in the path');
   });
 
+  it('inspects a merge commit, where the plain diff of a merge shows nothing', () => {
+    const dir = scratchRepo();
+    const git = (...args: string[]) => execFileSync('git', args, { cwd: dir, encoding: 'utf8' });
+    track(dir, 'base.md', 'Base.\n');
+    commit(dir, 'initial');
+    git('checkout', '-q', '-b', 'side');
+    track(dir, 'side.md', 'Side.\n');
+    commit(dir, 'docs: side');
+    git('checkout', '-q', 'main');
+    track(dir, 'main.md', 'Main.\n');
+    commit(dir, 'docs: main');
+    git('merge', '-q', '--no-ff', 'side', '-m', 'merge side');
+    // The merge resolution itself introduces the name, and nothing after it does.
+    track(dir, 'main.md', `Main, reviewed by ${GIVEN_NAME}.\n`);
+    execFileSync('git', ['commit', '-q', '--amend', '--no-edit'], { cwd: dir, encoding: 'utf8' });
+
+    expect(checkCommitContents(dir, 'HEAD~2..HEAD')).not.toEqual([]);
+  });
+
+  it('inspects the first commit of a repository, which has no parent to compare against', () => {
+    const dir = scratchRepo();
+    track(dir, 'notes.md', `Reviewed by ${GIVEN_NAME}.\n`);
+    commit(dir, 'initial');
+    expect(checkCommitContents(dir, 'HEAD')).toHaveLength(1);
+  });
+
   it('does not fail a commit for content it removes', () => {
     const dir = scratchRepo();
     track(dir, 'notes.md', `Reviewed by ${GIVEN_NAME}.\n`);
