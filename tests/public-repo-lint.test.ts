@@ -14,6 +14,7 @@ import {
   OWNER_NAME,
   REPO_ROOT,
 } from '../scripts/public-repo-lint.mjs';
+import { checkCommentLanguage } from '../scripts/architecture-lint.mjs';
 
 // The forbidden words are stored hashed on purpose (see the module), so the fixtures cannot
 // spell one out — a fixture in a tracked file would put the name into this repository, which is
@@ -426,5 +427,15 @@ describe('the guards agree with the repository they ship in', () => {
   it('REPO_ROOT points at this repository', () => {
     const top = execFileSync('git', ['rev-parse', '--show-toplevel'], { cwd: REPO_ROOT, encoding: 'utf8' }).trim();
     expect(top.replace(/\\/g, '/').toLowerCase()).toBe(REPO_ROOT.replace(/\\/g, '/').toLowerCase());
+  });
+});
+
+describe('the two guards leave no file type unread', () => {
+  it('a Japanese comment in an SVG is caught by the comment guard', () => {
+    const dir = scratchRepo();
+    writeFileSync(join(dir, 'logo.svg'), '<svg><!-- 日本語のコメント --><rect /></svg>\n', 'utf8');
+    // The document guard treats SVG as markup, so the comment guard is the one that has to see it.
+    expect(checkProseLanguage(dir, ['logo.svg'])).toEqual([]);
+    expect(checkCommentLanguage(dir, ['logo.svg'])).toHaveLength(1);
   });
 });

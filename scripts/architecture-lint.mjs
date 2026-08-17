@@ -555,6 +555,10 @@ const HASH_COMMENT_NAMES = new Set(['.gitignore', '.gitattributes', '.nvmrc']);
 const BLOCK_COMMENT_DELIMITERS = new Map([
   ['.css', ['/*', '*/', true]],
   ['.html', ['<!--', '-->', false]],
+  // SVG uses the same comment syntax as HTML. Without this entry a Japanese comment in a tracked
+  // graphic would be read by nothing: this guard would skip the file, and the document guard
+  // treats SVG as markup rather than prose.
+  ['.svg', ['<!--', '-->', false]],
 ]);
 
 /**
