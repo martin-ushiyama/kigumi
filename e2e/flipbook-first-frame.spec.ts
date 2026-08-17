@@ -1,7 +1,7 @@
 import { expect, test, type Page } from '@playwright/test';
 
 /**
- * The wiring that shows only the first frame of an animated texture (16xN stacked vertically) (#93).
+ * The wiring that shows only the first frame of an animated texture (16xN stacked vertically).
  *
  * The frame-count computation itself is pinned down by the unit tests (tests/textureframe.test.ts).
  * What is checked here is **whether each piece of UI actually goes through that helper** — the palette,
@@ -126,7 +126,7 @@ test('the preview in the block change picker also shows only the first frame (bl
 });
 
 test('the layer panel icons are cropped to the same frame count (img is a separate path from background images)', async ({ page }) => {
-  // An img is removed when it fails to load (the fallback from #94). Stub the fetch before opening
+  // An img is removed when it fails to load (the fallback). Stub the fetch before opening
   // so that the result does not depend on whether the PNGs exist
   await stubTextures(page);
   await page.goto('/');

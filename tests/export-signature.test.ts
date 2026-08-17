@@ -7,15 +7,15 @@ import { buildMcstructure } from '../src/export/mcstructure';
 import { exportSignatureAt } from './helpers/export-signature';
 
 /**
- * **Cross-checking the measured ledger against the exported byte stream** (#131 PR 3).
+ * **Cross-checking the measured ledger against the exported byte stream**.
  *
  * Where PR 2 (`render-signature.test.ts`) looks at "what appears on screen", this one looks
  * at "what gets written into the `.mcstructure`". **The two share nothing** — different
  * observation helper, different way of writing expectations; the only shared anchor is the ledger.
  *
  * If they shared code, both sides would just be looking at the same table, and it would become
- * impossible to detect the actual subject of #131, **a mismatch between screen and export**
- * (the same shape as the #114 lesson).
+ * impossible to detect the actual subject, **a mismatch between screen and export**
+ * (the same shape as the stair-orientation lesson).
  *
  * ## Where the expected values come from
  *
@@ -79,14 +79,14 @@ function exportPose(orientation: Orientation) {
   return exportSignatureAt(buildMcstructure(world, CATALOG).bytes);
 }
 
-describe('measured ledger matches the export (#131 PR 3)', () => {
+describe('measured ledger matches the export', () => {
   it.each(LEDGER.map((entry) => [entry.label, entry] as const))('%s', (_label, entry) => {
     const signature = exportPose(entry.orientation);
     expect(signature.name).toBe(BLOCKS[entry.orientation.shape]);
     expect(signature.states).toEqual(entry.states);
   });
 
-  /** Pins down that the ledger doesn't miss any pose in the orientation space (a gap learned from the #139 review) */
+  /** Pins down that the ledger doesn't miss any pose in the orientation space (a gap learned in review) */
   it('the ledger covers every pose in the orientation space', () => {
     for (const shape of ['full', 'slab', 'stairs'] as const) {
       const codes = LEDGER.filter((e) => e.orientation.shape === shape).map((e) =>
@@ -110,7 +110,7 @@ describe('measured ledger matches the export (#131 PR 3)', () => {
     }
   });
 
-  /** Flipping upside-down does not move the horizontal orientation (confirmed on the real device 2026-08-01, #129). Same on the export side */
+  /** Flipping upside-down does not move the horizontal orientation (confirmed on the real device 2026-08-01). Same on the export side */
   it('weirdo_direction stays the same when flipped upside-down', () => {
     for (const d of [0, 1, 2, 3] as const) {
       const normal = exportPose({ shape: 'stairs', weirdoDirection: d, upsideDown: false });
@@ -122,14 +122,14 @@ describe('measured ledger matches the export (#131 PR 3)', () => {
 });
 
 /**
- * **Place every pose in a single work, and read them all back from one export** (#141 review finding).
+ * **Place every pose in a single work, and read them all back from one export**.
  *
  * Writing each pose to a separate file can't detect a regression where **the palette
  * collapses within the same work**. In fact, once orientation was dropped from the palette
  * key, folding `pillar_axis: x` and `z` into the same entry, the one-cell-at-a-time tests
  * still stayed all green.
  */
-describe('placing multiple poses in the same work does not collapse them (#131 PR 3)', () => {
+describe('placing multiple poses in the same work does not collapse them', () => {
   /** Lines up poses one cell at a time along X (coordinate = the ledger index) */
   function exportAllPoses() {
     const world = new VoxelWorld();

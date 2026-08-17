@@ -5,7 +5,7 @@ import type { GroupTransform } from './transform';
 import type { CellKey } from './types';
 
 /**
- * Component (equivalent to Figma's Component, #69).
+ * Component (equivalent to Figma's Component).
  *
  * **Lives outside the world.** Like recipes, it's tied to an account, and only the
  * components a given piece of work uses are bundled into its work file (shared rules
@@ -13,7 +13,7 @@ import type { CellKey } from './types';
  *
  * The subtree is stored as an array + parent index. This mirrors the work file's
  * `groups` representation, so export/import can round-trip without converting shape.
- * **Nested components are out of initial scope** (settled in #69), so a node only ever
+ * **Nested components are out of initial scope**, so a node only ever
  * represents a plain group.
  */
 export interface ComponentNode {
@@ -51,7 +51,7 @@ interface ComponentStorage {
 }
 
 /**
- * Hook for deciding how the list is represented when persisted (#142 review P1).
+ * Hook for deciding how the list is represented when persisted.
  *
  * A `ComponentTemplate`'s cells are raw values that include **a position within the
  * catalog**, so writing them straight to localStorage means a block that's added later
@@ -174,7 +174,7 @@ export class ComponentStore {
   }
 
   /**
-   * Replace by id. Adds if missing, removes if `null` (#142 review P1).
+   * Replace by id. Adds if missing, removes if `null`.
    *
    * **The hook called from history** (`Document`'s `setComponentTemplate` op). Undo /
    * redo restore "what this id used to be", so a single operation that can restore
@@ -212,7 +212,7 @@ export class ComponentStore {
    * Remove from the list.
    *
    * **Does not clean up instances here.** "Deleting a component turns its instances
-   * into plain groups" (settled in #69) is an operation that lives in Document's
+   * into plain groups" is an operation that lives in Document's
    * history, so the op side is what clears `templateId` (don't mix the decision to
    * delete with the decision to detach).
    */

@@ -16,7 +16,7 @@ import {
 import type { WorldReader } from './voxels';
 
 /**
- * WorldIndex (#37 PR B1a): the world-coordinate read-model derived from EditorScene (the source of
+ * WorldIndex: the world-coordinate read-model derived from EditorScene (the source of
  * truth for the owner-local edit model). renderer / picking read this.
  *
  * Whereas SceneProjection is an immutable snapshot, this is a live index that's incrementally
@@ -48,7 +48,7 @@ export type WorldIndexChange =
  * (2) Lifecycle notification — Selection / SelectionOverlay subscribe to this. By the time it's
  * received, the index swap has already completed (contract).
  *
- * The reason this is a separate type from (1) is that they're separate facts (#37 design rev.7).
+ * The reason this is a separate type from (1) is that they're separate facts.
  * In a staged voxel commit, scene/index are already in their final position as of preview time, so
  * the renderer must not be re-notified of a content change, while Selection must always be told
  * the old-ref → new-ref remap. Collapsing this into a single union and using `cells: []` as
@@ -68,7 +68,7 @@ export type SceneBatchChange =
 interface OwnerState {
   /** Rank in paint order (smaller = further back). Determines the stack insertion position */
   readonly rank: number;
-  /** Parent owner (null if directly under root). Needed to determine a blank cell's scope of effect (#113) */
+  /** Parent owner (null if directly under root). Needed to determine a blank cell's scope of effect */
   readonly parentId: OwnerId;
   readonly transform: ResolvedTransform;
   readonly effectiveHidden: boolean;
@@ -85,7 +85,7 @@ export interface OwnerVoxelChange {
 /**
  * WorldIndex's read contract. Pass this type to renderer / picking / selection so that the update
  * methods (rebuildFromScene / applyVoxelChanges / notifyBatch) cannot be called at the type level
- * (same policy as VoxelWorld ↔ WorldReader, #10). Since it extends WorldReader, existing world-read
+ * (same policy as VoxelWorld ↔ WorldReader). Since it extends WorldReader, existing world-read
  * paths can be swapped in as-is.
  */
 export interface WorldIndexReader extends WorldReader {
@@ -107,12 +107,12 @@ export interface WorldIndexReader extends WorldReader {
   /** Whether the winner's owner is locked (including ancestor lock) */
   isWorldCellLocked(world: Cell): boolean;
   /**
-   * Enumerates the world coordinates of placed blank cells (#113).
+   * Enumerates the world coordinates of placed blank cells.
    *
    * **Cannot be obtained via `entries()`.** That one follows the winner contract, and a blank never
    * becomes a winner (a hollowed-out coordinate has a null winner). Things that aren't drawn don't
    * produce coordinates either, so the "display" side needs a separate channel to ask (the outline
-   * in #113 stage 3).
+   * feature).
    *
    * A blank inside a hidden group is not emitted (collapsing it in the layers panel also removes
    * its outline). **Whether it's actually having an effect is not asked** — a blank that's fallen
@@ -129,7 +129,7 @@ export interface WorldIndexReader extends WorldReader {
 const EMPTY_STACK: readonly ProjectionEntry[] = Object.freeze([]);
 
 /**
- * Whether this stack contains a "visible blank" (#113).
+ * Whether this stack contains a "visible blank".
  * Even if multiple blanks are stacked at the same world coordinate, one outline is enough, so this just returns a boolean.
  */
 function hasVisibleVoid(stack: readonly ProjectionEntry[]): boolean {
@@ -143,10 +143,10 @@ export class WorldIndex implements WorldIndexReader {
   /** CellRefKey → worldKey reverse lookup (for worldOf) */
   private refToWorld = new Map<CellRefKey, CellKey>();
   private owners = new Map<OwnerId, OwnerState>();
-  /** Blank scope of effect (#113). Built from the owner snapshot as of rebuild time; the same one is used for incremental updates too */
+  /** Blank scope of effect. Built from the owner snapshot as of rebuild time; the same one is used for incremental updates too */
   private voidHidesOwner: VoidHidesOwner = makeVoidHidesOwner(() => null);
   /**
-   * worldKeys that contain a visible blank cell (#113). **Maintained together with the stack.**
+   * worldKeys that contain a visible blank cell. **Maintained together with the stack.**
    *
    * Scanning every stack on every `voidCells()` call would scan the entire world on every ordinary
    * single-cell edit, even with zero blanks (since the outline follows world changes without
@@ -217,7 +217,7 @@ export class WorldIndex implements WorldIndexReader {
       });
     }
 
-    // The blank's scope of effect is also pulled **from the rebuild-time snapshot** (#113). Without
+    // The blank's scope of effect is also pulled **from the rebuild-time snapshot**. Without
     // the same treatment as the other projection parameters, an incremental update after this
     // point would end up looking at the new tree alone if the tree is edited directly
     const voidHidesOwner = makeVoidHidesOwner((ownerId) => owners.get(ownerId)?.parentId ?? null);
@@ -260,7 +260,7 @@ export class WorldIndex implements WorldIndexReader {
     // assembling would let a non-canonical localKey slip through in a form where "the stack
     // reflects the parsed coordinate, but only the reverse lookup gets the non-canonical ref key" —
     // creating an inconsistency where the canonical ref's worldOf() keeps pointing at the old
-    // coordinate while only stack/winner change (PR #39 review finding)
+    // coordinate while only stack/winner change
     for (const change of changes) {
       assertCanonicalLocalCellKey(change.localKey, 'WorldIndex.applyVoxelChanges');
       if (!this.owners.has(change.owner)) {

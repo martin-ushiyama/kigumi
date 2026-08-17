@@ -35,7 +35,7 @@ const TOOLS: { tool: Tool; icon: IconName; labelKey: UiKey; key: string }[] = [
 ];
 
 /**
- * Shapes for the range fill (#64). **box is listed as just another item, on equal footing.**
+ * Shapes for the range fill. **box is listed as just another item, on equal footing.**
  * Treating it as "the basic box, plus bonus shapes" would add a box-only branch every time a
  * new shape is added.
  *
@@ -98,13 +98,13 @@ export function initToolbar(
   root: HTMLElement,
   documentBarRoot: HTMLElement,
   worldControlsRoot: HTMLElement,
-  /** The logo at the top of the rail. Anchor for the file-operations menu (#61) */
+  /** The logo at the top of the rail. Anchor for the file-operations menu */
   fileMenuAnchor: HTMLButtonElement,
   doc: Document,
   actions: ToolbarActions,
-  /** Catalog (used for the stacked swatch's appearance, #87) */
+  /** Catalog (used for the stacked swatch's appearance) */
   catalog: BlockDef[],
-  /** Block-change picker. The composition root hands out exactly one instance for the whole screen (#87) */
+  /** Block-change picker. The composition root hands out exactly one instance for the whole screen */
   picker: BlockChangePicker,
 ): ToolbarHandle {
   // render() gets rebuilt by onStateChange, so the save state is kept outside the DOM and redrawn
@@ -120,7 +120,7 @@ export function initToolbar(
   });
 
   /**
-   * The body of the shape dropdown (#64).
+   * The body of the shape dropdown.
    *
    * **Built once, outside `render()`.** The toolbar gets rebuilt with `root.innerHTML = ''`
    * on every onStateChange, so placing the menu inside it would mean "the whole menu vanishes
@@ -133,7 +133,7 @@ export function initToolbar(
   shapeMenu.id = 'shape-menu';
   // role="menu" / menuitem* comes with a keyboard contract for Arrow / Home / End / Escape.
   // That isn't implemented here, so this is downgraded to **a plain button group
-  // (group + aria-pressed)** (#64 review). Keep state's single source of truth as
+  // (group + aria-pressed)**. Keep state's single source of truth as
   // aria-pressed alone (setButtonPressed), avoiding a double specification
   shapeMenu.setAttribute('role', 'group');
 
@@ -152,7 +152,7 @@ export function initToolbar(
     shapeMenu.append(button);
   }
 
-  // Void (#113) and hollow are both "settings that apply to any shape," so they're listed
+  // Void and hollow are both "settings that apply to any shape," so they're listed
   // below the shape list. Void is a material-to-paint-with toggle, so it goes above hollow
   // (order: what to lay down → how to fill it)
   const voidItem = createButton({
@@ -171,7 +171,7 @@ export function initToolbar(
   shapeMenu.append(hollowItem);
 
   /**
-   * Per-shape parameters (#64). **Only show what applies to the current shape** — always
+   * Per-shape parameters. **Only show what applies to the current shape** — always
    * showing everything would leave a "step height showing while cylinder is selected" state,
    * making it unreadable which ones actually apply.
    */
@@ -315,7 +315,7 @@ export function initToolbar(
     saveStateEl.setAttribute('role', 'status');
 
     // The only thing always shown is **"export," the final exit point**. Save / load / clear
-    // fold into a menu next to the project name (#61). Lining up all 4 would use 74px just
+    // fold into a menu next to the project name. Lining up all 4 would use 74px just
     // for the button row within the 248px width, crowding the header into the canvas. Tucking
     // away the 3 low-frequency ones that can be grouped as "operations on the project file"
     // gives the same shape as Figma's file menu.
@@ -374,14 +374,14 @@ export function initToolbar(
     // Places the save state and "export" on the same row. A full-width filled button would
     // be a 223x30 ≈ 6,700px² solid block, making it the strongest element in the white panel.
     // Figma's Share button uses the same saturated blue but is only 60px wide —
-    // **strength comes from area, not color** (#61)
+    // **strength comes from area, not color**
     const statusRow = document.createElement('div');
     statusRow.className = 'document-status-row';
     statusRow.append(saveStateEl, exportButton);
 
     documentBarRoot.append(nameRow, statusRow, fileMenu, fileInput);
 
-    // The stacked swatch sits at the left edge of the tool row (#87). "What to paint with" is
+    // The stacked swatch sits at the left edge of the tool row. "What to paint with" is
     // decided before tool selection, so it's placed ahead of the tool row
     const swatchGroup = group('block-swatch-group');
     swatchGroup.append(createBlockSwatchPair(catalog, picker));
@@ -391,7 +391,7 @@ export function initToolbar(
     for (const tool of TOOLS) {
       // Only the range fill is "button + caret." Rather than lining up 5 separate tools, it
       // stays the same "specify a range and fill it" operation, switching just **how it's
-      // filled** (#64)
+      // filled**
       if (tool.tool === 'fill') {
         toolGroup.append(renderShapeControl());
         continue;
@@ -480,7 +480,7 @@ export function initToolbar(
         className: 'world-control-button',
         onClick: () => setDisplayMode(state.displayMode === 'texture' ? 'flat' : 'texture'),
       }),
-      // Void outlines (#146). Heavy use of void fills the screen with lines, so this can be toggled on/off
+      // Void outlines. Heavy use of void fills the screen with lines, so this can be toggled on/off
       createButton({
         label: t('toolbar.voidEdges'),
         ariaLabel: t('toolbar.voidEdgesTitle'),
@@ -496,7 +496,7 @@ export function initToolbar(
   }
 
   // onStateChange fires for **every** state change, including lang, so adding onLangChange
-  // on top of it would render twice on a language switch (#70 review)
+  // on top of it would render twice on a language switch
   onStateChange(() => {
     render();
     // The menu lives outside render(), so its selection state is redrawn separately

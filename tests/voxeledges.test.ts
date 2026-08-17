@@ -21,7 +21,7 @@ function getLineSegments(scene: THREE.Scene): THREE.LineSegments {
   return found as THREE.LineSegments;
 }
 
-/** #15 follow-up: the position attribute is a fixed buffer pre-allocated for capacity, so the
+/** The position attribute is a fixed buffer pre-allocated for capacity, so the
  *  actually rendered range is narrowed via geometry.drawRange (the raw attribute.count includes unused space) */
 function activeVertexCount(geometry: THREE.BufferGeometry): number {
   return geometry.drawRange.count;
@@ -51,7 +51,7 @@ describe('VoxelEdges', () => {
 
     const geometry = getLineSegments(scene).geometry;
     const pos = geometry.getAttribute('position');
-    // BoxGeometry's EdgesGeometry is 12 edges × 2 vertices = 24. #15 follow-up: the per-cell
+    // BoxGeometry's EdgesGeometry is 12 edges × 2 vertices = 24. The per-cell
     // slot width is fixed to the max across the whole catalog (e.g. stairs), so it can be >= 24
     // (the excess is padded with degenerate edges of 2 identical points, with no effect on the bounding box)
     expect(activeVertexCount(geometry)).toBeGreaterThanOrEqual(24);
@@ -129,7 +129,7 @@ describe('VoxelEdges', () => {
     expect(scene.children).toHaveLength(0);
   });
 
-  it('disables frustumCulled (#15 follow-up review fix: in-place mutation leaves boundingSphere permanently stale)', () => {
+  it('disables frustumCulled (in-place mutation leaves boundingSphere permanently stale)', () => {
     const scene = new THREE.Scene();
     const world = new VoxelWorld();
     new VoxelEdges(scene, world, makeCatalog());
@@ -137,7 +137,7 @@ describe('VoxelEdges', () => {
   });
 });
 
-describe('VoxelEdges incremental updates (#15 follow-up)', () => {
+describe('VoxelEdges incremental updates', () => {
   function makeEdges(scene: THREE.Scene, world: VoxelWorld, catalog: BlockDef[]): VoxelEdges {
     const edges = new VoxelEdges(scene, world, catalog);
     world.subscribe((event) => edges.onWorldChange(toIndexChange(event)));
@@ -245,7 +245,7 @@ describe('VoxelEdges incremental updates (#15 follow-up)', () => {
   it('a voxel-only Document commit does not re-scan index.entries()', () => {
     const scene = new THREE.Scene();
     const catalog = makeCatalog();
-    // #37 B1b: the sole source of mesh updates is WorldIndexChange (markDirty from Document events was removed)
+    // The sole source of mesh updates is WorldIndexChange (markDirty from Document events was removed)
     const doc = new DocumentFixture((i) => catalog[i]?.shape);
     const edges = new VoxelEdges(scene, doc.world, catalog);
     doc.index.subscribe((event) => edges.onWorldChange(event));

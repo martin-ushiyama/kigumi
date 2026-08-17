@@ -7,7 +7,7 @@ implementation depends on and that took real effort to research**.
 
 We once implemented the stair orientation (`weirdo_direction`) by guesswork, left it
 "unverified", and did not notice the mismatch until it showed up in-game
-(#114). And **it was findable** —
+. And **it was findable** —
 community references have the mapping table.
 
 Testing in-game is the last step of verification, not the first. **Research first.** Only
@@ -135,7 +135,7 @@ There are two layers; the second is for waterlogged blocks (blocksmith writes al
 | The name typed into `/structure load` | derived from the `structures/{ns}/{name}.mcstructure` path | `bs:test` |
 
 **They do not match.** Typing the display name shown on the import screen does not work
-(#127) — which is why `buildMcpack`
+ — which is why `buildMcpack`
 now embeds the loadable form in parentheses inside the display name.
 
 ### Steps to install a pack
@@ -160,8 +160,7 @@ There are two scripts under `scripts/`. **Their roles differ** — use the right
 | `gen-stairs-verify.mjs` | Whether blocksmith's output matches the spec | **The app's export functions** (`buildMcstructure` → `buildMcpack`), fed through the same `WorldReader` interface |
 
 If verify were hand-assembled, it would bypass catalog matching and state merging, missing the
-case where "verification passes but the actual export is off" (review feedback on
-#129).
+case where "verification passes but the actual export is off".
 
 For context, the app's export pipeline: the editing model's source of truth is the
 `Document`-owned `EditorScene` (scene tree + owner-local cells), and export reads the derived

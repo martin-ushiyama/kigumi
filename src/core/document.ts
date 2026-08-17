@@ -21,9 +21,9 @@ import { cloneTransform, mirrorRaw, type GroupTransform, type MirrorAxis } from 
 import { WorldIndex, type OwnerVoxelChange, type WorldIndexReader } from './worldindex';
 
 /**
- * Document change notification event kinds (#13).
+ * Document change notification event kinds.
  *
- * As of #37 B1b, subscribers to this event are limited to **autosave / UI (layers, inspector, status)**.
+ * Subscribers to this event are limited to **autosave / UI (layers, inspector, status)**.
  * The sole source of mesh updates is `WorldIndexChange`, and the source of selection re-projection is
  * `SceneBatchChange` — both are notified from the WorldIndex side (structurally prevents double rebuilds
  * and missed preview follow-ups, design rev.7).
@@ -45,7 +45,7 @@ function isVoxelOnly(ops: readonly DocOp[]): boolean {
 /**
  * The smallest unit of an edit operation.
  *
- * `voxel` is **owner-local** (#37 B1b): "which local cell of which owner, set to which value."
+ * `voxel` is **owner-local**: "which local cell of which owner, set to which value."
  * The old `{ kind:'voxel'; edit: Edit }`, which was keyed on world coordinates, couldn't represent
  * overlaps where multiple owners project onto the same world coordinate — a winner swap would cause
  * the op's target to silently switch to a different owner.
@@ -62,10 +62,10 @@ export type DocOp =
   | { kind: 'renameGroup'; id: string; before: string; after: string }
   | { kind: 'setGroupHidden'; id: string; before: boolean; after: boolean }
   | { kind: 'setGroupLocked'; id: string; before: boolean; after: boolean }
-  /** Marks that this group is a component instance (#69). `null` = plain group */
+  /** Marks that this group is a component instance. `null` = plain group */
   | { kind: 'setGroupTemplateId'; id: string; before: string | null; after: string | null }
   /**
-   * Sets a group's transform (#37 B1b). `undefined` means "transform not set" — the v2 migration
+   * Sets a group's transform. `undefined` means "transform not set" — the v2 migration
    * omits the transform under the contract "initialize the pivot from the bounds center on first
    * rotation," so undoing the first transform assignment must restore the unset state rather than
    * identity (replacing with identity would bake in pivot=[0,0], making the next rotation pivot
@@ -73,7 +73,7 @@ export type DocOp =
    */
   | { kind: 'setGroupTransform'; id: string; before: GroupTransform | undefined; after: GroupTransform | undefined }
   /**
-   * Replacing the component definition itself (#69 / #142 review P1).
+   * Replacing the component definition itself.
    *
    * **Must go in the same transaction as the op that aligns instances.** If the definition (the
    * library entry) and the entities (instances within the artwork) live in separate history entries,
@@ -91,7 +91,7 @@ export type DocOp =
     };
 
 /**
- * Port to the component library (owned by the account side) (#69 / #142 review P1).
+ * Port to the component library (owned by the account side).
  *
  * Document does not hold the library itself — the library belongs to the user, not the artwork,
  * so ownership stays with the app side (`ComponentStore`). Only the **writes that need to go into
@@ -106,7 +106,7 @@ export interface ComponentLibraryPort {
 export interface Transaction {
   ops: DocOp[];
   /**
-   * Ref mapping applied to the selection, only on success (#37 design rev.5). Physical moves
+   * Ref mapping applied to the selection, only on success. Physical moves
    * (nudge / drag / cross-owner move / group / ungroup) change the ref itself, so merely "dropping
    * the vanished ref" would deselect right after commit. Undo notifies with the inverse mapping,
    * redo notifies with this mapping as-is.
@@ -120,7 +120,7 @@ export interface Transaction {
  * caller sneaks a voxel op in via extraOps, commitStaged won't forward-apply voxel ops (it
  * assumes they're already staged), producing an op that's "recorded in undo history but never
  * reflected in the scene" — which then suddenly materializes an unapplied change the moment
- * redo runs (#22 review finding). Disallow this at the type level.
+ * redo runs. Disallow this at the type level.
  */
 /** Marker returned by `openHistorySession`. Pass it back unchanged when closing. */
 export interface HistorySessionMark {
@@ -133,7 +133,7 @@ export interface HistorySessionMark {
 export type NonVoxelDocOp = Exclude<DocOp, { kind: 'voxel' } | { kind: 'setPattern' }>;
 
 /**
- * Input expressing edit intent in **world coordinates** (#37 design rev.3).
+ * Input expressing edit intent in **world coordinates**.
  *
  * The old `Edit` type carried `before`, but that was the WorldIndex visible-winner value, not
  * "the current value of the write-target ref." When the placement target is a different owner
@@ -165,7 +165,7 @@ export interface SessionBaseline {
  * Session that governs pre-commit preview edits such as dragging and continuous placement.
  * The stage family only reflects into scene + WorldIndex immediately (not subject to undo/autosave).
  * commit() finalizes the "diff against the true value at session start (baseline)" as a single
- * Transaction; cancel() restores to baseline and discards it (#11).
+ * Transaction; cancel() restores to baseline and discards it.
  *
  * After either commit or cancel is called, the session becomes closed and further calls are
  * ignored (so that a delayed pointercancel after pointerup can double-terminate safely).
@@ -191,7 +191,7 @@ export interface EditSession {
 function cloneGroupNode(node: GroupNode): GroupNode {
   // Deep-clone transform too, just like childIds — if the transform contents (translate / pivot2
   // arrays) could be rewritten via an alias left with the caller, the node snapshot pushed onto
-  // the undo stack would change along with it (#37 B1b: plugs the gap where only childIds was cloned)
+  // the undo stack would change along with it (plugs the gap where only childIds was cloned)
   return {
     ...node,
     childIds: [...node.childIds],
@@ -216,7 +216,7 @@ function toOwnedGroupNode(node: ReadonlyGroupNode): GroupNode {
 /**
  * Clones so that DocOp doesn't hold onto a caller-owned object directly. If an alias left with the
  * caller is rewritten later, the Transaction pushed onto the undo stack would change along with it,
- * creating a loophole where undo→redo revives the post-rewrite value (#19 review finding). voxel /
+ * creating a loophole where undo→redo revives the post-rewrite value. voxel /
  * renameGroup / setGroupHidden / setGroupLocked / reparentGroup have only primitive fields so no
  * nested cloning is needed, but the reference to the op object itself must still be severed here.
  */
@@ -273,12 +273,12 @@ function invertRemap(remap: CellRefRemap): CellRefRemap {
 /**
  * Facade governing the undo/redo history plus the edit model (EditorScene).
  *
- * As of #37 B1b, **the source of truth was moved to EditorScene (owner-local), and VoxelWorld was
+ * **The source of truth was moved to EditorScene (owner-local), and VoxelWorld was
  * removed from the runtime.** What renderer / picking read is the derived read-model `WorldIndex`
  * (one-way derivation, zero dual truth). `get world()` returns a `WorldIndexReader`, which is
  * compatible with `WorldReader`, so existing read paths can be swapped in as-is.
  *
- * Scene/tree mutation methods are restricted to going through Document only (#10). Public types
+ * Scene/tree mutation methods are restricted to going through Document only. Public types
  * are limited to `EditorSceneReader` / `SceneTreeReader` / `WorldIndexReader` (read-only); the
  * concrete types are protected — production code cannot call write methods at the type level.
  * Only test setup — via DocumentFixture (a Document subclass) in tests/helpers/document-fixture.ts —
@@ -297,7 +297,7 @@ export class Document {
     protected readonly shapeOf: (catalogIndex: number) => Shape | undefined,
     resolveLocalRaw: LocalRawResolver = (_ref, raw) => raw,
     /**
-     * Port to the component library (owned by the account side) (#69 / #142 review P1).
+     * Port to the component library (owned by the account side).
      *
      * Serves two roles.
      *
@@ -322,7 +322,7 @@ export class Document {
   }
 
   /**
-   * The **owner-local raw currently used for display** of a ref (#64 PR-C review).
+   * The **owner-local raw currently used for display** of a ref.
    *
    * For live pattern (recipe reference) cells, `scene.cells`'s raw is the **fallback for saving**
    * and doesn't get rewritten when the ratio is edited (`refreshDerived()` only rebuilds the
@@ -368,9 +368,9 @@ export class Document {
   }
 
   /**
-   * #13: Supports multiple subscribers, returns an unsubscribe. Listeners are called in isolation
+   * Supports multiple subscribers, returns an unsubscribe. Listeners are called in isolation
    * — one throwing doesn't affect other listeners or the caller (transaction success/failure)
-   * (#22 3rd-round review finding: there was an incident where a notify failure was mistaken for
+   * (raised in review: there was an incident where a notify failure was mistaken for
    * a transaction failure — state/history had already committed, but it looked like a failure to
    * the caller. "Did the notification to observers succeed" and "did the operation itself succeed"
    * are independent concerns; see createEmitter).
@@ -383,7 +383,7 @@ export class Document {
     this.emitter.notify(change);
   }
 
-  // ---- target resolution (#37 design rev.2 blocker ② + rev.3 blocker ②) ----
+  // ---- target resolution ----
   //
   // A single resolution function that "always targets the winner if there is one" has a flaw
   // where the meaning of ownership changes based on visibility alone. Split into 3 by operation intent.
@@ -444,7 +444,7 @@ export class Document {
   }
 
   /**
-   * The world-oriented raw obtained by mirroring a world-oriented raw across a world axis (#63).
+   * The world-oriented raw obtained by mirroring a world-oriented raw across a world axis.
    * Since `shapeOf` is held protected by Document, this is the sole entry point here too, same as
    * `localRawOf` / `worldRawOf` (so the editor layer never pulls from the catalog directly).
    */
@@ -464,7 +464,7 @@ export class Document {
   }
 
   /**
-   * Whether the given owner is inside a component instance (#69).
+   * Whether the given owner is inside a component instance.
    *
    * **The contents of an instance are not editable.** Even if fixed, it gets overwritten the
    * moment the component is edited (the propagated version wins), so touching it produces an edit
@@ -622,7 +622,7 @@ export class Document {
    * before application. Even if the before/node snapshot the caller passed in is stale or invalid,
    * Document always trusts this measured value — using this normalized op for rollback (the
    * unwind on applyForwardAtomic failure) and for the undo history record removes the dependency
-   * on the caller's claim (#21 review finding: rewinding an op that had already succeeded before
+   * on the caller's claim (rewinding an op that had already succeeded before
    * the exception, using the caller-claimed "before," would restore incorrectly if that value
    * disagreed with the actual pre-start state).
    */
@@ -693,7 +693,7 @@ export class Document {
         return { kind: 'setGroupTemplateId', id: op.id, before, after: op.after };
       }
       case 'setGroupTransform': {
-        // `before` is measured live. Don't trust the caller's claim (same reason as #21). SceneTree's
+        // `before` is measured live. Don't trust the caller's claim. SceneTree's
         // getNode returns the internal node as-is, so deep-copy before pushing onto history to sever the alias
         const live = this._scene.tree.getNode(op.id)?.transform;
         const before = live === undefined ? undefined : cloneTransform(live);
@@ -918,8 +918,8 @@ export class Document {
    * `SceneBatchChange(commit + refRemap)` for Selection fires once, and Document event / autosave
    * fires once.
    *
-   * Placing `setPattern` on the same "already staged" side as voxel is the key point (#76 review
-   * round 4). Routing it through `applyForwardAtomic` as a structural op triggers
+   * Placing `setPattern` on the same "already staged" side as voxel is the key point (raised in
+   * review). Routing it through `applyForwardAtomic` as a structural op triggers
    * `rebuildFromScene()`, causing a **full WorldIndex rebuild + `replaceAll` notification on every
    * pointerup** (measured: ~230ms for 48³). The binding diff only needs to land in history — the
    * display is already correct as of preview.
@@ -951,7 +951,7 @@ export class Document {
   }
 
   /**
-   * Starts a preview edit session for dragging, continuous placement, etc. (#11).
+   * Starts a preview edit session for dragging, continuous placement, and the like.
    * The input layer (controls.ts / selecttool.ts) does preview → commit/discard only through the
    * EditSession obtained here, and doesn't own baseline-restoration logic itself.
    *
@@ -960,7 +960,7 @@ export class Document {
    */
   beginSession(placementOwner: OwnerId = null): EditSession {
     const baseline = new Map<CellRefKey, SessionBaseline>();
-    /** Baseline for the binding side. Used to roll back a cell drag's staged remap (#76 review) */
+    /** Baseline for the binding side. Used to roll back a cell drag's staged remap */
     const patternBaseline = new Map<CellRefKey, { ref: CellRef; before: PatternPaint | null }>();
     let lastRemap: CellRefRemap | null = null;
     let closed = false;
@@ -986,7 +986,7 @@ export class Document {
       if (existing) return existing.before;
       const before = this._scene.cells.get(ref.ownerId, localKeyOf(ref)) ?? null;
       baseline.set(key, { ref, before });
-      // Also take a baseline for the pattern binding, over the same ref set (#76 review). If only
+      // Also take a baseline for the pattern binding, over the same ref set. If only
       // the voxel is restored and the binding fails to restore, "the cell is back but the pattern
       // is still at the destination" would remain after cancel
       patternBaseline.set(key, { ref, before: this._scene.patterns?.get(ref.ownerId, localKeyOf(ref)) ?? null });
@@ -994,7 +994,7 @@ export class Document {
     };
 
     /**
-     * Restores a staged binding move back to baseline (#76 review).
+     * Restores a staged binding move back to baseline.
      *
      * Same as voxel: **always rebuilt from baseline every time** — accumulating remaps would push
      * the binding further and further from its original position each time the drag offset changes.
@@ -1005,7 +1005,7 @@ export class Document {
     };
 
     /**
-     * Turns the binding's baseline diff into `setPattern` ops (#76 review round 2).
+     * Turns the binding's baseline diff into `setPattern` ops.
      *
      * Leaving the staged remap to `Transaction.remap`'s automatic follow-along means **a binding
      * that originally existed at the destination doesn't come back on undo** — automatic remap can
@@ -1063,7 +1063,7 @@ export class Document {
     };
 
     /**
-     * **The sole entry point for staged reflection of both binding and voxel** (#76 review round 5).
+     * **The sole entry point for staged reflection of both binding and voxel**.
      *
      * Finishes range validation before touching the binding; any failure after that (index update
      * throwing, etc.) also restores the binding back to baseline. **Never leaves a state where only
@@ -1103,7 +1103,7 @@ export class Document {
         for (const change of changes) {
           recordBaseline({ ownerId: change.owner, localCell: parseCellKey(change.localKey) });
         }
-        // The bindings on touched cells are **removed at preview time** (#76 review round 4).
+        // The bindings on touched cells are **removed at preview time**.
         // Previously `withPatternClears` added this automatically at commit, but that would let
         // an "unapplied setPattern" flow into commitStaged and trigger a full rebuild.
         // Removing it here means it lands in the op as a baseline diff, and the display is correct from preview onward
@@ -1127,8 +1127,8 @@ export class Document {
         // destinations, so even self-overlaps (swapping among move sources, delta 0) end up
         // correct in a single stage
         const final = new Map<CellRefKey, OwnerVoxelChange>();
-        // The binding also builds its final state via **exactly the same 3 steps** (#76 review
-        // round 3). `PatternPaintStore.remap` only collects "moves where the source has a binding,"
+        // The binding also builds its final state via **exactly the same 3 steps** (raised in
+        // review). `PatternPaintStore.remap` only collects "moves where the source has a binding,"
         // so overlaying a plain block onto a cell with a binding would leave the destination's
         // binding un-cleared. Doing "empty both source and destination first, then place only what
         // existed" closes no-binding→binding / binding→no-binding / binding→binding under the same rule
@@ -1166,8 +1166,8 @@ export class Document {
           remap.set(makeCellRefKey(ref), destRef);
         }
 
-        // Copy the binding to the destination **before stageLocal** (#76 review). Since the pattern
-        // is derived from world coordinates (#69), leaving the binding on the old ref would show
+        // Copy the binding to the destination **before stageLocal**. Since the pattern
+        // is derived from world coordinates, leaving the binding on the old ref would show
         // the save-fallback only during preview and then jump to the destination's pattern the
         // instant it's committed. `applyVoxelChanges` calls the resolver for the moved cell, so
         // placing the binding at the correct position beforehand makes it show the final pattern from preview onward
@@ -1181,7 +1181,7 @@ export class Document {
       commit: (extraOps: NonVoxelDocOp[] = []): void => {
         if (closed) return;
         // The type already disallows passing a voxel op via extraOps (NonVoxelDocOp), but reject it
-        // at runtime too as a safety net in case it slips through via `any` or a future caller (#22 review finding)
+        // at runtime too as a safety net in case it slips through via `any` or a future caller
         for (const op of extraOps as DocOp[]) {
           if (op.kind === 'voxel') {
             throw new Error('Cannot pass a voxel op via EditSession.commit\'s extraOps (would be double-managed with the baseline diff)');
@@ -1196,7 +1196,7 @@ export class Document {
           }
         }
         ops.push(...extraOps);
-        // Turns the binding diff into ops (#76 review round 2). **The scene is passed through
+        // Turns the binding diff into ops. **The scene is passed through
         // as-staged** — commitStaged treats setPattern as "already staged," same as voxel, and
         // neither forward-applies nor re-projects it (review round 4). The op is only pushed for the undo history.
         ops.push(...collectPatternOps());
@@ -1209,7 +1209,7 @@ export class Document {
           closed = true; // only set closed after commitStaged succeeds
         } catch (err) {
           // If commitStaged fails, setting closed beforehand would create a deadlock state where
-          // "preview stays but cancel doesn't work either" (#21 review finding). Restore to
+          // "preview stays but cancel doesn't work either". Restore to
           // baseline and re-throw. Since it was already previewed, "0 notifications on failure"
           // doesn't apply here — a restore notification is fired since the screen must revert too
           restorePatterns();
@@ -1244,7 +1244,7 @@ export class Document {
    * if intents is empty.
    *
    * Passing `parentId` creates it inside that group (default is directly under root). **Since
-   * blank cells (#113) have their scope of effect determined by which group they're inside**,
+   * blank cells have their scope of effect determined by which group they're inside**,
    * fixing it to root would always make them affect everything.
    *
    * The new group's own transform is identity, but **the parent chain's transform still applies**,
@@ -1284,7 +1284,7 @@ export class Document {
   }
 
   /**
-   * A temporary floor for history (#69 component editing / #142 review P1).
+   * A temporary floor for history, used while editing a component.
    *
    * During a session (edit mode, etc.), **undo is prevented from going back past the point of
    * entry.** If it could, only the things premised on the session being active (working groups)
@@ -1389,7 +1389,7 @@ export class Document {
   /**
    * Snapshots the entire current scene/history. For rollback dedicated to "replace-everything /
    * clear-everything" methods like replaceAll/clearAll (found while investigating similar paths
-   * per the #22 review finding: unlike applyTransaction/commitStaged, these two methods can't do
+   * per a review finding: unlike applyTransaction/commitStaged, these two methods can't do
    * sequential per-op capture — since they're inherently "replace everything" operations, it's
    * natural for rollback to also be "restore everything wholesale," rather than forcing a reuse of
    * the per-op rollback mechanism).
@@ -1421,7 +1421,7 @@ export class Document {
   }
 
   /**
-   * For project loading. Clears history and replaces the entire scene (#37 B1b: direct connection to v3's EditorScene).
+   * For project loading. Clears history and replaces the entire scene (direct connection to v3's EditorScene).
    *
    * The argument scene's **content only is imported** (the instance is not swapped) — so that
    * subscribers and derived indexes holding references into Document's owned tree/cells don't need

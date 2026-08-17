@@ -1,7 +1,7 @@
 import { expect, test, type Page } from '@playwright/test';
 
 /**
- * Confirms on the real app that a shape fill is anchored to the face that was touched (#101).
+ * Confirms on the real app that a shape fill is anchored to the face that was touched.
  *
  * How the axis is decided and the geometry of the projection belong to the unit side
  * (`tests/shape-fill-face-axis.test.ts` / `tests/services/picking.test.ts`). What is checked here is

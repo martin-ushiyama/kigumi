@@ -15,7 +15,7 @@ type Category = BlockDef['category'];
 /**
  * **Kept as a function.** A module-level constant would bake in the language at
  * load time, leaving stale category labels behind even after switching languages
- * and reopening the picker (the same trap palette.ts hit in #70 — this one surfaced in the #85 review).
+ * and reopening the picker (the same trap palette.ts hit — this one surfaced in review).
  *
  * `checkFrozenTranslations` in `scripts/architecture-lint.mjs` mechanically catches
  * this pattern in CI so it can't recur.
@@ -35,7 +35,7 @@ export interface BlockChangeTarget {
   onBlock: (catalogIndex: number) => void;
   onPattern: (recipe: MixRecipe) => void;
   /**
-   * Hides the pattern tab (#87). Used by callers like the toolbar swatch where only
+   * Hides the pattern tab. Used by callers like the toolbar swatch where only
    * a single block can be chosen. Since only one tab would remain, the tab list
    * itself isn't rendered at all.
    */
@@ -62,7 +62,7 @@ export function createBlockChangePicker(catalog: BlockDef[], store: RecipeStore)
   popover.setAttribute('aria-label', t('picker.ariaLabel'));
   // The popover is created once, directly under body. Since render() doesn't run
   // while it's closed, the announced name would stay stuck at the language it
-  // launched with until it's opened (#89)
+  // launched with until it's opened
   onLangChange(() => popover.setAttribute('aria-label', t('picker.ariaLabel')));
   document.body.appendChild(popover);
 

@@ -1,5 +1,5 @@
 /**
- * Shared rules for moving "items tied to an account" back and forth with work files (#69).
+ * Shared rules for moving "items tied to an account" back and forth with work files.
  *
  * Both recipes (`MixRecipe`) and components (`ComponentTemplate`) share the same structure:
  *
@@ -7,7 +7,7 @@
  * - Bundle into a work file **only the items that work references**
  * - When opening a work, add to the owner's list without removing anything
  *
- * Writing this rule in two separate places invites the accident of fixing only one, so it lives here in exactly one spot (lifted as-is from the rule introduced on the recipe side in #126).
+ * Writing this rule in two separate places invites the accident of fixing only one, so it lives here in exactly one spot (lifted as-is from the rule introduced on the recipe side).
  */
 
 /** The minimal shape shared by anything that goes into a library */
@@ -49,7 +49,7 @@ export function freshLibraryId(prefix: string, taken: ReadonlySet<string>): stri
  * - If not -> add. Keep the id as-is if it's free, otherwise allocate a new one
  *
  * Matching on id alone would mean **the same item keeps reappearing under a different
- * id every time a colliding work is opened** (#126). Overwriting the existing item
+ * id every time a colliding work is opened**. Overwriting the existing item
  * would corrupt the owner's data, and discarding the file's version would change the
  * appearance of the loaded work — so "merge by content" is the only way out.
  */

@@ -11,7 +11,7 @@ import {
 } from '../scripts/bedrock-snapshot.mjs';
 
 /**
- * The upstream snapshot contract (#97 stage 1).
+ * The upstream snapshot contract.
  *
  * The real files (data/bedrock/*.json and friends) belong to Mojang under All rights reserved,
  * so they are gitignored and **do not exist in CI**. The checks are therefore pinned to two things:
@@ -37,7 +37,7 @@ describe('SOURCE.json — the record of which commit and which files were assume
   /**
    * "When was it imported" is already held by git, as the moment SOURCE.json was committed.
    * Keeping a timestamp in the record would make a tracked file go dirty just from re-fetching
-   * the same commit (#98 review finding). The same fact is not written down in two places.
+   * the same commit. The same fact is not written down in two places.
    */
   it('holds no value that changes on every run, such as a fetch timestamp', () => {
     const keys = Object.keys(source);
@@ -77,7 +77,7 @@ describe('buildSource — the record is determined solely by the upstream state'
   const commit = 'f'.repeat(40);
 
   /**
-   * The regression contract requested in review (#98):
+   * The regression contract requested in review:
    * "re-fetching the same commit with the same bytes is byte-identical to SOURCE.json".
    * Pinned down without depending on the clock or the network.
    */

@@ -1,6 +1,6 @@
 /**
- * The **projection from the unified DB (#97 stage 2) into the app's texture manifest**
- * (#97 stage 3). Pure functions only.
+ * The **projection from the unified DB into the app's texture manifest**
+ *. Pure functions only.
  *
  * The DB is lossless — it holds the reference of each of the six faces and the multiplicity of
  * the candidates as-is. The renderer, on the other hand, handles only the two values
@@ -8,7 +8,7 @@
  * **That upstream only has that shape and that the renderer only handles that shape are
  * different facts**, so the collapsing is confined to this one place.
  *
- * ## Contract (#97 stage 3)
+ * ## Contract
  *
  * 1. Every block in the included catalogue can be projected
  * 2. **Zero unclassified ambiguity or lossy projection.** Several candidates / a different
@@ -58,7 +58,7 @@ function manifestFileOf(path) {
  * can be taken (only `{overlay_color}`, etc.) used to be filtered out before indexing, but that
  * meant (1) the index drifted from the upstream data and the ledger pointed at a different
  * candidate, and (2) when filtering left exactly one, it slipped past the "several candidates"
- * check and the first was taken with no ruling (#97 stage 3 review). Both the multiplicity
+ * check and the first was taken with no ruling. Both the multiplicity
  * check and the position taken use the upstream array as the single yardstick.
  */
 function resolveFace({ face, name, resolved, variantIndex }) {
@@ -224,7 +224,7 @@ export function buildTextureManifest({ catalogIds, dbBlocks, ledger }) {
     manifest[id] = entry;
   }
 
-  // Keeping unused rulings makes it impossible to tell which contracts are live (the structure #97 is removing)
+  // Keeping unused rulings makes it impossible to tell which contracts are live (the structure the unified DB removes)
   const stale = Object.keys(ledger).filter((id) => !usedLedgerIds.has(id));
   if (stale.length > 0) problems.push(`ledger entries that are not in the catalogue (${stale.length}): ${stale.join(', ')}`);
 

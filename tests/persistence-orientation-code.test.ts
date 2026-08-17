@@ -16,17 +16,17 @@ const STONE = CATALOG[0]!.id;
 const RECIPE: MixRecipe = { id: 'r1', name: 'Mix', entries: [{ blockId: STONE, weight: 1 }] };
 
 /**
- * The orientation code's container (#95) only closes cleanly if both write and read use
+ * The orientation code's container only closes cleanly if both write and read use
  * the same width.
  *
  * `serializeProjectV5` writes `unpackCell(raw).code` as-is, so widening the container lets
  * it write out larger codes. If the read side is stuck on the old limit, **saving succeeds
- * but reloading rejects it** (#96 review P1).
+ * but reloading rejects it**.
  *
  * Just reading hand-written JSON wouldn't exercise the write side, so we round-trip by
  * **actually building a scene, serializing it, and loading that**.
  */
-describe('orientation code limit in the save format (#95 / #96)', () => {
+describe('orientation code limit in the save format', () => {
   const codes = [0, 15, 16, 31, MAX_ORIENTATION_CODE];
 
   function sceneWith(code: number, withPattern: boolean): EditorScene {

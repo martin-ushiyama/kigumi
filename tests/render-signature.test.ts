@@ -15,12 +15,12 @@ import { renderSignatureAt, type Direction, type SubCell } from './helpers/rende
 import { toIndexChange } from './helpers/world-index-events';
 
 /**
- * **Cross-checking the measured ledger against the final data reaching the screen** (#131 PR 2).
+ * **Cross-checking the measured ledger against the final data reaching the screen**.
  *
  * The ledger never references product code at all. It writes directly "what should be visible
  * on screen for this pose." The observation side (`renderSignatureAt`) also only reads the
  * `InstancedMesh` inside a `THREE.Scene`, so both sides don't end up sharing the same table
- * in a structure where a round trip would pass anyway (the lesson from #114).
+ * in a structure where a round trip would pass anyway (the stair-orientation lesson).
  *
  * ## How to read the sub-cell names
  *
@@ -32,7 +32,7 @@ import { toIndexChange } from './helpers/world-index-events';
  * - `faceTextures`: **the texture actually loaded onto the material that index points to**
  *
  * `faces` alone doesn't check the correspondence with the `mesh.material` array, so swapping
- * side/top and putting them into the array still passes (#139 review finding).
+ * side/top and putting them into the array still passes.
  * That's why we observe all the way down to the texture.
  *
  * Texture loading depends on the DOM, so it doesn't run in this environment. **To keep the
@@ -176,9 +176,9 @@ const LEDGER: LedgerEntry[] = [
   stairsEntry('Stairs · south (d=2)', 2, false, stepOn('z1', false)),
   stairsEntry('Stairs · north (d=3)', 3, false, stepOn('z0', false)),
   // Upside-down: only the top and bottom flip, **the horizontal orientation doesn't move**.
-  // This is exactly the behavior confirmed on real hardware (Bedrock 1.21) on 2026-08-01 (#129).
+  // This is exactly the behavior confirmed on real hardware (Bedrock 1.21) on 2026-08-01.
   // **List all 4 directions** — with only some listed, breaking the wiring for that pose would
-  // still pass (#139 review finding)
+  // still pass
   stairsEntry('Stairs · east upside-down', 0, true, stepOn('x1', true)),
   stairsEntry('Stairs · west upside-down', 1, true, stepOn('x0', true)),
   stairsEntry('Stairs · south upside-down', 2, true, stepOn('z1', true)),
@@ -220,7 +220,7 @@ async function renderPose(orientation: Orientation) {
   return renderSignatureAt(scene, [0, 0, 0]);
 }
 
-describe('measured ledger matches the screen (#131 PR 2)', () => {
+describe('measured ledger matches the screen', () => {
   it.each(LEDGER.map((entry) => [entry.label, entry] as const))('%s', async (_label, entry) => {
     const signature = await renderPose(entry.orientation);
     expect(signature.occupancy).toEqual([...entry.occupancy].sort());
@@ -229,7 +229,7 @@ describe('measured ledger matches the screen (#131 PR 2)', () => {
   });
 
   /**
-   * **Pins down that the ledger itself doesn't miss any part of the pose space** (#139 review
+   * **Pins down that the ledger itself doesn't miss any part of the pose space** (raised in
    * finding). Only 2 poses of the flipped stairs were listed, so breaking the wiring for the
    * remaining 2 poses still passed every check. The pose count is taken from PR 1's pose space
    * (used as **the denominator for coverage**, not an expected value)
@@ -245,7 +245,7 @@ describe('measured ledger matches the screen (#131 PR 2)', () => {
   });
 
   /**
-   * Occupancy volume alone can't verify a post's axis (#131 body text). This pins down
+   * Occupancy volume alone can't verify a post's axis. This pins down
    * **that the ledger itself doesn't have that blind spot**.
    */
   it("a post's 3 axes can't be distinguished by occupancy volume (the reason we check faces)", () => {
@@ -254,7 +254,7 @@ describe('measured ledger matches the screen (#131 PR 2)', () => {
     expect(new Set(axes.map((e) => JSON.stringify(e.faceTextures))).size).toBe(3);
   });
 
-  /** Upside-down doesn't change the horizontal orientation (confirmed on real hardware 2026-08-01, #129) */
+  /** Upside-down doesn't change the horizontal orientation (confirmed on real hardware 2026-08-01) */
   it('the horizontal direction the step faces stays the same even when flipped upside-down', async () => {
     const stepSide = (cells: SubCell[]) => {
       const half = cells.filter((c) => cells.filter((o) => o.slice(0, 2) === c.slice(0, 2)).length === 1);

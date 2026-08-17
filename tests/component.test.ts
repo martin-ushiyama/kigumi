@@ -326,7 +326,7 @@ describe('Placing a component', () => {
     expect([...doc.scene.cells.allEntries()]).toHaveLength(before);
   });
 
-  it('a different placement location gives a different pattern (#69: pattern paint is determined by coordinates)', () => {
+  it('a different placement location gives a different pattern (pattern paint is determined by coordinates)', () => {
     // the pattern is not baked into PatternPaint but derived from world coordinates,
     // so placing the instance elsewhere gives a different pattern
     const atOrigin = patternSampleAt('c1', [0, 0, 0], 0);
@@ -363,7 +363,7 @@ describe('Appearance of a placed instance', () => {
 });
 
 /**
- * Round-tripping through a project file (#69 Step 1).
+ * Round-tripping through a project file.
  *
  * Components, like recipes, are **tied to the account**. The file only
  * contains the ones that project uses, and the opening side's list is not cleared.
@@ -437,7 +437,7 @@ describe('Round-tripping through a project file', () => {
   });
 
   /**
-   * Saving does not depend on the catalog's ordering (#142 review P1).
+   * Saving does not depend on the catalog's ordering.
    *
    * `ComponentTemplate`'s raw value includes its position within the catalog. Writing it
    * as-is means that once blocks are added or the generation order changes, the same file
@@ -531,7 +531,7 @@ describe('Round-tripping through a project file', () => {
   });
 
   /**
-   * Saved data comes from outside. **If it is broken, fail the whole load** (#142 review P1).
+   * Saved data comes from outside. **If it is broken, fail the whole load**.
    *
    * Letting this slip through with a type assertion means a broken template reaches the
    * list and the Document, then crashes partway through rendering/placement. The farther
@@ -589,12 +589,12 @@ describe('Round-tripping through a project file', () => {
 });
 
 /**
- * Propagating component edits to instances (#69 Step 2).
+ * Propagating component edits to instances.
  *
  * The contract is **sync wins**, so any direct edits made on an instance are wiped out
  * here. To change one individually, detach it first (`buildDetachInstance`).
  */
-describe('Component edits propagate to instances (#69 Step 2)', () => {
+describe('Component edits propagate to instances', () => {
   /** State with the pillar component placed in 2 locations */
   function docWithTwoInstances() {
     const { doc: source, groupId } = docWithPillar();
@@ -750,12 +750,12 @@ describe('Component edits propagate to instances (#69 Step 2)', () => {
     const doc = newDoc();
     const result = buildSyncInstancesOf(doc, template('c9', 'nobody has placed one'));
     // there is simply nothing to sync to. Making this an error would mean edits to a
-    // component that has not been placed yet could never be finalized (#142 review P1)
+    // component that has not been placed yet could never be finalized
     expect('tx' in result && result.tx.ops).toEqual([]);
   });
 });
 
-describe('Detaching from a component (#69 Step 2)', () => {
+describe('Detaching from a component', () => {
   it('a detached instance no longer follows subsequent edits', () => {
     const { doc: source, groupId } = docWithPillar();
     const created = buildCreateComponent(source, groupsSel(source, groupId), 'c1');
@@ -796,14 +796,14 @@ describe('Detaching from a component (#69 Step 2)', () => {
 });
 
 /**
- * **Placing a component built somewhere else at the clicked location** (#69 reported).
+ * **Placing a component built somewhere else at the clicked location**.
  *
  * Cells are owner-local, but for a group with no transform, local == world.
  * That means turning a group built high up or far away into a component
  * **bakes that position into the cell coordinates**. Adding the click position on top of
  * that when placing it would shift it by that amount.
  */
-describe('Not dragged by the location it was built at (#69)', () => {
+describe('Not dragged by the location it was built at', () => {
   /** A 3-cell pillar built at (10, 5, 3) */
   function farPillar() {
     const doc = newDoc();
@@ -846,7 +846,7 @@ describe('Not dragged by the location it was built at (#69)', () => {
   });
 
   /**
-   * A component whose child node has a transform (#142 review P1).
+   * A component whose child node has a transform.
    *
    * If the preview and the actual placement compute coordinates separately, **they drift
    * by however much the child was moved**. Verify both read the same projected cell list
@@ -890,7 +890,7 @@ describe('Not dragged by the location it was built at (#69)', () => {
 });
 
 /**
- * Range check for sync (#142 review P1).
+ * Range check for sync.
  *
  * Before rebuilding an instance, we check whether "the placement result would go outside
  * the world", but unless we measure it **in world coordinates by running the projected
@@ -953,7 +953,7 @@ describe('Sync checks range using projected coordinates', () => {
 });
 
 /**
- * The mark of a component removed from the list (#142 review P1).
+ * The mark of a component removed from the list.
  *
  * The list belongs to the account side and is not part of the project's history (same as
  * recipes). So after removal, undo / redo can sometimes bring back just the `templateId`.
@@ -1028,13 +1028,13 @@ describe('The mark of a component removed from the list', () => {
 });
 
 /**
- * **The contents of an instance are not editable** (#69 reported).
+ * **The contents of an instance are not editable**.
  *
  * Even if you fix the inside, it gets overwritten the moment the component is edited
  * (sync wins). Allowing it to be touched would create edits that "work but don't stick",
  * so it is excluded at the entry point.
  */
-describe('Does not allow touching the inside of an instance (#69)', () => {
+describe('Does not allow touching the inside of an instance', () => {
   function placedInstance() {
     const { doc: source, groupId } = docWithPillar();
     const created = buildCreateComponent(source, groupsSel(source, groupId), 'c1');
@@ -1076,13 +1076,13 @@ describe('Does not allow touching the inside of an instance (#69)', () => {
 });
 
 /**
- * Component edit mode (#69).
+ * Component edit mode.
  *
  * Since instance contents are not normally touchable, fixing them needs **a place to
  * bring out the component itself**. Everything else is hidden, only the contents are
  * shown, and on exit the changes are written back and propagated to all instances.
  */
-describe('Component edit mode (#69)', () => {
+describe('Component edit mode', () => {
   function docWithInstanceAndOther() {
     const { doc: source, groupId } = docWithPillar();
     const created = buildCreateComponent(source, groupsSel(source, groupId), 'c1');
@@ -1149,7 +1149,7 @@ describe('Component edit mode (#69)', () => {
   });
 
   /**
-   * Edit mode and undo / redo (#142 review P1).
+   * Edit mode and undo / redo.
    *
    * The edit session is one-to-one with the history session. **Changes inside do not leak
    * out**, and **history outside cannot be touched from inside**. If this breaks, you get

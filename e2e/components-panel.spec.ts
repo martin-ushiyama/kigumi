@@ -1,12 +1,12 @@
 import { expect, test, type Page } from '@playwright/test';
 
 /**
- * Pins down the persistence and edit mode of the component list against the real assembly in main.ts (#69 / #142).
+ * Pins down the persistence and edit mode of the component list against the real assembly in main.ts.
  *
  * The unit tests cover `ComponentStore` and `endComponentEdit` separately, but
  * **how the list is assembled and wired to localStorage** exists only in main.ts.
  * Restoring on startup depends on the initialization order, so without going through here
- * "saved it, but the list is empty after a restart" slips past (#142 review: the whole list vanished).
+ * "saved it, but the list is empty after a restart" slips past (the whole list vanished).
  */
 
 const AUTOSAVE_KEY = 'blocksmith.project.autosave.v1';
@@ -60,7 +60,7 @@ async function makeComponent(page: Page, groupId: string): Promise<void> {
   await page.locator('#inspector button', { hasText: 'コンポーネントにする' }).click();
 }
 
-test('a component that was created is still listed after a reload (#142)', async ({ page }) => {
+test('a component that was created is still listed after a reload', async ({ page }) => {
   await page.goto('/');
   await expect(page.locator('#viewport')).toBeVisible();
   const groupId = await seedOneGroup(page);
@@ -77,7 +77,7 @@ test('a component that was created is still listed after a reload (#142)', async
   expect(await listedNames(page), 'it is still listed after a restart').toContain('pillar');
 });
 
-test('a component with no instances placed yet can still be edited and committed (#142)', async ({ page }) => {
+test('a component with no instances placed yet can still be edited and committed', async ({ page }) => {
   await page.goto('/');
   await expect(page.locator('#viewport')).toBeVisible();
   const groupId = await seedOneGroup(page);

@@ -17,7 +17,7 @@ const V = packCell(0, 0);
  * └─ g2 (sibling, flat) ← cell (5,0,5) belongs to it directly (1 level deep)
  * cell (9,9,9) and (1,1,1) are unassigned (owner = null)
  *
- * #37 B1b: cell ownership is now literally "which owner holds this cell," so it's placed
+ * Cell ownership is now literally "which owner holds this cell," so it's placed
  * directly into OwnerVoxelStore keyed owner-local instead of a membership index.
  * No group has a transform set (identity), so local coordinates = world coordinates.
  */

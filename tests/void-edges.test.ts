@@ -23,7 +23,7 @@ function lineSegmentsIn(scene: THREE.Scene): THREE.LineSegments {
 /** 12 cube edges = 24 vertices */
 const VERTS_PER_CELL = 24;
 
-describe('VoidEdges — outline of void cells (#113 stage 3)', () => {
+describe('VoidEdges — outline of void cells', () => {
   it('draws nothing when there are no void cells', () => {
     const scene = new THREE.Scene();
     const edges = new VoidEdges(scene, fakeSource([]));

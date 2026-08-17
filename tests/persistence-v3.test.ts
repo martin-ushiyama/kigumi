@@ -27,7 +27,7 @@ function v3File(partial: Partial<ProjectFileV3>): ProjectFileV3 {
   return { app: 'blocksmith', version: 3, name: 'Test', groups: [], cells: [], recipes: [], ...partial };
 }
 
-describe('persistence v3 — migration from v2 (#37)', () => {
+describe('persistence v3 — migration from v2', () => {
   it('migrateV2ToV3: all group transforms are omitted (treated as identity), local coordinates stay = world coordinates', () => {
     const v2: ProjectFileV2 = {
       app: 'blocksmith',
@@ -88,7 +88,7 @@ describe('persistence v3 — migration from v2 (#37)', () => {
   });
 });
 
-describe('persistence v3 — round-trip (#37)', () => {
+describe('persistence v3 — round-trip', () => {
   it('preserves an overlap where multiple owners project to the same world coordinate through a round-trip', () => {
     // g0 is projected via translate to the same world coordinate (0,0,0) as g1's cell
     const file = v3File({
@@ -153,7 +153,7 @@ describe('persistence v3 — round-trip (#37)', () => {
   });
 });
 
-describe('persistence v3 — rejecting malformed data (#37)', () => {
+describe('persistence v3 — rejecting malformed data', () => {
   const cases: [string, (f: ProjectFileV3) => unknown][] = [
     ['unknown ownerIndex', (f) => ({ ...f, cells: [[5, 0, 0, 0, STONE, 0]] })],
     ['ownerIndex is -2', (f) => ({ ...f, cells: [[-2, 0, 0, 0, STONE, 0]] })],
@@ -207,7 +207,7 @@ describe('persistence v3 — rejecting malformed data (#37)', () => {
   });
 });
 
-describe('persistence v3 — owner consistency on serialize (#37)', () => {
+describe('persistence v3 — owner consistency on serialize', () => {
   it('serializing a scene containing an owner absent from the tree throws (no fallback demotion to root)', () => {
     const scene: EditorScene = { tree: new SceneTree(), cells: new OwnerVoxelStore() };
     scene.cells.set('ghost', makeCellKey(0, 0, 0), 0);
@@ -239,7 +239,7 @@ describe('persistence v3 — owner consistency on serialize (#37)', () => {
   });
 });
 
-describe('persistence v3 — setTransform(undefined) and defense against invalid CellKey (#38 review)', () => {
+describe('persistence v3 — setTransform(undefined) and defense against invalid CellKey', () => {
   it('a group that was set then cleared has transform go back to omitted on serialize (preserves the migration contract)', () => {
     const file = v3File({ groups: [{ name: 'G', parent: -1 }], cells: [[0, 0, 0, 0, STONE, 0]] });
     const { scene } = loadProjectV3(file, indexOf);

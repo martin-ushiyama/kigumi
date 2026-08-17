@@ -82,7 +82,7 @@ export function buildMcstructure(world: WorldReader, catalog: BlockDef[]): Mcstr
   const layer0 = new Int32Array(volume).fill(-1);
 
   let blockCount = 0;
-  // Iterate in coordinate order (#37 B1b). Palette indices are assigned in
+  // Iterate in coordinate order. Palette indices are assigned in
   // "first-encountered order", so a different traversal order produces a
   // different byte array from the same model. WorldIndex's entries() order
   // depends on paint order / the history of incremental updates, so using it

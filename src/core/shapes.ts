@@ -3,14 +3,14 @@ import { OP_MAX_CELLS, SHAPE_MAX_SCAN_CELLS } from './limits';
 import type { Axis } from './axis';
 
 /**
- * Shape generator (#64 PR-A).
+ * Shape generator.
  *
  * A pure function that builds a **list of cell coordinates** from a bbox + params. Doesn't
  * depend on UI or Document (layer convention: core never imports editor / ui / render).
  *
  * Since this is used for the same "drag a range then confirm" operation as the box fill,
  * the box shape is treated as just another shape on equal footing. Special-casing box would
- * mean every new shape adds another "box-only" branch (#64 decision).
+ * mean every new shape adds another "box-only" branch (a design decision).
  *
  * ## Contract (settled in review round 1)
  *
@@ -88,7 +88,7 @@ export type ShapeResult =
       readonly max: number;
     };
 
-/** Default hollow setting per shape. Dome defaults to hollow since it's meant for roofs (#64) */
+/** Default hollow setting per shape. Dome defaults to hollow since it's meant for roofs */
 export function defaultHollow(kind: ShapeKind): boolean {
   return kind === 'dome';
 }
@@ -100,7 +100,7 @@ export function defaultHollow(kind: ShapeKind): boolean {
  * This is the only combination where we can say for certain that `buildShape`'s generated-cell
  * limit will be hit **before scanning even starts**. Every other case can end up with fewer
  * cells than the bbox volume, so we can't assert an over-limit purely from the bbox
- * (#83 review: hollow shapes were incorrectly marked "not applicable").
+ * (hollow shapes were incorrectly marked "not applicable").
  *
  * This check lives in the same file as `buildShape` so it stays visible whenever a shape's
  * internals change. `tests/shapes.test.ts` cross-checks the two against every shape ×
@@ -186,7 +186,7 @@ function toShell(
  * The vertical radius is **the distance between the cell centers of the lowest and highest
  * rows** (`sizeY - 1`). Dividing by `sizeY` instead would cap out at `(sizeY-1)/sizeY < 1`
  * even at the top row, producing a flat-topped dome that never reaches the apex
- * (#64 review: the top row of a 9×5×9 came out as a flat 21-cell plane).
+ * (the top row of a 9×5×9 came out as a flat 21-cell plane).
  *
  * At the top row the horizontal radius collapses to 0, so the ellipsoid test alone would
  * leave **an empty layer whenever the width is even**. We always include the column closest
@@ -235,7 +235,7 @@ function defaultSlopeDirection(size: Vec3): SlopeDirection {
  * ```
  *
  * The key point is that the endpoint mapping is a contract on **both** ends
- * (#64 review, round 2):
+ * (raised in review):
  * - `ceil(height * (i+1) / run)` only pins the far end, so when `run < height` the near end
  *   started at a height of `ceil(height/run)` (5,10 for a 2×10; 7,14,20 for a 3×20) — a wall
  *   would jump up right at the low side
@@ -405,7 +405,7 @@ export function bboxOfCorners(a: Cell, b: Cell): Bbox {
 }
 
 /**
- * Builds a slope direction from the two points of a drag (#64 review).
+ * Builds a slope direction from the two points of a drag.
  *
  * `bboxOfCorners` normalizes to min/max, which loses **which point the drag started from**.
  * Given only the bbox, we could only build "min → max on the longer axis", with no way to

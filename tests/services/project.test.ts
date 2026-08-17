@@ -14,7 +14,7 @@ const indexOfBlock = buildIndexOf(CATALOG);
 /**
  * A synchronous fake for ProjectIO. setTimeout does not use a real timer, it just holds onto
  * "the most recently scheduled fn" (on the assumption that debounce always leaves only one
- * pending call, same as the original #14 implementation). Tests fire it explicitly via flushTimer().
+ * pending call, same as the original implementation). Tests fire it explicitly via flushTimer().
  */
 function makeFakeIO(): ProjectIO & {
   downloads: { kind: 'bytes' | 'text'; payload: Uint8Array | string; filename: string; mime?: string }[];
@@ -35,7 +35,7 @@ function makeFakeIO(): ProjectIO & {
     downloadText: (text, filename, mime) => downloads.push({ kind: 'text', payload: text, filename, mime }),
     loadAutosave: () => autosaveData,
     saveAutosave: (project) => {
-      // A real browser may fail to write due to quota overflow etc. **Make failure reproducible too** (#140 review feedback)
+      // A real browser may fail to write due to quota overflow etc. **Make failure reproducible too**
       if (saveFails) return false;
       autosaveData = project;
       autosaved.push(project);
@@ -113,7 +113,7 @@ describe('ProjectService — exportMcpack', () => {
   it('when there are blocks, passes .mcpack byte data and filename to io.downloadBytes, and notifies export completion for a normal size', () => {
     const { doc, service, io, toast } = setup();
     doc.setCells([[0, 0, 0, packCell(0, 0)]]);
-    // non-ASCII names get an identifier derived from the project name appended (#127). Use an ASCII name here since we want to assert the filename exactly
+    // non-ASCII names get an identifier derived from the project name appended. Use an ASCII name here since we want to assert the filename exactly
     service.setName('my-castle');
     io.downloads.length = 0; // unrelated to setName's autosave path, clear explicitly
 
@@ -148,7 +148,7 @@ describe('ProjectService — saveProjectFile', () => {
     expect(io.downloads[0]!.filename).toBe('my-warehouse.blocksmith.json');
     const parsed = JSON.parse(io.downloads[0]!.payload as string) as { name: string; cells: unknown[] };
     expect(parsed.name).toBe('my-warehouse');
-    expect(parsed.cells).toHaveLength(1); // v3: owner-local cells (#37 B1b)
+    expect(parsed.cells).toHaveLength(1); // v3: owner-local cells
     expect(toast).toHaveBeenCalledWith('Project saved'); // default language (EN)
   });
 });
@@ -198,17 +198,17 @@ describe('ProjectService — loadProjectFromText', () => {
   });
 
   /**
-   * #70 review round 3. `persistence.ts`'s validation throws were in Japanese at the time, so putting
+   * Raised in review. `persistence.ts`'s validation throws were in Japanese at the time, so putting
    * the raw `e.message` into the toast meant **Japanese leaking into the English UI**.
    * This went undetected because the test only checked "does it have the Load failed prefix".
    *
    * It doesn't reproduce with a syntax error (browser-originated English SyntaxError).
    * Pin it down with **JSON that is syntactically correct but fails validation**.
    *
-   * #152 translated those throws, so this path no longer carries Japanese. The guard stays: what it pins
+   * Those throws have since been translated, so this path no longer carries Japanese. The guard stays: what it pins
    * down is that a raw `e.message` never reaches the toast, which holds whatever language it is in.
    */
-  describe('load-failure wording does not mix in raw exception messages (#70)', () => {
+  describe('load-failure wording does not mix in raw exception messages', () => {
     const JA = /[぀-ヿ一-鿿]/;
 
     /** JSON that is syntactically correct but fails validation (the path that goes through the validation throws) */
@@ -353,7 +353,7 @@ describe('ProjectService — restoreAutosave', () => {
   });
 });
 
-describe('ProjectService — the default name is determined by the language at creation time (#70)', () => {
+describe('ProjectService — the default name is determined by the language at creation time', () => {
   it('switching to JA before creating produces "作品", and the name does not change even after switching back to EN', () => {
     setLang('ja');
     try {
@@ -369,12 +369,12 @@ describe('ProjectService — the default name is determined by the language at c
 });
 
 /**
- * The export count is **remembered by the project file** (#133).
+ * The export count is **remembered by the project file**.
  * If it's only kept in the local browser, the version drops back down the moment you
  * switch PCs / clear data, returning to the state where Minecraft ignores the import
  * (= the symptom we're fixing right now).
  */
-describe('ProjectService — export count (#133)', () => {
+describe('ProjectService — export count', () => {
   const versionOfLastPack = (io: ReturnType<typeof makeFakeIO>) => {
     const pack = io.downloads.filter((download) => download.kind === 'bytes').at(-1)!;
     const files = unzipSync(pack.payload as Uint8Array);
@@ -450,11 +450,11 @@ describe('ProjectService — export count (#133)', () => {
 });
 
 /**
- * The export count is **saved before the download starts** (#140 review feedback).
+ * The export count is **saved before the download starts**.
  * With only the autosave schedule (1 second later), closing the tab right after exporting
- * would lose the count, and the next export would reuse the same version, reintroducing #133.
+ * would lose the count, and the next export would reuse the same version.
  */
-describe('ProjectService — timing of saving the export count (#133)', () => {
+describe('ProjectService — timing of saving the export count', () => {
   const versionOfLastPack = (io: ReturnType<typeof makeFakeIO>) => {
     const pack = io.downloads.filter((download) => download.kind === 'bytes').at(-1)!;
     const files = unzipSync(pack.payload as Uint8Array);
@@ -490,9 +490,9 @@ describe('ProjectService — timing of saving the export count (#133)', () => {
 /**
  * A real browser's autosave can fail to write to `localStorage`. Swallowing that failure
  * means **the export goes through even though it wasn't saved, and the next export reuses
- * the same version** (#140 review feedback).
+ * the same version**.
  */
-describe('ProjectService — exporting when the save failed (#133)', () => {
+describe('ProjectService — exporting when the save failed', () => {
   it('does not export if the save fails', () => {
     const { doc, service, io, toast } = setup();
     doc.setCells([[0, 0, 0, packCell(0, 0)]]);

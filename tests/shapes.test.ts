@@ -112,7 +112,7 @@ describe('buildShape — shared guarantees', () => {
 });
 
 /**
- * A limit doesn't work if "the caller judges from the result length" (#64 review).
+ * A limit doesn't work if "the caller judges from the result length".
  * The browser would freeze mid synchronous scan before the check is ever reached, so we bail at the entry point.
  */
 describe('buildShape — limits (scan volume and cell count are tracked separately)', () => {
@@ -334,7 +334,7 @@ describe('dome', () => {
   });
 
   /**
-   * #64 review: the topmost layer becomes a single point — 1 cell for an odd width.
+   * Raised in review: the topmost layer becomes a single point — 1 cell for an odd width.
    * Previously the vertical radius used sizeY, so the topmost layer only ever reached a height of
    * (sizeY-1)/sizeY < 1, leaving the topmost layer of a 9×5×9 dome as a flat 21-cell plane (a flat-topped dome).
    */
@@ -506,7 +506,7 @@ describe('slope', () => {
   });
 
   /**
-   * #64 review: pin the mapping at **both** ends.
+   * Raised in review: pin the mapping at **both** ends.
    *
    * - The first version (dividing the step count evenly by run) never reached the topmost step
    *   at the far end (2×10 → stopped at y=5)
@@ -580,7 +580,7 @@ describe('slope', () => {
 });
 
 /**
- * #64 review: bbox normalizes start/end points, which loses the direction.
+ * Raised in review: bbox normalizes start/end points, which loses the direction.
  * Pin down that all 4 horizontal directions obtainable from a drag (±X / ±Z) can be represented.
  */
 describe('slope orientation', () => {
@@ -650,14 +650,14 @@ describe('bboxOfCorners', () => {
 
 /**
  * `shapeFillsBbox` declares "whether a shape always produces a cell count equal to the bbox
- * volume." The dimension display (#83) checks this to decide whether it may assert a
+ * volume." The dimension display checks this to decide whether it may assert a
  * limit-exceeded state before the shape is finalized.
  *
  * If the declaration and `buildShape`'s actual behavior drift apart, an operation that would go
  * through gets marked as "blocked" (or the reverse), so here we actually generate every shape ×
  * hollow combination and cross-check them.
  */
-describe('shapeFillsBbox — declaration matches actual generation (#83 review)', () => {
+describe('shapeFillsBbox — declaration matches actual generation', () => {
   const KINDS: readonly ShapeKind[] = ['box', 'sphere', 'cylinder', 'dome', 'slope'];
   // cube / flat slab / thin rod. Representative shapes where inscribing and shell behavior differ
   const BOXES: readonly Bbox[] = [

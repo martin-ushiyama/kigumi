@@ -11,7 +11,7 @@ import { SceneTree } from '../src/core/scenetree';
 import { buildReplaceSelection } from '../src/editor/ops';
 
 /**
- * Repainting a selection (#64 PR-C).
+ * Repainting a selection.
  *
  * The existing `buildReplaceUsage` could only scope to "cells within a group whose block
  * type matches `from`", so **changing the texture of just part of a wall** wasn't possible.
@@ -189,7 +189,7 @@ describe('buildReplaceSelection — carrying over orientation (same contract as 
 });
 
 /**
- * Since #60, pattern painting isn't baked into a concrete block but held as a recipe reference
+ * Pattern painting isn't baked into a concrete block but held as a recipe reference
  * (binding). Leaving the binding untouched on repaint means a live recipe can later repaint
  * over it and **the change gets rolled back**.
  */
@@ -261,7 +261,7 @@ describe('buildReplaceSelection — pattern binding', () => {
   });
 
   /**
-   * #64 PR-C review, round 2: `sourceRaw` is **the source of truth for orientation before the
+   * Raised in review: `sourceRaw` is **the source of truth for orientation before the
    * pattern was applied**. For a cell that already has a binding, the raw in `cells` is the
    * current appliedRaw (the save fallback), so overwriting from there loses the original
    * orientation (east-facing stairs → pattern A turns it into a full block → switching to
@@ -335,7 +335,7 @@ describe('buildReplaceSelection — limits', () => {
 });
 
 /**
- * #64 PR-C review: the raw in `scene.cells` is the live pattern's **save fallback**. It doesn't
+ * Raised in review: the raw in `scene.cells` is the live pattern's **save fallback**. It doesn't
  * get rewritten when the recipe's ratios are edited, so judging the type from there
  * **targets a different type than what's shown on screen**.
  */

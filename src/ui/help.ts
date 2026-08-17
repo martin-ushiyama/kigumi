@@ -3,7 +3,7 @@ import { onLangChange, state } from '../state';
 /**
  * The help panel listing shortcuts. Toggled by H / ? / the rail's help button.
  *
- * **This file holds Japanese and English text as pairs, in place** (#70). Scattered labels
+ * **This file holds Japanese and English text as pairs, in place**. Scattered labels
  * are consolidated in `core/i18n.ts`'s dictionary, but since this is a single self-contained
  * table, keeping the correspondence visible at a glance is easier to maintain than pushing
  * 70+ keys into the dictionary.
@@ -182,7 +182,7 @@ const CLOSE_LABEL: Bi = ['Close (Esc)', '閉じる (Esc)'];
 
 export interface HelpHandle {
   isVisible: () => boolean;
-  /** Equivalent of the h / ? key. Called from InputRouter's (#12) SHORTCUTS */
+  /** Equivalent of the h / ? key. Called from InputRouter's SHORTCUTS */
   toggle: () => void;
   /** Called from the Escape broadcast. No-op while hidden (self-guarded via root.hidden, unchanged from the old implementation) */
   close: () => void;
@@ -241,7 +241,7 @@ export function initHelp(root: HTMLElement): HelpHandle {
 
   window.addEventListener('bs-toggle-help', () => setVisible(Boolean(root.hidden)));
 
-  // The old window keydown handler (h/?/Escape) was moved to InputRouter's (#12) SHORTCUTS / Escape broadcast.
+  // The old window keydown handler (h/?/Escape) was moved to InputRouter's SHORTCUTS / Escape broadcast.
   return {
     isVisible: () => !root.hidden,
     toggle: () => setVisible(Boolean(root.hidden)),

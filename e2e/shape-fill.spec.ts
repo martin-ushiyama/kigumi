@@ -1,7 +1,7 @@
 import { expect, test, type Page } from '@playwright/test';
 
 /**
- * UI integration of the shape generator (#64 PR-B).
+ * UI integration of the shape generator.
  *
  * `buildShape`, introduced in PR-A, was wired into the commit path of the existing range fill (the box tool).
  * What is confirmed here is **that it is connected** and **that the existing operations are not broken**.
@@ -19,7 +19,7 @@ async function dragOnGround(page: Page, from: [number, number], to: [number, num
   await page.mouse.down();
   await page.mouse.move(b.x, b.y, { steps: 4 });
   await page.mouse.up();
-  // Extrusion (#78): releasing moves on to specifying the height. Clicking without moving commits it at height 1
+  // Extrusion: releasing moves on to specifying the height. Clicking without moving commits it at height 1
   await page.mouse.down();
   await page.mouse.up();
 }

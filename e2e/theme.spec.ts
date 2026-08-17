@@ -1,7 +1,7 @@
 import { expect, test, type Page } from '@playwright/test';
 
 /**
- * The screen theme (#144).
+ * The screen theme.
  *
  * Pins down that **CSS and 3D look at the same theme**. A state where only one of them switches shows up as
  * "the UI is dark but only the viewport is bright", so both are checked in a single test.
@@ -56,7 +56,7 @@ test.beforeEach(async ({ page }) => {
   await expect(page.locator('#viewport')).toBeVisible();
 });
 
-test('the toggle switches the UI and the 3D scene to dark together (#144)', async ({ page }) => {
+test('the toggle switches the UI and the 3D scene to dark together', async ({ page }) => {
   const light = await snapshot(page);
   expect(light.attr).toBe('light');
   expect(light.sceneBackground).toBe('#e5e7ea');
@@ -73,7 +73,7 @@ test('the toggle switches the UI and the 3D scene to dark together (#144)', asyn
   expect(dark.grid, 'the 3D grid follows too').not.toBe(light.grid);
 });
 
-test('the chosen theme survives a reload (#144)', async ({ page }) => {
+test('the chosen theme survives a reload', async ({ page }) => {
   await themeButton(page).click();
   await expect.poll(() => page.evaluate(() => document.documentElement.dataset.theme)).toBe('dark');
 
@@ -85,7 +85,7 @@ test('the chosen theme survives a reload (#144)', async ({ page }) => {
   expect(after.sceneBackground, 'the 3D scene is dark right from startup').toBe('#101317');
 });
 
-test('a saved choice outweighs the OS setting (#144)', async ({ page }) => {
+test('a saved choice outweighs the OS setting', async ({ page }) => {
   // Even if the OS is dark, it opens in light when light was chosen
   await page.emulateMedia({ colorScheme: 'dark' });
   await page.evaluate(
@@ -98,7 +98,7 @@ test('a saved choice outweighs the OS setting (#144)', async ({ page }) => {
   expect((await snapshot(page)).attr).toBe('light');
 });
 
-test('with nothing saved it follows the OS setting (#144)', async ({ page }) => {
+test('with nothing saved it follows the OS setting', async ({ page }) => {
   await page.emulateMedia({ colorScheme: 'dark' });
   await page.evaluate((key) => localStorage.removeItem(key), UI_KEY);
   await page.reload();
@@ -107,7 +107,7 @@ test('with nothing saved it follows the OS setting (#144)', async ({ page }) => 
   expect((await snapshot(page)).attr).toBe('dark');
 });
 
-test('without an explicit choice, changing other settings keeps it following the OS (#145 review)', async ({ page }) => {
+test('without an explicit choice, changing other settings keeps it following the OS', async ({ page }) => {
   // Leave the theme alone and switch only the language (which triggers a save)
   await page.locator('#sidebar-rail .rail-lang').click();
   const saved = await page.evaluate((key) => JSON.parse(localStorage.getItem(key) ?? '{}') as { theme?: string }, UI_KEY);
@@ -118,7 +118,7 @@ test('without an explicit choice, changing other settings keeps it following the
   await expect.poll(() => page.evaluate(() => document.documentElement.dataset.theme)).toBe('dark');
 });
 
-test('after an explicit choice it does not move when the OS changes (#145 review)', async ({ page }) => {
+test('after an explicit choice it does not move when the OS changes', async ({ page }) => {
   await themeButton(page).click(); // explicitly light → dark
   await expect.poll(() => page.evaluate(() => document.documentElement.dataset.theme)).toBe('dark');
 
@@ -128,10 +128,10 @@ test('after an explicit choice it does not move when the OS changes (#145 review
   expect((await snapshot(page)).attr, 'the choice is not overwritten by the OS').toBe('dark');
 });
 
-test('the meadow theme stays daytime even in dark mode (#144)', async ({ page }) => {
+test('the meadow theme stays daytime even in dark mode', async ({ page }) => {
   // **Look at the meadow in light first, then compare that dark matches it.**
   // Pinning concrete colors would make the value depend on whether the grass texture (optional to fetch)
-  // is present, producing a test that only passes locally (#145 review)
+  // is present, producing a test that only passes locally
   await page.locator('#world-controls .display-tools button').first().click(); // ground: to meadow
   const lightSnapshot = await snapshot(page);
   const lightGrass = lightSnapshot.ground;

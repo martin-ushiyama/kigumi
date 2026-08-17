@@ -1,7 +1,7 @@
 import { expect, test } from '@playwright/test';
 
 /**
- * A spec that catches **language-switch burn-in** across the whole screen (#89).
+ * A spec that catches **language-switch burn-in** across the whole screen.
  *
  * If code evaluates `t()` at build time and never re-renders, only that element keeps the startup language
  * even after a switch. Fixing them one by one does not help, because the next occurrence of that pattern brings it
@@ -16,7 +16,7 @@ import { expect, test } from '@playwright/test';
 
 // The storageState in playwright.config.ts makes this start in JA (not overridden here)
 
-test('switching the language to EN leaves no Japanese anywhere on screen (#89)', async ({ page }) => {
+test('switching the language to EN leaves no Japanese anywhere on screen', async ({ page }) => {
   await page.goto('/');
   await expect(page.locator('#viewport')).toBeVisible();
 

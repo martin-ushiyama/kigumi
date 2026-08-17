@@ -51,7 +51,7 @@ function ownersOf(stack: readonly ProjectionEntry[]): OwnerId[] {
   return stack.map((e) => e.ref.ownerId);
 }
 
-describe('WorldIndex — overlap and winner resolution (#37 B1a)', () => {
+describe('WorldIndex — overlap and winner resolution', () => {
   interface StackCase {
     name: string;
     /** Expected owner order from back to front */
@@ -172,7 +172,7 @@ describe('WorldIndex — overlap and winner resolution (#37 B1a)', () => {
   });
 });
 
-describe('WorldIndex — WorldReader-compatible reads (#37 B1a)', () => {
+describe('WorldIndex — WorldReader-compatible reads', () => {
   it('get / has / entries / size / bounds only show the winner (non-hidden)', () => {
     const scene = sceneWith([{ id: 'g0', hidden: true }]);
     scene.cells.set(null, makeCellKey(1, 0, 1), A);
@@ -205,7 +205,7 @@ describe('WorldIndex — WorldReader-compatible reads (#37 B1a)', () => {
   });
 });
 
-describe('WorldIndex — selectableRefAt (locked pass-through) (#37 B1a rev.3)', () => {
+describe('WorldIndex — selectableRefAt (locked pass-through)', () => {
   it('even when locked is frontmost, returns the unlocked lower ref at the same world coordinate', () => {
     const scene = sceneWith([{ id: 'g0' }, { id: 'g1', locked: true }]);
     scene.cells.set('g0', makeCellKey(0, 0, 0), A);
@@ -269,7 +269,7 @@ describe('WorldIndex — selectableRefAt (locked pass-through) (#37 B1a rev.3)',
   });
 });
 
-describe('WorldIndex — transform application and worldOf reverse lookup (#37 B1a)', () => {
+describe('WorldIndex — transform application and worldOf reverse lookup', () => {
   const ROT90: GroupTransform = { angleSteps: 1, translate: [0, 0, 0], pivot2: [1, 1] };
 
   it('writing to a rotated owner emits a cells event at the post-rotation world coordinate', () => {
@@ -295,7 +295,7 @@ describe('WorldIndex — transform application and worldOf reverse lookup (#37 B
 
     const raw = index.get(0, 0, -1);
     expect(raw).not.toBeNull();
-    // rotating 0=east by +Y 90 degrees gives north = 3 (from the measured table, #114)
+    // rotating 0=east by +Y 90 degrees gives north = 3 (from the measured table)
     expect(decodeOrientation('stairs', unpackCell(raw!).code)).toEqual({ shape: 'stairs', weirdoDirection: 3, upsideDown: false });
   });
 
@@ -322,7 +322,7 @@ describe('WorldIndex — transform application and worldOf reverse lookup (#37 B
   });
 });
 
-describe('WorldIndex — 2-channel notifications (#37 B1a rev.7)', () => {
+describe('WorldIndex — 2-channel notifications', () => {
   it('content changes go through WorldIndexChange, lifecycle through SceneBatchChange — separate subscription channels', () => {
     const scene = sceneWith([]);
     const index = WorldIndex.fromScene(scene, shapeOf);
@@ -392,7 +392,7 @@ describe('WorldIndex — 2-channel notifications (#37 B1a rev.7)', () => {
   });
 });
 
-describe('WorldIndex — swap-style updates and defensive copies (#37 B1a rev.5 P2)', () => {
+describe('WorldIndex — swap-style updates and defensive copies', () => {
   it("stackAt's return value is frozen; mutating it does not corrupt the internal stack", () => {
     const scene = sceneWith([{ id: 'g0' }]);
     scene.cells.set('g0', makeCellKey(0, 0, 0), A);
@@ -498,7 +498,7 @@ describe('WorldIndex — swap-style updates and defensive copies (#37 B1a rev.5 
   });
 });
 
-describe('WorldIndex — equivalence with buildSceneProjection (#37 B1a)', () => {
+describe('WorldIndex — equivalence with buildSceneProjection', () => {
   /** Pseudo-random number generator (fixed seed, reproducible) */
   function mulberry32(seed: number): () => number {
     let a = seed;
@@ -588,7 +588,7 @@ describe('WorldIndex — equivalence with buildSceneProjection (#37 B1a)', () =>
   });
 });
 
-describe('CellRefKey — injective encoding for all OwnerId values (#37 B1a, addressing PR #39 review)', () => {
+describe('CellRefKey — injective encoding for all OwnerId values (addressing a review finding)', () => {
   it('round-trips owner (root / group) and local coordinates', () => {
     const refs: CellRef[] = [
       { ownerId: null, localCell: [0, 0, 0] },

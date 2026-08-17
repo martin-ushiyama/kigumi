@@ -5,7 +5,7 @@ import { unpackCell } from '../core/orientation';
 import { onLangChange, onStateChange, setPendingComponent, state, t } from '../state';
 
 /**
- * The components list (#69 Step 3).
+ * The components list.
  *
  * The fourth panel in the left rail. Plays the same role as Figma's Assets panel —
  * it lists belongings that are **tied to the account, not the build** (same as the
@@ -20,13 +20,13 @@ export interface ComponentsPanelOpts {
   /** Notify the outside when placement mode is entered/exited (so pressing again can cancel it) */
   onPendingChange?: () => void;
   /**
-   * Remove from the list (#69). **Doesn't delete placed instances** — removing from
+   * Remove from the list. **Doesn't delete placed instances** — removing from
    * the list and destroying the build are separate decisions, so instances are left
    * behind as plain groups. The op that clears `templateId` gets recorded in
    * history (on the Document side), which the caller owns.
    */
   onRemove?: (template: ComponentTemplate) => void;
-  /** Enter editing its contents (#69). Hides everything else and shows only the component */
+  /** Enter editing its contents. Hides everything else and shows only the component */
   onEdit?: (template: ComponentTemplate) => void;
   /** The component currently being edited (null = not editing). While editing, other operations are hidden */
   getEditingId?: () => string | null;
@@ -209,7 +209,7 @@ export function initComponents(
         item.appendChild(name);
       }
 
-      // Pressing enters placement mode, pressing again exits it. **The placement location is decided by a click** (#69 Step 3b)
+      // Pressing enters placement mode, pressing again exits it. **The placement location is decided by a click**
       const pending = state.pendingComponentId === template.id;
       const place = document.createElement('button');
       place.textContent = pending ? t('components.placing') : t('components.place');
@@ -247,7 +247,7 @@ export function initComponents(
   store.subscribe(render);
   // Redraw when the language changes. **The list's heading and empty-state hint
   // are assembled here**, so subscribing only to store / state would leave them
-  // stuck in the old language after a switch (#142 review P1)
+  // stuck in the old language after a switch
   onLangChange(render);
   // Placement mode can also change from the canvas side (confirmed by a click /
   // exited on placement), so keep the button display following state — redrawing

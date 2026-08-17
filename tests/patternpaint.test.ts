@@ -109,7 +109,7 @@ describe('live pattern paint', () => {
     expect(doc.scene.patterns?.get(null, oldKey)).toBeUndefined();
     expect(doc.scene.patterns?.get(null, nextKey)?.recipeId).toBe('mix');
     expect(doc.scene.patterns?.get(null, nextKey)?.variant).toBe(0);
-    // the pattern is determined by the destination's world coordinate (#69). It doesn't use the value baked into the binding
+    // the pattern is determined by the destination's world coordinate. It doesn't use the value baked into the binding
     expect(resolvePatternRaw(patterns.get(null, nextKey)!, nextRef.localCell, recipe, indexOf, shapeOf)).toBe(
       resolvePatternRaw({ recipeId: 'mix', variant: 0, sourceRaw: raw, appliedRaw: raw }, nextRef.localCell, recipe, indexOf, shapeOf),
     );
@@ -118,7 +118,7 @@ describe('live pattern paint', () => {
     expect(doc.scene.patterns?.get(null, nextKey)).toBeUndefined();
   });
 
-  it('array-duplicating copies the binding to every cell, and it is preserved through undo/redo (#67 integration)', () => {
+  it('array-duplicating copies the binding to every cell, and it is preserved through undo/redo', () => {
     const { scene, patterns } = sceneWithOne();
     const sourceRef = { ownerId: null, localCell: [0, 0, 0] as [number, number, number] };
     const sourceKey = makeCellKey(...sourceRef.localCell);
@@ -147,7 +147,7 @@ describe('live pattern paint', () => {
     }
   });
 
-  it('array-duplicating a group also copies the binding to all N owners (#67 integration)', () => {
+  it('array-duplicating a group also copies the binding to all N owners', () => {
     const tree = new SceneTree();
     tree.insertNode({ id: 'g', name: 'G', parentId: null, childIds: [] }, 0);
     const cells = new OwnerVoxelStore();
@@ -172,13 +172,13 @@ describe('live pattern paint', () => {
     }
   });
 
-  it('mirror simultaneously transforms the orientation and position of the swapped bindings, and it is reversible through undo/redo (#66)', () => {
+  it('mirror simultaneously transforms the orientation and position of the swapped bindings, and it is reversible through undo/redo', () => {
     const stairsIndex = CATALOG.findIndex((block) => block.shape === 'stairs');
     const sourceRaw = packCell(
       stairsIndex,
       encodeOrientation({ shape: 'stairs', weirdoDirection: 1, upsideDown: false }),
     );
-    // 1 = facing west. Mirroring on X gives east = 0 (from the measured table, #114)
+    // 1 = facing west. Mirroring on X gives east = 0 (from the measured table)
     const mirroredRaw = packCell(
       stairsIndex,
       encodeOrientation({ shape: 'stairs', weirdoDirection: 0, upsideDown: false }),
@@ -246,7 +246,7 @@ describe('live pattern paint', () => {
     });
   });
 
-  it('a mirror that changes sourceRaw\'s orientation is not treated as a no-op even when the coordinate and appliedRaw are symmetric (#66)', () => {
+  it('a mirror that changes sourceRaw\'s orientation is not treated as a no-op even when the coordinate and appliedRaw are symmetric', () => {
     const stairsIndex = CATALOG.findIndex((block) => block.shape === 'stairs');
     const fullIndex = CATALOG.findIndex((block) => block.shape === 'full');
     const sourceRaw = packCell(
@@ -272,14 +272,14 @@ describe('live pattern paint', () => {
     doc.applyTransaction(result.tx);
 
     const mirrored = patterns.get(null, key)!;
-    // 1 = facing west → X mirror → east = 0 (from the measured table, #114)
+    // 1 = facing west → X mirror → east = 0 (from the measured table)
     expect(decodeOrientation('stairs', unpackCell(mirrored.sourceRaw).code)).toMatchObject({
       weirdoDirection: 0,
     });
     expect(activePatternAt(patterns, scene.cells, null, key)).not.toBeNull();
   });
 
-  it('a slab\'s Y mirror also transforms the binding\'s half, keeping it active through undo/redo (#66)', () => {
+  it('a slab\'s Y mirror also transforms the binding\'s half, keeping it active through undo/redo', () => {
     const slabIndex = CATALOG.findIndex((block) => block.shape === 'slab');
     const topRaw = packCell(slabIndex, encodeOrientation({ shape: 'slab', half: 'top' }));
     const bottomRaw = packCell(slabIndex, encodeOrientation({ shape: 'slab', half: 'bottom' }));
@@ -339,7 +339,7 @@ describe('live pattern paint', () => {
     expect(serializeProjectV5('x', loaded, CATALOG, recipes)).toEqual(file);
   });
 
-  it('even after group id renumbering, the same world coordinate picks the same entry (#69)', () => {
+  it('even after group id renumbering, the same world coordinate picks the same entry', () => {
     const tree = new SceneTree();
     tree.insertNode({ id: 'g17', name: 'G', parentId: null, childIds: [] }, 0);
     const cells = new OwnerVoxelStore();
@@ -366,12 +366,12 @@ describe('live pattern paint', () => {
     expect(loadedOwner).not.toBe('g17');
     const loadedPaint = loaded.patterns?.get(loadedOwner, key);
     // the draw position isn't persisted, but since the world coordinate is the same it resolves to the same pattern
-    // (back when it was seeded by owner, renumbering would change the pattern, PR #60 review P1)
+    // (back when it was seeded by owner, renumbering would change the pattern, raised in review)
     expect(loadedPaint?.variant).toBe(3);
     expect(resolvePatternRaw(loadedPaint!, [0, 0, 0], recipe, indexOf, shapeOf)).toBe(before);
   });
 
-  it('opening a v4 (sample) file reads it as variant 0 (#76 review)', () => {
+  it('opening a v4 (sample) file reads it as variant 0', () => {
     const { scene, patterns } = sceneWithOne();
     const key = makeCellKey(0, 0, 0);
     const raw = scene.cells.get(null, key)!;
@@ -397,7 +397,7 @@ describe('live pattern paint', () => {
     expect(serializeProjectV5('x', loaded, CATALOG, recipes).version).toBe(5);
   });
 
-  it('strictly checks required fields per version (#76 review)', () => {
+  it('strictly checks required fields per version', () => {
     const { scene, patterns } = sceneWithOne();
     const raw = scene.cells.get(null, makeCellKey(0, 0, 0))!;
     patterns.set({ ownerId: null, localCell: [0, 0, 0] }, { recipeId: 'mix', variant: 0, sourceRaw: raw, appliedRaw: raw });
@@ -471,7 +471,7 @@ describe('live pattern paint', () => {
     expect(scene.cells.get(null, key)).toBe(raw);
   });
 
-  describe('binding follows along during cell drag (#76 review)', () => {
+  describe('binding follows along during cell drag', () => {
     const recipe = {
       id: 'mix',
       name: 'mix',
@@ -574,7 +574,7 @@ describe('live pattern paint', () => {
       expect(doc.scene.patterns?.get(null, key)?.recipeId).toBe('mix');
     });
 
-    it('if stageMoveRefs fails, the binding does not move either (#76 review round 2)', () => {
+    it('if stageMoveRefs fails, the binding does not move either', () => {
       const { doc, ref, key, appliedRaw } = setup();
       const before = [...doc.scene.patterns!.allEntries()];
       let indexChanges = 0;
@@ -592,7 +592,7 @@ describe('live pattern paint', () => {
       expect(indexChanges).toBe(0);
     });
 
-    it('even moving onto a cell that already has a pattern, both bindings are reversible through commit/undo/redo (#76 review round 2)', () => {
+    it('even moving onto a cell that already has a pattern, both bindings are reversible through commit/undo/redo', () => {
       const cells = new OwnerVoxelStore();
       const patterns = new PatternPaintStore();
       const sourceRef = { ownerId: null, localCell: [0, 0, 0] as [number, number, number] };
@@ -643,7 +643,7 @@ describe('live pattern paint', () => {
 
     /**
      * Pin down the 3 source/destination binding-presence combinations under the same contract
-     * (#76 review round 3).
+     *.
      *
      * Contract: **the preview display = the post-commit display**. If a stale binding is left
      * only during preview, the pattern would change at the moment of pointerup (because
@@ -713,7 +713,7 @@ describe('live pattern paint', () => {
       });
     });
 
-    it('commit does not emit renderer notifications — undo/redo update the display (#76 review round 4)', () => {
+    it('commit does not emit renderer notifications — undo/redo update the display', () => {
       const { doc, ref } = setup();
       const dx = deltaThatChangesPattern(ref.localCell);
 
@@ -735,7 +735,7 @@ describe('live pattern paint', () => {
       unsubscribe();
     });
 
-    it('a stroke commit also does not emit renderer notifications (the path that removes a binding, #76 review round 4)', () => {
+    it('a stroke commit also does not emit renderer notifications (the path that removes a binding review round 4)', () => {
       const { doc, ref, key } = setup();
       const session = doc.beginSession();
       // placing a different block on the same cell = the path that invalidates the binding
@@ -754,7 +754,7 @@ describe('live pattern paint', () => {
       expect(doc.scene.patterns?.get(null, key)?.recipeId).toBe('mix');
     });
 
-    it('if stagePreview fails, cell / index / binding / notifications are all unchanged (#76 review round 5)', () => {
+    it('if stagePreview fails, cell / index / binding / notifications are all unchanged', () => {
       const { doc, ref, key, appliedRaw } = setup();
       const before = [...doc.scene.patterns!.allEntries()];
       const events: string[] = [];
@@ -844,7 +844,7 @@ describe('live pattern paint', () => {
     expect(decodeOrientation('stairs', local.code)).toMatchObject({ weirdoDirection: 0 });
     const worldCell = doc.index.worldOf({ ownerId: 'g', localCell: [0, 0, 0] })!;
     const world = doc.index.winnerRefAt(worldCell)!;
-    // local 0=east becomes north = 3 in the world projection of a 90-degree-rotated group (from the measured table, #114)
+    // local 0=east becomes north = 3 in the world projection of a 90-degree-rotated group (from the measured table)
     expect(decodeOrientation('stairs', unpackCell(world.raw).code)).toMatchObject({ weirdoDirection: 3 });
   });
 
@@ -876,14 +876,14 @@ describe('live pattern paint', () => {
   it('the placement number cycles through PATTERN_VARIANTS and also accepts out-of-range input', () => {
     expect(nextPatternVariant(0)).toBe(1);
     expect(nextPatternVariant(PATTERN_VARIANTS - 1)).toBe(0);
-    // non-integer / out-of-range values from old data (in case a pre-#69 sample slipped in)
+    // non-integer / out-of-range values from old data (in case a pre sample slipped in)
     expect(nextPatternVariant(Number.NaN)).toBe(1);
     expect(nextPatternVariant(0.99)).toBe(1);
     expect(nextPatternVariant(-1)).toBe(1);
     expect(nextPatternVariant(PATTERN_VARIANTS)).toBe(1);
   });
 
-  it('different world coordinates produce different patterns — duplicated cells do not all end up with the same pattern (#69)', () => {
+  it('different world coordinates produce different patterns — duplicated cells do not all end up with the same pattern', () => {
     const recipe = {
       id: 'mix',
       name: 'mix',
@@ -896,7 +896,7 @@ describe('live pattern paint', () => {
     expect(picked.size).toBeGreaterThan(1);
   });
 
-  it('the same world coordinate produces the same pattern even with a different owner (#69)', () => {
+  it('the same world coordinate produces the same pattern even with a different owner', () => {
     const recipe = {
       id: 'mix',
       name: 'mix',

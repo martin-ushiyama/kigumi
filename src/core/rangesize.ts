@@ -3,7 +3,7 @@ import { OP_MAX_CELLS, SHAPE_MAX_SCAN_CELLS } from './limits';
 import { bboxOfCorners, shapeFillsBbox, type ShapeKind } from './shapes';
 
 /**
- * Dimensions shown during a range operation (#83).
+ * Dimensions shown during a range operation.
  *
  * Even with the preview solid visible, there's no way to tell how many blocks it covers
  * without counting. Shows X × Y × Z while dragging and while extruding.
@@ -59,7 +59,7 @@ export function rangeSizeOf(anchor: Cell, target: Cell, shape: RangeShape): Rang
  * the other status bar items.
  *
  * `!` is only appended when "committing this as-is will be rejected". Attaching it to
- * operations that would go through would misleadingly suggest they can't be applied (#83 review).
+ * operations that would go through would misleadingly suggest they can't be applied.
  */
 export function formatRangeSize(range: RangeSize): string {
   const [x, y, z] = range.size;

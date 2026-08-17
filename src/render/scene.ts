@@ -14,13 +14,13 @@ export interface SceneCtx {
   controls: OrbitControls;
   resizeIfNeeded: () => void;
   setGroundTheme: (theme: GroundTheme) => void;
-  /** Re-reads the 3D-side colors when the UI theme changes (#144) */
+  /** Re-reads the 3D-side colors when the UI theme changes */
   refreshTheme: () => void;
   getGroundTheme: () => GroundTheme;
 }
 
 /**
- * Reads the 3D-side colors that **change with the UI theme** from CSS (#144).
+ * Reads the 3D-side colors that **change with the UI theme** from CSS.
  *
  * **CSS is the source of truth.** Keeping duplicate constants on the three.js side would let
  * the UI go dark while the viewport stays bright (the promise to update both always gets
@@ -37,7 +37,7 @@ type ThemeColorToken = (typeof THEME_COLOR_TOKENS)[number];
  *
  * Keeping the same color hardcoded here would let things keep running silently even after
  * the CSS token is removed, making "CSS is the source of truth" true in name only
- * (#145 review). If it can't be read, throw and surface the broken source of truth at startup.
+ *. If it can't be read, throw and surface the broken source of truth at startup.
  */
 function themeColor(name: ThemeColorToken): string {
   const value = getComputedStyle(document.documentElement).getPropertyValue(name).trim();
@@ -46,7 +46,7 @@ function themeColor(name: ThemeColorToken): string {
 }
 
 /**
- * The grass theme's colors are **not hooked into the UI theme** (settled in #144).
+ * The grass theme's colors are **not hooked into the UI theme**.
  *
  * The grass theme depicts "a Minecraft daytime plains," which is a different thing from the
  * UI's light/dark skin. Darkening it would change how the built structure looks in daylight
@@ -253,7 +253,7 @@ export function createScene(canvas: HTMLCanvasElement): SceneCtx {
   }
 
   /**
-   * Re-derives the 3D side because the screen theme changed (#144).
+   * Re-derives the 3D side because the screen theme changed.
    *
    * **Leave the ground and grid alone in the grass theme** — the promise is that it stays the daytime look
    */

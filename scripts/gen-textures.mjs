@@ -2,7 +2,7 @@
  * Generates the block → texture file name mapping and (with --fetch) fetches the real files.
  *
  * **The manifest is a projection of the unified DB (`data/block-db.json`)**; it holds no
- * hand-written mapping (#97 stage 3). The 136 entries used to be laid out by hand, which
+ * hand-written mapping. The 136 entries used to be laid out by hand, which
  * produced 18 errors (a cut-end picture applied to the sides / reusing the uncracked picture /
  * picking up a file upstream never assigned, and so on). The point is to remove the path where
  * a human transcribes a file name.
@@ -41,7 +41,7 @@ export function readTextureSource() {
   try {
     // Being readable as JSON and being usable as a record are different things. Returning a
     // structurally invalid value such as {} makes the next stage throw a TypeError at
-    // commit.slice() (#100 review). An unusable record collapses to null = generation unknown
+    // commit.slice(). An unusable record collapses to null = generation unknown
     // and flows into the refetch path
     return parseTextureSource(JSON.parse(readFileSync(p, 'utf-8')));
   } catch {
@@ -116,7 +116,7 @@ function readBlockDb() {
  *
  * **src/data/env-textures.json is the single source of truth.** Both the runtime
  * (render/scene.ts) and the fetch plan read the same file. Holding the strings twice here means
- * that rewriting only one of them fails no check at all (#94: the runtime was looking at a path
+ * that rewriting only one of them fails no check at all (the runtime was looking at a path
  * that did not exist, and because the dev server returns index.html with a 200 it silently fell
  * back).
  *
@@ -181,7 +181,7 @@ function writeManifest() {
   });
 
   // **Nothing is written if even one unruled ambiguity or lossy projection remains** (the
-  // completion condition of #97 stage 3). Silently taking the first candidate would bring back
+  // completion condition of stage 3). Silently taking the first candidate would bring back
   // the same "a decision nobody looked at" as the hand-written era
   if (problems.length > 0) {
     const lines = [`there are ${problems.length} places that cannot be projected from the unified DB.`];
@@ -248,7 +248,7 @@ async function fetchTextures() {
 }
 
 // Only write when run directly. The top-level side effects are closed off here so that the
-// contract test can import uniqueFiles() (#94, raised in review)
+// contract test can import uniqueFiles() (raised in review)
 if (process.argv[1] && import.meta.url === pathToFileURL(process.argv[1]).href) {
   writeManifest();
   if (process.argv.includes('--fetch')) {

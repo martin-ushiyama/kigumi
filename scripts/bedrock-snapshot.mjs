@@ -26,12 +26,12 @@ export const UPSTREAM_REPO = 'https://github.com/Mojang/bedrock-samples';
  * repository.
  *
  * No script reads terrain_texture.json at the moment, but it is the source of truth for
- * texture file names (guessing does not get there, #92), so it is fetched at the same commit
+ * texture file names (guessing does not get there), so it is fetched at the same commit
  * as everything else.
  *
  * `resource-pack-blocks.json` (upstream `resource_pack/blocks.json`) is **the only bridge from
  * a block ID to a texture name**. terrain_texture.json is a dictionary keyed by texture name,
- * so without this bridge a block ID cannot reach a real file (#97 stage 2).
+ * so without this bridge a block ID cannot reach a real file.
  * The upstream basename is `blocks.json`, but that would blur into `mojang-blocks.json` and
  * `src/data/blocks.json`, so the local name is kept distinct.
  */
@@ -64,9 +64,9 @@ export function readSource() {
  * (the commit and the bytes of each file).
  *
  * It holds no value that changes on every run, such as a fetch timestamp. Holding one would
- * make a tracked file dirty merely from refetching the same commit (#98 review). "When it was
+ * make a tracked file dirty merely from refetching the same commit. "When it was
  * taken in" is already held by git as the moment SOURCE.json was committed, and writing it into
- * the record would manage the same fact twice (which is the very structure #97 is removing).
+ * the record would manage the same fact twice (which is the very structure the unified DB removes).
  */
 export function buildSource({ commit, files }) {
   return {

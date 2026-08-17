@@ -6,7 +6,7 @@
  * (the same reason as bedrock-snapshot.mjs).
  *
  * Only "how to read upstream" belongs here. Decisions about what to include and how to
- * present it stay out (#97).
+ * present it stay out.
  */
 
 /**
@@ -43,7 +43,7 @@ export function parseJsonc(text, label = 'JSON') {
  *   mechanically generated name matches the official spelling
  *
  * Both gen-blocks.mjs and block-db need this rule. **Do not write the same rule in two
- * places** (that is the very structure #97 is trying to remove).
+ * places** (that is the very structure the unified DB is trying to remove).
  */
 export function parseLangEntries(text) {
   const exact = new Map();
@@ -106,7 +106,7 @@ export function expandFaceRefs(refs) {
     return { faces: null, notes: [...notes, `missing faces: ${missing.join(', ')}`] };
   }
   // **Having all the keys is not enough.** The values are checked for being usable as texture
-  // names too — six faces holding numbers or null were being treated as a success (#97 stage 2
+  // names too — six faces holding numbers or null were being treated as a success (stage 2
   // review). Without stopping here, a value that cannot be picked up as a name drops out
   // silently and never appears in the diagnostics
   const badValues = FACES.filter((f) => !isTextureString(faces[f])).map((f) => describeBadValue(f, faces[f]));
@@ -120,7 +120,7 @@ export function expandFaceRefs(refs) {
  * Whether a value is usable as a texture name or path (empty and whitespace-only are rejected).
  *
  * The name side and the path side **use the same check**. If one is looser, an empty path
- * passes as "reached" (#97 stage 2 review).
+ * passes as "reached".
  */
 function isTextureString(value) {
   return typeof value === 'string' && value.trim() !== '';
@@ -167,7 +167,7 @@ export function collectRefNames(refs) {
  * Pulls the file path out of a single candidate (a string as-is, or `path` for an object).
  *
  * **An empty or whitespace-only path counts as not extractable.** Returning it as-is would
- * make the reachability check mistake it for "there is a path" and pass (#97 stage 2 review).
+ * make the reachability check mistake it for "there is a path" and pass.
  * The same check as the name side is used.
  */
 export function variantPath(variant) {

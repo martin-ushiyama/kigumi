@@ -1,7 +1,7 @@
 import { expect, test, type Page } from '@playwright/test';
 
 /**
- * The "block usage" panel on the right (#48). Pins down aggregation → bulk replacement → pattern repaint
+ * The "block usage" panel on the right. Pins down aggregation → bulk replacement → pattern repaint
  * through real panel operations.
  *
  * The unit tests (`tests/blockusage.test.ts`) cover the aggregation and the op builders separately, but
@@ -208,7 +208,7 @@ test('the pattern tab handles create, add blocks, and rename end to end, and can
   const targetId = await page.evaluate(() => window.__bs.CATALOG[2]!.id);
 
   await openChangePicker(page, blockA);
-  // The left rail is also a tablist for switching panels, so scope this inside the picker (#61 turned it into a rail)
+  // The left rail is also a tablist for switching panels, so scope this inside the picker
   const picker = page.locator('.block-change-picker');
   const blockTab = picker.getByRole('tab', { name: 'ブロック' });
   const patternTab = picker.getByRole('tab', { name: 'パターン' });
@@ -319,7 +319,7 @@ test('change picker: at 1280x720 the category row is not squashed and it fits wi
   expect(geometry.filtersBottom).toBeLessThanOrEqual(geometry.gridTop + 1);
 });
 
-test('a picker opened after switching the language shows the category filters in the current language too (#85 review)', async ({ page }) => {
+test('a picker opened after switching the language shows the category filters in the current language too', async ({ page }) => {
   const { blockA } = await seedProject(page);
   const filters = page.locator('#block-change-picker .change-picker-filters');
   const langToggle = page.locator('#sidebar-rail .rail-lang');

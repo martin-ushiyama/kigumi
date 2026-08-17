@@ -2,7 +2,7 @@ import { expect, test, type Page } from '@playwright/test';
 
 /**
  * Pins down the input wiring of the layers panel (HTML5 drag & drop / Shift+arrows) with real events
- * (#44 review P2 / #49).
+ *.
  *
  * The unit tests (ops) cover `dragPayloadFor` / `buildReparentGroups` / `computeDropIndexFor` separately, but
  * **the only thing connecting them is the DOM event handlers in layers.ts**, and the wiring of
@@ -67,7 +67,7 @@ function selectionIds(page: Page): Promise<string[] | undefined> {
  * Grabs a group row and drops it onto another group row. `zone` maps to the vertical position within the row
  * (zoneOf in layers.ts: top 25% = above / bottom 25% = below / middle = into).
  *
- * **The display puts the front on top**, so `above` goes toward the end of the sibling array (= the front) (#110).
+ * **The display puts the front on top**, so `above` goes toward the end of the sibling array (= the front).
  * This is specified by screen position, and converting it into an array index is layers.ts's job.
  *
  * The mousedown → dragstart order matches a real browser. When mousedown changes the selection, a synchronous
@@ -142,7 +142,7 @@ test('multi-selected groups move together on a real drag and revert in one undo'
   const undoBefore = await page.evaluate(() => window.__bs.doc.undoStack.length);
 
   // Grab the selected a and drop it **above** c → the selected a and b move to the front together.
-  // The display puts the front on top, so in the sibling array (front is later) they go toward the end (#110)
+  // The display puts the front on top, so in the sibling array (front is later) they go toward the end
   await dragRowOntoRow(page, a!, c!, 'above');
   expect(await rootChildren(page)).toEqual([c, a, b]);
 
@@ -159,7 +159,7 @@ test('grabbing a row outside the selection moves the selection to it, and it sta
   expect(await selectionIds(page)).toEqual([a]);
 
   // Grab c, which is outside the selection → the selection moves to c and only c moves (a is not dragged along).
-  // **Below** a means the back side, so in the sibling array it goes before a (#110)
+  // **Below** a means the back side, so in the sibling array it goes before a
   await dragRowOntoRow(page, c!, a!, 'below');
   expect(await rootChildren(page)).toEqual([c, a, b]);
 
@@ -180,10 +180,10 @@ test('dropping into the middle of a group row puts the selected groups inside it
   expect(await rootChildren(page)).toEqual([a, b, c]);
 });
 
-test('Shift+↓ / Shift+↑ grow and shrink the layer selection range (#49)', async ({ page }) => {
+test('Shift+↓ / Shift+↑ grow and shrink the layer selection range', async ({ page }) => {
   const [a, b, c] = await seedThreeGroups(page);
 
-  // The display puts the front on top, so the order is C → B → A (#110). Anchor on the topmost, C.
+  // The display puts the front on top, so the order is C → B → A. Anchor on the topmost, C.
   // A click makes a single selection = the anchor of the range
   await page.evaluate((id) => {
     document.querySelector<HTMLElement>(`[data-group-id="${id}"]`)!.click();
@@ -274,7 +274,7 @@ test('selecting the parent and pressing Shift+↑ skips the child and adds the s
   }, p);
   expect(await selectionIds(page)).toEqual([p]);
 
-  // The display puts the front on top, so the order is S → P → C. The sibling S sits **above** P (#110).
+  // The display puts the front on top, so the order is S → P → C. The sibling S sits **above** P.
   // "Nothing visibly changes" must not happen on the first press — it jumps straight to the sibling
   await page.keyboard.press('Shift+ArrowUp');
   expect(await selectionIds(page)).toEqual([s, p]);
@@ -310,7 +310,7 @@ test('once the selected child is hidden by collapsing the parent, Shift+↑↓ i
   await expect(page.locator(`[data-group-id="${c}"]`)).toHaveCount(0);
   expect(await selectionIds(page)).toEqual([c]);
 
-  // **Stay on the place tool** — the nudge stopped looking at the tool (#53), so if a
+  // **Stay on the place tool** — the nudge stopped looking at the tool, so if a
   // "Shift+↑↓ the layers do not claim" leaked into the nudge, a block would move here
   await page.keyboard.press('1');
   expect(await page.evaluate(() => window.__bs.state.tool)).toBe('place');
@@ -331,11 +331,11 @@ test('once the selected child is hidden by collapsing the parent, Shift+↑↓ i
   expect(await selectionIds(page)).toEqual([c]);
   expect(await occupiedCells(page)).toEqual(before);
   expect(await page.evaluate((id) => window.__bs.doc.tree.getNode(id)?.transform, c)).toEqual(transformBefore);
-  // **And rather than vanishing with nobody receiving it, it is passed to the camera** (#53 review, second round)
+  // **And rather than vanishing with nobody receiving it, it is passed to the camera**
   expect(await cameraPosition(page)).not.toEqual(cameraBefore);
 });
 
-test('even with the select tool, a Shift+↑↓ the layers do not claim does not move blocks (#53 review P1)', async ({ page }) => {
+test('even with the select tool, a Shift+↑↓ the layers do not claim does not move blocks', async ({ page }) => {
   const { p, c } = await seedNestedGroups(page);
 
   await page.evaluate((id) => {
@@ -346,7 +346,7 @@ test('even with the select tool, a Shift+↑↓ the layers do not claim does not
   }, p);
   await expect(page.locator(`[data-group-id="${c}"]`)).toHaveCount(0);
 
-  await page.keyboard.press('v'); // select tool (the side where the nudge was active even before #53)
+  await page.keyboard.press('v'); // select tool (the side where the nudge was already active)
   const before = await occupiedCells(page);
 
   await page.keyboard.press('Shift+ArrowDown');
@@ -368,9 +368,9 @@ async function typeFilter(page: import('@playwright/test').Page, text: string): 
   await box.fill(text);
 }
 
-test('filtering leaves only the matching groups, and clearing it restores everything (#45)', async ({ page }) => {
+test('filtering leaves only the matching groups, and clearing it restores everything', async ({ page }) => {
   const [a, b, c] = await seedThreeGroups(page);
-  // The display puts the front on top, so the order is C → B → A (#110)
+  // The display puts the front on top, so the order is C → B → A
   expect(await visibleGroupIds(page)).toEqual([c, b, a]);
 
   // The group names from seedThreeGroups are A / B / C
@@ -385,7 +385,7 @@ test('filtering leaves only the matching groups, and clearing it restores everyt
   expect(await visibleGroupIds(page)).toEqual([c, b, a]);
 });
 
-test('filtering reaches inside a group even while it is collapsed (#45)', async ({ page }) => {
+test('filtering reaches inside a group even while it is collapsed', async ({ page }) => {
   const { p, c } = await seedNestedGroups(page);
   // Collapse P to hide C, then filter
   await page.evaluate((pid) => {
@@ -398,7 +398,7 @@ test('filtering reaches inside a group even while it is collapsed (#45)', async 
   expect(await visibleGroupIds(page)).toEqual([p, c]);
 });
 
-test('Shift+↑↓ walks only the rows visible under the filter (#45 / #49)', async ({ page }) => {
+test('Shift+↑↓ walks only the rows visible under the filter', async ({ page }) => {
   const [, b] = await seedThreeGroups(page);
 
   // A filter that leaves only B. A / C are out of view, so there is nowhere to walk to
@@ -417,7 +417,7 @@ test('Shift+↑↓ walks only the rows visible under the filter (#45 / #49)', as
   expect(await selectionIds(page)).toEqual([b]);
 });
 
-test('the expand-all / collapse-all buttons (#45)', async ({ page }) => {
+test('the expand-all / collapse-all buttons', async ({ page }) => {
   const { p, c } = await seedNestedGroups(page);
 
   await page.locator('#layers .layers-header button[title="すべて折りたたむ"]').click();
@@ -429,7 +429,7 @@ test('the expand-all / collapse-all buttons (#45)', async ({ page }) => {
   expect(ids).toContain(c);
 });
 
-test('a caret click during filtering does not rewrite the expansion state (#45 review P1)', async ({ page }) => {
+test('a caret click during filtering does not rewrite the expansion state', async ({ page }) => {
   const { p, c } = await seedNestedGroups(page);
   // seedNestedGroups returns with the parent expanded
   await expect(page.locator(`[data-group-id="${c}"]`)).toBeVisible();
@@ -456,7 +456,7 @@ test('a caret click during filtering does not rewrite the expansion state (#45 r
   expect(await selectionIds(page)).toEqual([c]);
 });
 
-test('the filter does not match catalog IDs that never appear on screen (#45 review P1)', async ({ page }) => {
+test('the filter does not match catalog IDs that never appear on screen', async ({ page }) => {
   await seedThreeGroups(page);
   const blockId = await page.evaluate(() => window.__bs.CATALOG[0]!.id);
 

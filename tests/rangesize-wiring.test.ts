@@ -9,7 +9,7 @@ import { DocumentFixture } from './helpers/document-fixture';
 
 /**
  * The wiring for **what the dimensions shown during a range operation depend on** for
- * updates (#83).
+ * updates.
  *
  * The counting itself lives in `tests/rangesize.test.ts`, and whether it appears/disappears
  * is covered by e2e. What this checks is whether the "can it be asserted as exceeding the
@@ -18,7 +18,7 @@ import { DocumentFixture } from './helpers/document-fixture';
  * The height stage holds no claim (it proceeds with the button released), so shape hotkeys
  * can pass through during that time. Committing reads the `state` after the change, so if
  * the dimensions were stuck on the shape at the start, an operation that would actually
- * succeed could still be committed while showing a "rejected" mark (#83 review finding).
+ * succeed could still be committed while showing a "rejected" mark.
  */
 
 function hitAt(cell: [number, number, number]): Hit {
@@ -41,7 +41,7 @@ function installWindowStub(): void {
   g.window ??= { dispatchEvent: () => true };
 }
 
-describe('range dimension wiring — the limit judgment tracks the state it depends on (#83)', () => {
+describe('range dimension wiring — the limit judgment tracks the state it depends on', () => {
   let controls: EditorControlsHandle;
   let nextHit: Hit | null;
   let verticalY: number | null;
@@ -74,7 +74,7 @@ describe('range dimension wiring — the limit judgment tracks the state it depe
       getPlacementGroup: () => null,
       // Stand-in for the plane-stage projection. Uses the hit cell the test provided as-is
       resolveRangeFaceCell: () => (nextHit ? [nextHit.cell[0], nextHit.cell[1], nextHit.cell[2]] : null),
-      // Stand-in for the extrude projection. Returns the value the test provided, placed on **the face's axis** (#101)
+      // Stand-in for the extrude projection. Returns the value the test provided, placed on **the face's axis**
       resolveRangeExtrudeCell: (_e, anchor, face) => {
         if (verticalY === null) return null;
         const cell: [number, number, number] = [...anchor];

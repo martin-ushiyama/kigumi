@@ -11,7 +11,7 @@ export interface FrameUpdatable {
 
 /**
  * The browser time/scheduling API that `start()` needs, carved out as a port
- * (#14 PR4 review feedback). RenderScheduler itself (this file) depends only on this port and
+ *. RenderScheduler itself (this file) depends only on this port and
  * never touches concrete `performance` / `document` / `requestAnimationFrame` / `setTimeout`
  * entities — the implementation (`createBrowserFrameClock`, `./renderscheduler-clock-browser.ts`)
  * is assembled and injected only by main.ts (composition root, same policy as ProjectService's `ProjectIO`).
@@ -55,7 +55,7 @@ export interface RenderScheduler {
   start: () => void;
 }
 
-/** Dirty notification / render scheduling extracted from main.ts. Behavior is unchanged (#14 PR4) */
+/** Dirty notification / render scheduling extracted from main.ts. Behavior is unchanged */
 export function createRenderScheduler(opts: RenderSchedulerOpts): RenderScheduler {
   const {
     voxelMesh,

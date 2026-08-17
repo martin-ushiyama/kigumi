@@ -15,7 +15,7 @@ import {
 } from '../../src/editor/selection';
 
 /**
- * Test-only Document extension (#10 / #37 B1b).
+ * Test-only Document extension.
  *
  * Production code only touches Document's Reader type (read-only), but test
  * setup needs low-level operations that build an arbitrary initial state

@@ -6,7 +6,7 @@ import {
 } from '../core/textureframe';
 
 /**
- * The single channel for attaching a block texture to the DOM (#93).
+ * The single channel for attaching a block texture to the DOM.
  *
  * The palette / swatch / change picker / layer icon all render the same image in
  * four separate places; writing `background-size` independently in each would
@@ -29,7 +29,7 @@ export function applyTextureBackground(el: HTMLElement, file: string): void {
  *
  * The wrapper clips it, stretching the img vertically so only the first frame
  * shows. Not using a background image here keeps the path for catching load
- * failures via the `error` event open (failures can't be detected on a background image, #94).
+ * failures via the `error` event open (failures can't be detected on a background image).
  */
 export function applyTextureImage(wrap: HTMLElement, img: HTMLImageElement, file: string): void {
   const frames = frameCountOf(file);

@@ -20,7 +20,7 @@ const recipe = (id: string, name: string, blockId: string): MixRecipe => ({
 });
 
 /**
- * Recipes belong to the user, not the project file (#69, earlier stage).
+ * Recipes belong to the user, not the project file.
  *
  * This test guards against "my recipes vanished after opening someone else's project."
  * Simply appending isn't enough because **cells reference a recipe by id** — when an
@@ -54,7 +54,7 @@ describe('recipe merge planning', () => {
     expect(existing[0]!.name).toBe('Stone');
   });
 
-  it('reading a conflicting project twice does not duplicate the same recipe (#126 review P1)', () => {
+  it('reading a conflicting project twice does not duplicate the same recipe', () => {
     const own = recipe('r1', 'Stone', STONE);
     const incoming = recipe('r1', 'Cobblestone', COBBLE);
 
@@ -117,7 +117,7 @@ function sceneWithoutPattern() {
 
 /**
  * Keeping recipes on the account side risks the export turning into "an export of
- * the account's entire recipe library" (#126 review P1, round 2). A project should
+ * the account's entire recipe library" (raised in review). A project should
  * only include **the recipes it actually references**.
  */
 describe('recipes included when exporting a project', () => {
@@ -194,7 +194,7 @@ describe('loading a project and its recipes', () => {
     expect(store.recipes.map((r) => r.name)).toEqual(['Stone']);
   });
 
-  it('loading a colliding project twice does not duplicate, and the cell reference keeps pointing at the same target (#126 review P1)', () => {
+  it('loading a colliding project twice does not duplicate, and the cell reference keeps pointing at the same target', () => {
     const store = new RecipeStore(null);
     store.applyMerge(planRecipeMerge([], [recipe('r1', 'My Stone', STONE)]));
     const file = serializeProjectV5('Project', sceneWithPattern('r1'), CATALOG, [recipe('r1', "Someone Else's Cobblestone", COBBLE)]);

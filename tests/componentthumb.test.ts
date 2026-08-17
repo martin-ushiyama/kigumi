@@ -5,7 +5,7 @@ import { packCell } from '../src/core/orientation';
 import { makeCellKey } from '../src/core/types';
 
 /**
- * Thumbnail layout for lists (#69 Step 3).
+ * Thumbnail layout for lists.
  *
  * The key point here is **not taking a screenshot of the screen**. If the picture changes
  * with camera, selection, or lighting, the same shape looks different in the list every

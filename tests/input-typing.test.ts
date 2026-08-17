@@ -1,7 +1,7 @@
 import { describe, expect, it, beforeAll, afterAll } from 'vitest';
 import { isTypingTarget } from '../src/input/typing';
 
-// vitest defaults to the node environment (no jsdom, also consistent with #12 plan's
+// vitest defaults to the node environment (no jsdom, also consistent with the input plan's
 // "DOM-independent input handler" policy).
 // We test by injecting into globalThis only the minimal classes needed for instanceof checks.
 class FakeInputElement {}

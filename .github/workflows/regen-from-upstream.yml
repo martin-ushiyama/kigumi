@@ -31,7 +31,7 @@ jobs:
       # Representative colours are **not** rebuilt here. Deriving them from the PNGs belongs to
       # `gen-textures --fetch`, and its output (src/data/texture-colors.json) is committed. This
       # workflow never fetches the PNGs, so if catalog generation assumed they were present it
-      # would always fail in a clean environment (raised as P1 in the review of #137).
+      # would always fail in a clean environment (raised in review).
       # To refresh the colours, run `npm run fetch-textures` locally.
       - name: Regenerate the block catalog
         run: npm run gen-blocks

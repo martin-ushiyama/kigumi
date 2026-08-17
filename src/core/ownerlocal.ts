@@ -16,13 +16,13 @@ import {
 } from './transform';
 
 /**
- * world ⇔ owner-local conversion helpers and subtree traversal (#37 B1b).
+ * world ⇔ owner-local conversion helpers and subtree traversal.
  *
  * After removing the membership index (SceneTree's `groupByCell` / `cellsByGroup`),
  * writing "which cells a group owns" / "which owner's local space a world coordinate
  * maps to" separately in each layer invites drift — forgetting to rotate the raw value,
  * or mixing up the descendant chain. **This is the single implementation of the
- * conversion rules** (#37 design rev.3: "consolidate shared helpers into Document/core").
+ * conversion rules** ("consolidate shared helpers into Document/core").
  */
 
 /** Minimal port requiring only transformChain (structurally satisfied by SceneTree / SceneTreeReader) */
@@ -50,7 +50,7 @@ export function ownerToWorldCell(tree: TransformChainReader, owner: OwnerId, loc
  *
  * If only the coordinates are inverse-transformed while the raw stays world-oriented,
  * the owner's angle gets applied a second time during projection, making stairs /
- * pillars appear rotated away from what the user specified (#37 design rev.3 finding).
+ * pillars appear rotated away from what the user specified.
  * The inverse rotation is `(4 - angleSteps) % 4`.
  */
 export function worldToOwnerRaw(
@@ -95,11 +95,11 @@ export function ownersOfSubtree(tree: ChildrenReader, id: OwnerId): OwnerId[] {
 }
 
 /**
- * Enumerate `CellRef`s for every cell in a subtree (#37 B1b, successor to the old `SceneTree.collectCellsDeep`).
+ * Enumerate `CellRef`s for every cell in a subtree (successor to the old `SceneTree.collectCellsDeep`).
  *
  * **The key point is returning an array of refs, not a Set of world keys** — multiple
  * overlapping refs can project onto the same world coordinate, and collapsing to world
- * keys would lose mutation targets (#37 design: "for mutation, walk the owner/ref list directly").
+ * keys would lose mutation targets ("for mutation, walk the owner/ref list directly").
  */
 export function refsOfSubtree(scene: EditorSceneReader, id: OwnerId): CellRef[] {
   const out: CellRef[] = [];
@@ -114,7 +114,7 @@ export function refsOfSubtree(scene: EditorSceneReader, id: OwnerId): CellRef[] 
 /**
  * **Block count** of a subtree (formerly `SceneTree.cellCountDeep`). Counted per-ref, so overlaps count individually.
  *
- * **Does not count voids (#113).** This is "how many were placed" as shown in layer
+ * **Does not count voids.** This is "how many were placed" as shown in layer
  * rows and the inspector — what the user reads is "how many end up in the exported
  * world". A hole isn't a placed object. Use `directCellCount` when you need to check
  * actual data presence (e.g. delete guards).
@@ -145,7 +145,7 @@ export function directCellCount(scene: EditorSceneReader, owner: OwnerId): numbe
 
 /**
  * x/z bounds of every cell in the subtree, mapped into **id's own local coordinate
- * system** (used for pivot initialization in #37 B2, and also for the initial transform
+ * system** (used for pivot initialization, and also for the initial transform
  * creation in `buildTranslateGroup`).
  *
  * Descendants are mapped using only "the chain below id" — including id's own or an
@@ -153,7 +153,7 @@ export function directCellCount(scene: EditorSceneReader, owner: OwnerId): numbe
  * relative chain is computed as `chain(id)⁻¹ ∘ chain(descendant)`.
  *
  * `null` when there are 0 cells (descendants empty too). The caller falls back to
- * `[0, 0]` since bounds can't be defined (#37 design rev.2 blocker 5).
+ * `[0, 0]` since bounds can't be defined.
  */
 export function subtreeLocalBounds(
   scene: EditorSceneReader,
@@ -182,7 +182,7 @@ export function localKeyOf(ref: CellRef): CellKey {
 }
 
 /**
- * Initial value used when **creating a transform for the first time** on a group that has none set (#37 B1b).
+ * Initial value used when **creating a transform for the first time** on a group that has none set.
  *
  * The pivot is taken from the subtree's local bounds. Baking in `pivot2: [0, 0]` as a
  * stand-in for "unset" would make the group's first rotation pivot around the origin

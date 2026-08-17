@@ -6,7 +6,7 @@ const MAX_DIST = 400;
 const COORD_LIMIT = 2000;
 
 /**
- * A probe that the DDA uses to test "did this hit a world cell?" (#37 B1b).
+ * A probe that the DDA uses to test "did this hit a world cell?".
  *
  * On a hit, returns **the ref occupying that world cell**. What a hit means depends on
  * the use case, so the probe is swappable (1:1 with WorldIndex's resolver functions):

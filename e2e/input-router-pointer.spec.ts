@@ -1,7 +1,7 @@
 import { expect, test, type Page } from '@playwright/test';
 
 /**
- * Regression check for Issue #12 PR2 (unifying pointer handling in InputRouter).
+ * Regression check for unifying pointer handling in InputRouter.
  * Confirms that a Fill tool drag through controls.ts (the edit-tools route) still produces the same result
  * after being turned into a handler.
  */
@@ -61,7 +61,7 @@ test('a Fill tool drag commits the range (claim onMove → onUp commit)', async 
   await dispatchPointer(page, 'pointerdown', from.x, from.y);
   await dispatchPointer(page, 'pointermove', to.x, to.y);
   await dispatchPointer(page, 'pointerup', to.x, to.y);
-  // Extrusion (#78): nothing is committed on release. Click without changing the height to commit
+  // Extrusion: nothing is committed on release. Click without changing the height to commit
   await dispatchPointer(page, 'pointerdown', to.x, to.y);
 
   // The 3 cells from 0,0 to 2,0 are placed (a box at y=0, 3 wide × 1 high × 1 deep)
@@ -82,8 +82,8 @@ test('pressing Escape during a Fill tool drag places nothing (claim.onCancel)', 
 });
 
 /**
- * Having a fillAnchor but no claim does not mean a drag is in progress (a regression from review #25).
- * That state used to be the wait for the first point of a Shift+click range, but that was removed in #103,
+ * Having a fillAnchor but no claim does not mean a drag is in progress (a regression caught in review).
+ * That state used to be the wait for the first point of a Shift+click range, but that was removed,
  * so the only remaining state of this shape is the height stage of a shape fill (button released, extruding).
  */
 test('isDragging() stays false during the height stage of a shape fill (the button is released)', async ({ page }) => {
@@ -103,7 +103,7 @@ test('isDragging() stays false during the height stage of a shape fill (the butt
 });
 
 /**
- * A regression from the #12 PR3 review (PR #26): InputRouter.broadcastCancel() calls endActiveClaim()
+ * A regression caught in review: InputRouter.broadcastCancel() calls endActiveClaim()
  * (claim.onCancel = cancelDrag/cancelMarquee) first, then escapeHandlers (including selectTool.cancelActive).
  * Before the claim unification, selectTool.cancelActive() alone handled exactly one step of the
  * "drag / marquee / rangeAnchor / clear selection" priority chain, but afterwards claim.onCancel has already
@@ -111,7 +111,7 @@ test('isDragging() stays false during the height stage of a shape fill (the butt
  * selection (found 2026-07-21). This confirms the selection is preserved on the Escape
  * (broadcastCancel reason='escape') path.
  */
-test.describe('#12 PR3 regression: an existing selection is not cleared by mistake when a claim is cancelled', () => {
+test.describe('regression: an existing selection is not cleared by mistake when a claim is cancelled', () => {
   async function placeAndSelect(page: Page, gx: number, gz: number): Promise<{ x: number; y: number }> {
     const groundPos = await groundScreenPos(page, gx, gz);
     await page.keyboard.press('1'); // place tool

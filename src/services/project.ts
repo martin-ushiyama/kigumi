@@ -9,7 +9,7 @@ import { loadProject, serializeProject, type ProjectFile } from '../project/pers
 import { defaultName, errorText, t } from '../state';
 
 /**
- * The browser I/O that ProjectService needs, carved out as a port (#14 PR1 review feedback).
+ * The browser I/O that ProjectService needs, carved out as a port.
  * ProjectService itself (this file) depends only on this port and never touches concrete
  * `document` / `Blob` / `URL` / `localStorage` / timer entities — the implementation
  * (`createBrowserProjectIO`, `./project-io-browser.ts`) is assembled and injected only by
@@ -24,20 +24,20 @@ export interface ProjectIO {
   downloadText: (text: string, filename: string, mime?: string) => void;
   /** Reads/writes autosave (localStorage etc.) */
   loadAutosave: () => ProjectFile | null;
-  /** true if the save succeeded. **Never swallow this** — the caller branches on success/failure (#133) */
+  /** true if the save succeeded. **Never swallow this** — the caller branches on success/failure */
   saveAutosave: (project: ProjectFile) => boolean;
   /** Timer for debouncing. Return value/argument are treated as an opaque handle (can be swapped for a synchronous fake in tests) */
   setTimeout: (fn: () => void, ms: number) => unknown;
   clearTimeout: (handle: unknown) => void;
 }
 
-/** Dependency injection for ProjectService. #14: aside from io, only values/functions that don't depend on DOM/Three.js */
+/** Dependency injection for ProjectService. Aside from io, only values/functions that don't depend on DOM/Three.js */
 export interface ProjectServiceOpts {
   world: WorldReader;
   doc: Document;
   recipeStore: RecipeStore;
   /**
-   * Component inventory (#69). **Not made optional on purpose** — forgetting to pass it would
+   * Component inventory. **Not made optional on purpose** — forgetting to pass it would
    * leave `templateId` in the saved file without the component itself, resulting in an empty
    * instance the moment it's opened on another PC. Treated the same as recipes (`recipeStore`),
    * always required at construction time
@@ -73,7 +73,7 @@ export interface ProjectService {
   restoreAutosave: () => void;
 }
 
-/** Project management extracted from main.ts (export / save / load / autosave). Behavior is unchanged (#14) */
+/** Project management extracted from main.ts (export / save / load / autosave). Behavior is unchanged */
 export function createProjectService(opts: ProjectServiceOpts): ProjectService {
   const {
     world,
@@ -89,9 +89,9 @@ export function createProjectService(opts: ProjectServiceOpts): ProjectService {
     autosaveDelayMs = 1000,
   } = opts;
 
-  // The work name is data that gets saved, so it's fixed at **the language at creation time** (#70)
+  // The work name is data that gets saved, so it's fixed at **the language at creation time**
   let projectName = defaultName('project');
-  /** Export count. The work file remembers it, and loading carries it forward (#133) */
+  /** Export count. The work file remembers it, and loading carries it forward */
   let exportRevision = 0;
   let autosaveTimer: unknown = null;
 
@@ -117,7 +117,7 @@ export function createProjectService(opts: ProjectServiceOpts): ProjectService {
       const result = buildMcstructure(world, getCatalog());
       const name = sanitizeStructureName(projectName);
       // **Increment on every export.** Bedrock ignores an import with the same revision, so
-      // re-exporting wouldn't update the Minecraft side (#133).
+      // re-exporting wouldn't update the Minecraft side.
       // Increment first, then use it and flow it into the save — if the used revision fails to
       // save, the next export would reuse the same revision
       exportRevision += 1;
@@ -125,7 +125,7 @@ export function createProjectService(opts: ProjectServiceOpts): ProjectService {
       // **Save synchronously before starting the download.** Relying only on the autosave
       // schedule (1 second later) would lose the count if the tab closes right after exporting.
       // The next export would reuse the same revision and Bedrock would ignore the import —
-      // #133 would reoccur as-is.
+      // the version collision would reoccur as-is.
       //
       // **Don't export if the save fails.** Passing the count along without it having been
       // saved would quietly fall back into "imports don't trigger updates" next time. Better to
@@ -160,7 +160,7 @@ export function createProjectService(opts: ProjectServiceOpts): ProjectService {
       const { name, loaded, skipped } = parsed;
       projectName = name || projectName;
       // The export count travels with the work. Failing to carry it forward would roll the
-      // revision back, and Bedrock would ignore the import as "same or lower revision" (#133)
+      // revision back, and Bedrock would ignore the import as "same or lower revision"
       exportRevision = parsed.exportRevision;
       onNameChange(projectName);
       toast(skipped ? t('load.doneWithSkipped', { count: loaded, skipped }) : t('load.done', { count: loaded }));
@@ -174,7 +174,7 @@ export function createProjectService(opts: ProjectServiceOpts): ProjectService {
   /**
    * Saves right now without waiting for the scheduled save. **Call this right after state that
    * would hurt to lose** (like the export count, where the correctness of the next operation
-   * depends on this value, #133).
+   * depends on this value).
    *
    * If a save is still scheduled it would just write the same content again, so cancel it here
    */

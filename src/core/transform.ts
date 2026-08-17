@@ -12,18 +12,18 @@ import {
 } from './orientation';
 
 /**
- * Coordinate transform for a group (rotation in 90-degree Y-axis steps + translation). #37 PR A.
+ * Coordinate transform for a group (rotation in 90-degree Y-axis steps + translation).
  *
  * Rotation is done in doubled coordinates (cell center = 2*cell+1, always odd), so a
  * half-cell-centered pivot can be represented as an exact integer. The rotation direction is
  * fixed to match Three.js's +Y rotation: step 1 = (x,z) → (z,-x). Since the meaning of
  * angleSteps is baked into the v3 persistence format, this mapping is never changed once
- * implemented (settled ahead of time in the #37 design review).
+ * implemented (settled ahead of time in the design review).
  *
  * Stair orientation follows this same rotation, but **weirdo_direction must never be added
  * to or subtracted from** — its value is a label, not a rotation amount (0=east / 1=west /
  * 2=south / 3=north). The one and only place that rotates it is
- * `orientation.ts::rotateWeirdoDirection` (#114).
+ * `orientation.ts::rotateWeirdoDirection`.
  */
 
 export type AngleSteps = 0 | 1 | 2 | 3;
@@ -47,7 +47,7 @@ export const IDENTITY_TRANSFORM: GroupTransform = Object.freeze({
  * The discrete affine local→world transform obtained by folding down the ancestor chain.
  * Composing rotations around different pivots can always be normalized back into this same
  * form (R(angleSteps)·center2 + offset). A comparable, cacheable, invertible value type
- * (deliberately not a closure, per the #37 design review).
+ * (deliberately not a closure, per the design review).
  */
 export interface ResolvedTransform {
   readonly angleSteps: AngleSteps;
@@ -142,7 +142,7 @@ export function composeTransform(outer: GroupTransform, inner: ResolvedTransform
  * Composes two already-resolved transforms together (world = outer(inner(local))).
  * Where `composeTransform` "multiplies a single node's GroupTransform onto the outside of a
  * resolved transform", this multiplies two resolved transforms together (used for
- * recomputing when the parent chain is reassigned, #37 B1b).
+ * recomputing when the parent chain is reassigned B1b).
  */
 export function composeResolved(outer: ResolvedTransform, inner: ResolvedTransform): ResolvedTransform {
   const [rx, rz] = rotateXZ(inner.offsetXZ2[0], inner.offsetXZ2[1], outer.angleSteps);
@@ -160,7 +160,7 @@ export function composeResolved(outer: ResolvedTransform, inner: ResolvedTransfo
 }
 
 /**
- * Whether two resolved transforms are equal (#37 B1b). Used when reassigning a parent, to
+ * Whether two resolved transforms are equal. Used when reassigning a parent, to
  * check "did the parent chain's effective transform actually change?" — if it didn't, the
  * child's transform doesn't need to be rebased (so we don't push a wasted `setGroupTransform`
  * op onto the history).
@@ -174,7 +174,7 @@ export function resolvedEquals(a: ResolvedTransform, b: ResolvedTransform): bool
   );
 }
 
-/** The inverse transform such that `composeResolved(inverseResolved(r), r)` is the identity (#37 B1b) */
+/** The inverse transform such that `composeResolved(inverseResolved(r), r)` is the identity */
 export function inverseResolved(r: ResolvedTransform): ResolvedTransform {
   const inverseSteps = ((4 - r.angleSteps) % 4) as AngleSteps;
   const [rx, rz] = rotateXZ(r.offsetXZ2[0], r.offsetXZ2[1], inverseSteps);
@@ -183,7 +183,7 @@ export function inverseResolved(r: ResolvedTransform): ResolvedTransform {
 
 /**
  * Finds the local transform that keeps the world-space appearance unchanged when the parent
- * chain is reassigned (#37 B1b). Used by reparent (moving to a different parent) and by
+ * chain is reassigned. Used by reparent (moving to a different parent) and by
  * ungroup's handling of child groups.
  *
  * Rewrites `world = oldParent ∘ child(local)` as `world = newParent ∘ child'(local)`:
@@ -220,7 +220,7 @@ export function rebaseTransform(
 
 /**
  * Maps a **delta vector** in world coordinates to a delta vector in owner-local coordinates
- * (#37 B1b).
+ *.
  *
  * The inverse transform for a point (`applyInverseTransform`) subtracts an offset, but only
  * the rotation component matters for a delta (`R(a) - R(b) = R(a-b)`). There's also no need
@@ -296,10 +296,10 @@ export function computePivot2(bounds: { minX: number; maxX: number; minZ: number
 /**
  * Rotates a cell value's orientation (packCell'd raw) by angleSteps around Y.
  * Throws if shapeOf returns undefined (an unknown catalogIndex not in the catalog) —
- * never silently produce a wrong raw (#37 design review).
+ * never silently produce a wrong raw.
  */
 export function rotateRaw(raw: number, steps: AngleSteps, shapeOf: (catalogIndex: number) => Shape | undefined): number {
-  // Void cells have no orientation, so they're unaffected by rotation (#113). **This check
+  // Void cells have no orientation, so they're unaffected by rotation. **This check
   // returns before the shapeOf check** — void isn't a real catalog entry, so shapeOf would
   // always return undefined for it, which would get caught by the "unknown throws" check
   // below first and make it impossible to build the projection at all.
@@ -309,7 +309,7 @@ export function rotateRaw(raw: number, steps: AngleSteps, shapeOf: (catalogIndex
   // Check that the catalog entry exists even when steps=0 — an early return here would let
   // an unknown catalog slip silently into the projection whenever the transform happens to
   // be identity, making the "unknown throws" contract only apply while actually rotating
-  // (#38 review note)
+  //
   const shape = shapeOf(catalogIndex);
   if (shape === undefined) {
     throw new Error(`rotateRaw: unknown catalogIndex ${catalogIndex} (shapeOf returned undefined)`);
@@ -340,7 +340,7 @@ export type MirrorAxis = 'x' | 'y' | 'z';
  * Mirroring is a determinant −1 transform, so it can't be represented by `GroupTransform`
  * (90-degree Y rotation + translation). Because of that, `buildMirror` is implemented as a
  * destructive op that physically replaces each cell, converting each cell's orientation
- * through this function as it goes (#63 design).
+ * through this function as it goes.
  *
  * - **Stairs (horizontal mirror)**: flip the sign of the relevant component of the facing
  *   vector, then map back to d
@@ -351,7 +351,7 @@ export type MirrorAxis = 'x' | 'y' | 'z';
  * If shapeOf returns undefined, this throws under the same contract as `rotateRaw`.
  */
 export function mirrorRaw(raw: number, axis: MirrorAxis, shapeOf: (catalogIndex: number) => Shape | undefined): number {
-  // Void cells have no orientation, so they're unaffected by mirroring too (#113). Same
+  // Void cells have no orientation, so they're unaffected by mirroring too. Same
   // reasoning as rotateRaw — this check returns before the shapeOf check. Unknown
   // catalogIndex values other than void still throw as before.
   if (isVoidCell(raw)) return raw;

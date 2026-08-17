@@ -1,5 +1,5 @@
 /**
- * The list of blocks not yet included (#97 stage 5). Pure functions only.
+ * The list of blocks not yet included. Pure functions only.
  *
  * The unified DB (stage 2) holds every Mojang block, and curation (stage 4) holds whether a
  * block is included. The difference between them is "what could be added next". **A human
@@ -36,7 +36,7 @@ const bareId = (id) => id.replace(/^minecraft:/, '');
  * `oak_fence` and `fence` line up in the same column, the latter is a bare entry rather than "a
  * member of the series".
  *
- * **"Two or more" at the candidate stage is not enough** (#124 review). Each id picks its own
+ * **"Two or more" at the candidate stage is not enough**. Each id picks its own
  * longest, so the side that was not picked can thin out to a single entry — with `copper_bulb`
  * / `exposed_copper_bulb` / `waxed_copper_bulb` / `waxed_exposed_copper_bulb`, the last three
  * move to `copper_bulb` and one is left behind on the `bulb` side. **After the final

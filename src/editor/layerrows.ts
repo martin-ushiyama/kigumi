@@ -2,7 +2,7 @@ import { makeCellRefKey, type CellRef, type OwnerId } from '../core/cellref';
 import { parseCellKey, type CellKey } from '../core/types';
 
 /**
- * The order of rows **as visible** in the layer panel (#49).
+ * The order of rows **as visible** in the layer panel.
  *
  * Previously, row order was decided by `layers.ts`'s `render()` while it built the DOM,
  * with no way to reference the order itself. Implementing "move to the row above/below"
@@ -18,7 +18,7 @@ export interface LayerRowsReader {
   childrenOf(parentId: string | null): readonly string[];
   localCellKeysOf(ownerId: OwnerId): Iterable<CellKey>;
   /**
-   * Is this a component instance (#69)? A query used to **not expose its contents as
+   * Is this a component instance? A query used to **not expose its contents as
    * rows**.
    *
    * The inside is a copy of the component, and editing it gets overwritten the moment
@@ -29,7 +29,7 @@ export interface LayerRowsReader {
 }
 
 /**
- * Whether a row survives filtering (#45). The name-holder is `layers.ts` (group names /
+ * Whether a row survives filtering. The name-holder is `layers.ts` (group names /
  * block names), so this only accepts a predicate and filters **without knowing any
  * names**.
  */
@@ -41,7 +41,7 @@ export type LayerRowPredicate = (row: LayerRow) => boolean;
  * child groups → own cells if expanded, and finally the unclassified (owner = null)
  * cells at the end.
  *
- * ## Ordering direction: top is front (#110)
+ * ## Ordering direction: top is front
  *
  * The source of truth for paint order is `ownerPaintOrder` in
  * `core/sceneprojection.ts`, where **`childrenOf`'s front-to-back order is back-to-front**,
@@ -68,13 +68,13 @@ export type LayerRowPredicate = (row: LayerRow) => boolean;
  * added to a selection, so it's simpler for the row order to just reflect the structure
  * as-is.
  *
- * Passing `matches` enters filter mode (#45):
+ * Passing `matches` enters filter mode:
  * - Cell rows survive only if they themselves match
  * - Group rows survive if **they themselves match, or a descendant matches**
  * - While filtering, `expandedIds` is ignored and every group is descended into
  *   (otherwise a collapsed group could hide a match)
  *
- * The filtered result is seen as the same ordering by keyboard navigation (#49) too —
+ * The filtered result is seen as the same ordering by keyboard navigation too —
  * this single function is the entry point so the definition of "visible rows" doesn't
  * diverge between rendering and interaction.
  */
@@ -92,7 +92,7 @@ export function visibleLayerRows(
     return rows;
   };
 
-  /** Reorders siblings **front-first** (#110). `childrenOf` is back-to-front order */
+  /** Reorders siblings **front-first**. `childrenOf` is back-to-front order */
   const siblingsFrontFirst = (parentId: string | null): string[] => [...reader.childrenOf(parentId)].reverse();
 
   /** The rows for one group. During filtering, a branch where neither it nor any descendant matches becomes an empty array */
@@ -118,11 +118,11 @@ export function layerRowKey(row: LayerRowRef): string {
 
 /**
  * Moves the cursor one step in `direction`, only through rows whose `kind` matches
- * (#49). Returns null if there's no row to move to (reached an edge).
+ *. Returns null if there's no row to move to (reached an edge).
  *
  * **Rows of a different kind are skipped over.** This is because `Selection` can't
- * represent a mix, being an exclusive union of groups / cells (#43). Skipping rather
- * than stopping, because stopping would give no clue as to why it stopped. Once #43 is
+ * represent a mix, being an exclusive union of groups / cells. Skipping rather
+ * than stopping, because stopping would give no clue as to why it stopped. Once mixed selection is
  * resolved, removing this skip logic is all that's needed to support mixed selections.
  */
 export function stepLayerCursor(
@@ -146,7 +146,7 @@ export function stepLayerCursor(
  * range (inclusive on both ends).
  *
  * Passing `isAncestor` **drops rows that are descendants of another group within the
- * range** (#49, P1 from review). Since `normalizeSelection` keeps only the outermost
+ * range** (raised in review). Since `normalizeSelection` keeps only the outermost
  * groups, passing the un-dropped set to the selection would **desync the internal
  * cursor from the actual Selection** — a step that brings a parent and child into range
  * together wouldn't visibly change anything (the child gets dropped by normalization),
@@ -172,7 +172,7 @@ export function layerRowsInRange(
 
 /**
  * Whether **both ends survive normalization** if anchor..candidate were made the
- * selection (#49, P1 from review).
+ * selection (raised in review).
  *
  * `normalizeSelection` keeps only the outermost groups, so when a parent and child
  * enter the range together, one of them disappears. Making that kind of combination

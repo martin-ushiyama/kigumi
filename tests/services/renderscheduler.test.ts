@@ -13,7 +13,7 @@ function fakeFrameUpdatable(): FrameUpdatable & { update: VoidFn } {
 
 /**
  * A synchronous fake for FrameClock. requestFrame/scheduleTimeout use no real timer, just
- * collect the scheduled callbacks into an array (#14 PR4 review finding: turned start()'s
+ * collect the scheduled callbacks into an array (a review finding: turned start()'s
  * time/scheduling into a port, and unit-tested that "tick and rescheduling happen after
  * the callback fires" using the fire* helpers).
  */

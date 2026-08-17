@@ -17,7 +17,7 @@ function fakePointerEvent(overrides: Partial<PointerLike> = {}): PointerLike {
 }
 
 /**
- * A synchronous fake for WorldIndexReader (#37 B1b). PickingService only uses
+ * A synchronous fake for WorldIndexReader. PickingService only uses
  * `winnerRefAt` (the edit probe) and `selectableRefAt` (the selection probe).
  * We give both the same behavior here — the locked-passthrough branching is WorldIndex's
  * responsibility, not something PickingService's tests cover (worldindex.test.ts owns that).
@@ -83,7 +83,7 @@ describe('PickingService — pickFromEvent', () => {
   });
 
   it('a cell the index answers as unoccupied (e.g. under a hidden group) falls through to a ground hit', () => {
-    // #37 B1b: excluding hidden cells is now done internally by WorldIndex's winner
+    // Excluding hidden cells is now done internally by WorldIndex's winner
     // resolution, so there's no longer a path for injecting isCellHidden into PickingService.
     // The same result follows just from the index answering "there is no ref there"
     const service = createPickingService({
@@ -177,7 +177,7 @@ describe('PickingService — resolveRangeExtrudeCell', () => {
 
 });
 
-describe('PickingService — resolveRangeFaceCell (plane stage along a face, #101)', () => {
+describe('PickingService — resolveRangeFaceCell (plane stage along a face)', () => {
   /** A camera looking straight down. The center pixel's ray is (0,-1,0) */
   function service3D(camera: THREE.PerspectiveCamera) {
     return createPickingService({
@@ -218,7 +218,7 @@ describe('PickingService — resolveRangeFaceCell (plane stage along a face, #10
 
 });
 
-describe('PickingService — resolveRangeExtrudeCell axis generalization (#101)', () => {
+describe('PickingService — resolveRangeExtrudeCell axis generalization', () => {
   /** Looking down at an angle. An orientation where the plane never degenerates for any pushed axis */
   function obliqueService() {
     const camera = new THREE.PerspectiveCamera(50, 1, 0.1, 1000);

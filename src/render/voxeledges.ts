@@ -21,7 +21,7 @@ const INITIAL_CAPACITY = 256; // In cell units (the position buffer is capacity 
  * copy plus adding the cell position (shape geometry is only generated for a key the first time
  * it's seen).
  *
- * #15 follow-up: the vertex count per cell varies by shape (full/slab/stairs), but we use the
+ * The vertex count per cell varies by shape (full/slab/stairs), but we use the
  * max across the whole catalog, `floatsPerCell`, as a fixed slot width shared by all cells
  * (any shortfall is padded with a degenerate edge — the first vertex's coordinates repeated,
  * i.e. a zero-length segment — which stays invisible and harmless). Splitting into per-shape
@@ -60,7 +60,7 @@ export class VoxelEdges {
     geometry.setDrawRange(0, 0);
     this.lineSegments = new THREE.LineSegments(geometry, material);
     this.lineSegments.visible = this.visible;
-    // #15 follow-up review fix: since incremental updates now mutate position in-place within
+    // A review fix: since incremental updates now mutate position in-place within
     // the same geometry, boundingSphere is lazily computed and cached only once on first render
     // and never auto-updates on later add/remove (as with VoxelMesh/DimModelMesh, disable
     // frustumCulled to avoid accidentally getting culled by stale bounds — the original
@@ -77,11 +77,11 @@ export class VoxelEdges {
     this.lineSegments.visible = v;
   }
 
-  /** Receives WorldIndex content-change events. `cells` triggers an incremental update, `replaceAll` schedules a full rebuild (#13 / #37 B1b) */
+  /** Receives WorldIndex content-change events. `cells` triggers an incremental update, `replaceAll` schedules a full rebuild */
   onWorldChange(event: WorldIndexChange): void {
     if (event.kind === 'cells') {
       // WorldIndex passes Cell (3 numeric elements). Internal dedup is handled by a Set of
-      // string keys, so we run it through makeCellKey here (#37 B1b: receive directly, no boundary adapter)
+      // string keys, so we run it through makeCellKey here (receive directly, no boundary adapter)
       for (const cell of event.cells) this.pendingKeys.add(makeCellKey(cell[0], cell[1], cell[2]));
       this.dirty = true;
       return;
@@ -188,7 +188,7 @@ export class VoxelEdges {
   }
 
   /** swap-with-last: copies the last cell's slot as-is into the freed index, then pops.
-   *  Doesn't go through the current world value (same reason as the #15 review lesson: if the
+   *  Doesn't go through the current world value (the same lesson from review: if the
    *  source cell is also slated for removal within the same event, world has already applied
    *  the whole batch, so recomputing would produce a wrong value. Copying the slot's raw bytes
    *  directly stays correct regardless of world's state) */

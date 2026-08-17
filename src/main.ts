@@ -55,7 +55,7 @@ import { toast } from './ui/toast';
 import { blockName, cyclePendingFacing, defaultName, errorText, onStateChange, opError, setActiveBlock, setPendingComponent, setActiveRecipe, setLang, setShowVoidEdges, setThemePreference, resolvedTheme, notifySystemThemeChanged, setDisplayMode, setShape, setTool, state, swapActiveAndSpare, t, togglePendingFlip, type Lang, type ThemePreference, type DisplayMode } from './state';
 
 // Bring the static text written into index.html (region aria-labels / <html lang>) under
-// language switching. Render this once before any other UI mounts (#70, review round 2)
+// language switching. Render this once before any other UI mounts (raised in review)
 initStaticLabels();
 
 /** Direct shape hotkeys (box is excluded since the existing '3' key already covers it). toolbar's SHAPES is the single source of truth */
@@ -74,7 +74,7 @@ const blockUsageRoot = document.getElementById('block-usage')!;
 const ctx = createScene(canvas);
 
 /**
- * Source of truth for the edit model (#37 B1b). Document owns the EditorScene (owner-local
+ * Source of truth for the edit model. Document owns the EditorScene (owner-local
  * tree + cells); renderer / picking read the derived read-model WorldIndex (`doc.world`).
  * VoxelWorld has been removed from the runtime.
  */
@@ -82,10 +82,10 @@ const shapeOf = (catalogIndex: number) => CATALOG[catalogIndex]?.shape;
 const recipeStore = new RecipeStore(localStorage);
 // **Must come before the codec.** The list reads back from localStorage during
 // construction, so declaring this after it would reference an uninitialized value
-// mid-readback and drop every entry (#142 review P1).
+// mid-readback and drop every entry.
 const indexOfBlock = buildIndexOf(CATALOG);
 // Save the list in a form independent of catalog ordering (block id + orientation),
-// so it still opens the same way even if blocks are added or generation order changes (#142 review P1).
+// so it still opens the same way even if blocks are added or generation order changes.
 const componentStore = new ComponentStore(localStorage, {
   encode: (template) => serializeComponentTemplate(template, CATALOG),
   decode: (raw) => {
@@ -108,7 +108,7 @@ const doc = new Document(
     const paint = activePatternAt(patternPaints, editorScene.cells, ref.ownerId, key);
     return paint ? resolvePatternRaw(paint, worldCell, recipeStore.get(paint.recipeId), indexOfBlock, shapeOf) : raw;
   },
-  // The hook into the list (owning side). Tracks marker lifecycle and records definition swaps in history (#142 review P1)
+  // The hook into the list (owning side). Tracks marker lifecycle and records definition swaps in history
   componentStore,
 );
 /**
@@ -120,14 +120,14 @@ const world = doc.world;
 
 const voxelMesh = new VoxelMesh(ctx.scene, world, CATALOG);
 const voxelEdges = new VoxelEdges(ctx.scene, world, CATALOG);
-// Void never wins and is never drawn, so show a position hint via outline edges (#113 stage 3)
+// Void never wins and is never drawn, so show a position hint via outline edges
 const voidEdges = new VoidEdges(ctx.scene, doc.index);
 const selection = new SelectionStore(doc);
 const selectionOverlay = new SelectionOverlay(ctx.scene, doc, selection);
 
-// ---- Render scheduling (dirty notifications, requestAnimationFrame loop). Extracted to RenderScheduler in #14 PR4 ----
+// ---- Render scheduling (dirty notifications, requestAnimationFrame loop). Extracted to RenderScheduler ----
 
-// Axis gizmo (#148). Overlaid on the viewport — placing it inside the 3D scene would make it disappear when the build is far from the origin
+// Axis gizmo. Overlaid on the viewport — placing it inside the 3D scene would make it disappear when the build is far from the origin
 const axisGizmo = initAxisGizmo(canvas.parentElement ?? document.body, ctx.camera);
 
 const renderScheduler = createRenderScheduler({
@@ -146,7 +146,7 @@ const renderScheduler = createRenderScheduler({
     ctx.renderer.render(ctx.scene, ctx.camera);
     // **Sync right after drawing.** Camera movement (including inertia) changes every
     // frame, so picking it up on the input side would stop before damping finishes and
-    // leave the gizmo behind (#148)
+    // leave the gizmo behind
     axisGizmo.update();
   },
   clock: createBrowserFrameClock(),
@@ -158,14 +158,14 @@ function activeRecipe() {
 }
 
 /**
- * Preview color for void (#113). Prioritize reading as "not a block color" — use a pale
+ * Preview color for void. Prioritize reading as "not a block color" — use a pale
  * blue-gray that doesn't overlap any catalog color (won't be confused with stone grays or quartz white)
  */
 const VOID_PREVIEW_COLOR = '#7fd7e8';
 
 /** Called for every cell placed. In mix mode, draws from the blend recipe */
 function getPaintBlock(): number | null {
-  // Void takes top priority (#113). The blend recipe is about "which block to draw",
+  // Void takes top priority. The blend recipe is about "which block to draw",
   // whereas void means "don't place a block" — it isn't a candidate to mix into the draw
   if (state.paintVoid) return VOID_CATALOG_INDEX;
   const recipe = activeRecipe();
@@ -196,7 +196,7 @@ function getPaintLabel(): string {
 
 let hoverCell: [number, number, number] | null = null;
 let toastMessage: string | null = null;
-/** Dimensions populated only during a range operation (#83). Reset to null on commit / cancel */
+/** Dimensions populated only during a range operation. Reset to null on commit / cancel */
 let rangeSize: RangeSize | null = null;
 let toastTimer: ReturnType<typeof setTimeout> | null = null;
 
@@ -208,7 +208,7 @@ function updateStatus(): void {
   const hover = hoverCell ? `(${hoverCell[0]}, ${hoverCell[1]}, ${hoverCell[2]})` : '—';
   const selCount = selection.resolveCells().size;
   const selPart = selCount > 0 ? t('status.selPart', { count: selCount.toLocaleString() }) : '';
-  // Show dimensions only during a range operation (#83). Don't leave numbers lingering when idle.
+  // Show dimensions only during a range operation. Don't leave numbers lingering when idle.
   // Conversely, the guide text isn't needed during the operation, so swap dimensions and
   // guide into the same slot (keep the line from growing)
   const sizePart = rangeSize ? t('status.sizePart', { size: formatRangeSize(rangeSize) }) : '';
@@ -226,7 +226,7 @@ window.addEventListener('bs-toast', (e) => {
   }, 2500);
 });
 
-// The single source of mesh updates is WorldIndexChange (#37 B1b design rev.7). Drag preview,
+// The single source of mesh updates is WorldIndexChange. Drag preview,
 // commit, and structural changes (group visibility toggle / reparent / transform) are all
 // notified by WorldIndex as "content changed" — a structural op fires 'replaceAll', triggering
 // a full rebuild.
@@ -252,7 +252,7 @@ recipeStore.subscribe(() => {
 // Document events are dedicated to autosave / UI (status, layers, inspector) only
 doc.subscribe(() => {
   updateStatus();
-  // projectService is created further down (#14), but subscribe only registers the
+  // projectService is created further down, but subscribe only registers the
   // callback without executing it immediately, so by the time an actual doc change
   // occurs (after projectService exists), the reference is safe
   projectService.scheduleAutosave();
@@ -281,17 +281,17 @@ function saveUiPrefs(): void {
   }
 }
 
-// Display language for block names (#70). UI labels stay fixed in English; only this switches
+// Display language for block names. UI labels stay fixed in English; only this switches
 let lastLang = state.lang;
 onStateChange(() => {
   if (state.lang === lastLang) return;
   lastLang = state.lang;
-  updateStatus(); // The status bar renders itself, so redraw it on language switch (#70)
+  updateStatus(); // The status bar renders itself, so redraw it on language switch
   saveUiPrefs();
 });
 
 /**
- * Screen theme (#144). **A single `<html>` attribute switches everything** —
+ * Screen theme. **A single `<html>` attribute switches everything** —
  * CSS re-maps semantic tokens via `[data-theme='dark']`, and 3D re-reads that CSS.
  * Consolidated into one to avoid a state where only one side switches.
  */
@@ -352,7 +352,7 @@ try {
     if (parsed.displayMode === 'flat' || parsed.displayMode === 'texture') setDisplayMode(parsed.displayMode);
     if (parsed.lang === 'ja' || parsed.lang === 'en') setLang(parsed.lang);
     if (typeof parsed.showVoidEdges === 'boolean') setShowVoidEdges(parsed.showVoidEdges);
-    // **Only saved when the user explicitly chose it** (#144). If absent, stays "system" = follows the OS
+    // **Only saved when the user explicitly chose it**. If absent, stays "system" = follows the OS
     if (parsed.theme === 'light' || parsed.theme === 'dark') setThemePreference(parsed.theme);
   }
 } catch {
@@ -363,7 +363,7 @@ try {
 applyTheme();
 voidEdges.setVisible(state.showVoidEdges);
 
-// ---- Picking (pick / placement coordinates / drag projection). Extracted to PickingService in #14 PR2 ----
+// ---- Picking (pick / placement coordinates / drag projection). Extracted to PickingService ----
 
 const pickingService = createPickingService({
   canvas,
@@ -377,7 +377,7 @@ function setView(preset: ViewPreset): void {
 }
 
 /**
- * **The single predicate that decides ownership of the arrow keys** (#53, review round 2).
+ * **The single predicate that decides ownership of the arrow keys** (raised in review).
  *
  * Both the nudge entry in the shortcut table and camerakeys **look at this and only this**.
  * Previously the decision was made independently in two places, which could produce a state
@@ -398,7 +398,7 @@ function arrowsClaimedByNudge(mods: ArrowModifiers): boolean {
   // Don't take it while dragging, since it would conflict with the nudge. **This condition
   // also belongs inside the predicate** — if a caller instead appends `&& !hasActiveDrag()`,
   // camerakeys would keep yielding without knowing about it, and the "neither nudge nor
-  // camera gets it" state would recur in the same shape (#53, review round 3)
+  // camera gets it" state would recur in the same shape (raised in review)
   return !selectTool.hasActiveDrag();
 }
 
@@ -425,13 +425,13 @@ const editorControls = initEditorControls({
   scene: ctx.scene,
   world,
   doc,
-  // Cells of the component about to be placed (#69 Step 3b). Only the shape is passed down to the input layer
+  // Cells of the component about to be placed. Only the shape is passed down to the input layer
   getPendingComponentCells: () => {
     const template = pendingComponent();
     if (!template) return null;
     // **Read the same column as the placement side** (aligns the projected cells' min
     // corner to the click position). Recomputing coordinates here would make the ghost
-    // and the actual placement diverge (#69 / #142 review)
+    // and the actual placement diverge
     return componentPlacementOffsets(template).map(([x, y, z]) => [x, y, z] as [number, number, number]);
   },
   onPlaceComponent: (origin) => {
@@ -466,14 +466,14 @@ const selectTool = initSelectTool({
   scene: ctx.scene,
   doc,
   selection,
-  // Selection needs locked transparency, so pass the select-only probe path (#37 B1b)
+  // Selection needs locked transparency, so pass the select-only probe path
   pickFromEvent: pickingService.pickFromEventForSelect,
   resolvePlaceCell: pickingService.resolvePlaceCell,
   toast,
   dragProject: pickingService.dragProject,
   setSelectionDragOffset: (offset) => selectionOverlay.setDragOffset(offset),
   isSpacePanActive,
-  // Camera pose used to map arrow keys to screen left/right and near/far (#147).
+  // Camera pose used to map arrow keys to screen left/right and near/far.
   // Pass matrixWorld's basis directly, keeping the three.js dependency out of the input layer
   getCameraBasis: () => {
     ctx.camera.updateMatrixWorld();
@@ -488,7 +488,7 @@ const selectTool = initSelectTool({
 
 selection.subscribe(updateStatus);
 
-// ---- Project management (export / save / load / autosave). Extracted to ProjectService in #14 ----
+// ---- Project management (export / save / load / autosave). Extracted to ProjectService ----
 
 const projectService = createProjectService({
   world,
@@ -510,23 +510,23 @@ const projectService = createProjectService({
 let toolbarHandle: ToolbarHandle | null = null;
 
 /** Reading the File's contents (`file.text()`) is the composition root's responsibility
- *  (ProjectService's public API doesn't take a File type, #14 review). Toast with the same
+ *  (ProjectService's public API doesn't take a File type review). Toast with the same
  *  wording as loadProjectFromText, including read failures themselves
  *  (same behavior as the original implementation's single catch) */
 function loadProjectFromFile(file: File): void {
   file
     .text()
     .then((text) => projectService.loadProjectFromText(text))
-    // Don't assemble a raw message. Route all display through errorText as the single boundary (#70, review round 4)
+    // Don't assemble a raw message. Route all display through errorText as the single boundary (raised in review)
     .catch((e) => toast(t('toast.loadFailed', { message: errorText(e, 'err.loadFailed') })));
 }
 
 initPalette(paletteRoot, CATALOG);
 initRecipes(recipesRoot, CATALOG, recipeStore);
-// A component placed from the list **appears at the origin, selected** (#69 Step 3a).
+// A component placed from the list **appears at the origin, selected**.
 // Alignment (ghost + click to confirm) is Step 3b; until then, place then move
 /**
- * Component edit mode state (#69). **Two entry points (list / instance selection), but
+ * Component edit mode state. **Two entry points (list / instance selection), but
  * one mode** — since what happens after entering is the same, keep the state singular too
  */
 let componentEdit: ComponentEditSession | null = null;
@@ -569,7 +569,7 @@ const componentsPanel = initComponents(componentsRoot, CATALOG, componentStore, 
   onEdit: enterComponentEdit,
   getEditingId: () => componentEdit?.templateId ?? null,
   onFinishEdit: finishComponentEdit,
-  // **Removing from the list and breaking the build are separate decisions** (#69).
+  // **Removing from the list and breaking the build are separate decisions**.
   // Don't delete placed instances — revert them to a plain group (recorded in history, so undo can restore it)
   onRemove: (template) => {
     const result = buildDetachInstancesOf(doc, template.id);
@@ -593,7 +593,7 @@ initInspector(
     recipeStore.subscribe(fn);
   },
   {
-    // **Register into the list only after the transaction succeeds** (#69). Registering
+    // **Register into the list only after the transaction succeeds**. Registering
     // first would leave a list entry with no instance if applying it failed
     createFromSelection: (sel) => {
       const result = buildCreateComponent(doc, sel, componentStore.nextId());
@@ -615,7 +615,7 @@ initInspector(
     },
   },
 );
-// Only one block-change picker exists on screen (#87). The block-usage panel and the
+// Only one block-change picker exists on screen. The block-usage panel and the
 // toolbar's overlaid swatch both open the same instance — creating one per caller would
 // spawn two popovers with the same id
 const blockChangePicker = createBlockChangePicker(CATALOG, recipeStore);
@@ -668,9 +668,9 @@ document.addEventListener('click', (e) => {
   if (e.target instanceof HTMLButtonElement) e.target.blur();
 });
 
-// ---- InputRouter (#12): the single source of keyboard shortcut priority ----
+// ---- InputRouter: the single source of keyboard shortcut priority ----
 // Array order = priority. Follows the same order as the old implementation's window keydown
-// listener registration (controls → selecttool → main → help) (behavior frozen, #12 plan §invariant 6).
+// listener registration (controls → selecttool → main → help) (behavior frozen plan §invariant 6).
 
 const shortcutCtx: ShortcutContext = {
   tool: () => state.tool,
@@ -698,7 +698,7 @@ const SHORTCUTS: ShortcutEntry[] = [
     },
   },
   {
-    // **Block during a gesture** (#57 review). If the tool changes mid-stroke, the
+    // **Block during a gesture**. If the tool changes mid-stroke, the
     // toolbar's pressed-state display would disagree with the edits actually being
     // accumulated. The processing side already pins strokeTool to the tool active at
     // start, so this is purely to keep the display consistent
@@ -717,7 +717,7 @@ const SHORTCUTS: ShortcutEntry[] = [
     },
   },
   {
-    // Assign a direct hotkey per shape (#64). Pressing one key decides tool and shape
+    // Assign a direct hotkey per shape. Pressing one key decides tool and shape
     // selection simultaneously, so it's never a two-step "pick tool, then pick shape".
     // The toolbar stays a single button; only the number of hotkeys grows
     id: 'shape hotkeys (o/y/m/k) — enters range-fill with the pressed shape',
@@ -766,7 +766,7 @@ const SHORTCUTS: ShortcutEntry[] = [
     },
   },
   {
-    // Layer panel range selection (#49). Placed above nudge — Shift wasn't previously
+    // Layer panel range selection. Placed above nudge — Shift wasn't previously
     // watched by either path (nudge / camerakeys) and fell into the same bucket as a plain
     // arrow key, so claiming only the Shift-modified case leaves plain arrows unchanged.
     //
@@ -775,7 +775,7 @@ const SHORTCUTS: ShortcutEntry[] = [
     // matches, not run. `hasSelection()` alone isn't enough: collapsing a parent that
     // hides a selected child group leaves Selection non-empty while zero visible rows are
     // selected — it would match and do nothing, without even calling preventDefault,
-    // leaking through to the browser's default scroll (#49 review P1).
+    // leaking through to the browser's default scroll.
     id: 'extend layer selection (shift+arrowup/arrowdown, with a visible selection)',
     duringGesture: 'block',
     matches: (e) =>
@@ -793,9 +793,9 @@ const SHORTCUTS: ShortcutEntry[] = [
     // With no selection / mid-drag, don't match here — fall back to camerakeys' arrow
     // camera movement. (In the old implementation, camerakeys could independently pick up
     // arrows even when selecttool's side returned. Now that routing is a single exclusive
-    // entry, the condition here needs to be exact. Found via review, #24.)
+    // entry, the condition here needs to be exact. Found via review.)
     //
-    // **Don't include the tool in the condition** (#53). `handleNudge` only ever acted on
+    // **Don't include the tool in the condition**. `handleNudge` only ever acted on
     // selection, and the gate lived in two places: here and `isArrowClaimed()`. Removing it
     // from both consolidates to "where the arrow goes is decided purely by selection" —
     // fixing only one side would create a state where the key is claimed but nothing happens.
@@ -811,7 +811,7 @@ const SHORTCUTS: ShortcutEntry[] = [
   {
     // Originally assigned to r / Shift+R, but that collided with camerakeys' r (view
     // reset), which would turn a non-destructive operation into a model change depending
-    // on selection state — so it was changed to [ / ] (#41 review). Neither key had an
+    // on selection state — so it was changed to [ / ]. Neither key had an
     // existing assignment or browser default behavior.
     id: 'rotate group 90° ([=left 90° / ]=right 90°, select tool)',
     duringGesture: 'block',
@@ -825,7 +825,7 @@ const SHORTCUTS: ShortcutEntry[] = [
     // Maps directly to the axis's initial letter (Shift+X = mirror on the X axis).
     //
     // **camerakeys only excludes ctrl/meta/alt, so Shift+Z has always been handled as a
-    // view-raise** (#65 review P1). The router doesn't fall through to camerakeys once
+    // view-raise**. The router doesn't fall through to camerakeys once
     // SHORTCUTS matches, so claiming this without checking for a selection would turn
     // Shift+Z with no selection into a dead key that does neither camera nor mirror.
     // **Only claim it when there's actually something to mirror.** Excluding isCtrlOrMeta
@@ -903,9 +903,9 @@ const inputRouter = createInputRouter({
   cameraKeys,
   // Escape broadcast: preserves the same "multiple can react simultaneously" behavior as
   // the old implementation, where each module independently judged and reacted to
-  // synthetic/real Escape events (#12 plan §invariant 4)
+  // synthetic/real Escape events (an invariant of the input plan)
   escapeHandlers: [editorControls.cancelActive, selectTool.cancelActive, helpHandle.close],
-  // pointerdown priority (select-tool integrated in #12 PR3): edit-tools (place/erase/fill/pick) →
+  // pointerdown priority (the select tool is integrated into the router): edit-tools (place/erase/fill/pick) →
   // select-tool (select / drag-move / marquee). Array order = priority.
   // The edit-tools route returns null while state.tool==='select', yielding to select-tool.
   // Both routes return null during Space+left-drag, yielding to OrbitControls' pan.
@@ -950,7 +950,7 @@ function groundScreenPos(x: number, z: number): { x: number; y: number } {
    * The catalogIndex of the block placed in the cell (null if empty).
    *
    * If E2E extracted this by dividing `world.get()`'s raw value, tests would need
-   * updating every time the orientation code width changes (#96). Pass it semantically
+   * updating every time the orientation code width changes. Pass it semantically
    * instead, keeping the packed representation's radix out of the public surface.
    */
   catalogIndexAt: (x: number, y: number, z: number): number | null => {

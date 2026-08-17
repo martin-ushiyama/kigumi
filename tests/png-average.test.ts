@@ -150,8 +150,8 @@ describe('averageColor', () => {
    *
    * **The same dimensions produce different results depending on the frame count** — whether
    * something is an animation is not decided by the aspect ratio; the membership in
-   * `flipbook_textures.json` is the source of truth (#93). Reverting this to guesswork averages a
-   * tall non-animated PNG over its first strip only (#137 review, P1)
+   * `flipbook_textures.json` is the source of truth. Reverting this to guesswork averages a
+   * tall non-animated PNG over its first strip only (raised in review)
    */
   it('looks at frame 1 only when a frame count is passed', () => {
     const image = decodePng(

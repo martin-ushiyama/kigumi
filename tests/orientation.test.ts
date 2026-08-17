@@ -31,7 +31,7 @@ describe('packCell / unpackCell', () => {
 
   /**
    * Even when the container is widened, the meaning of the code held by an existing project
-   * must not change (#95). The save format keeps the blockId string and code separately, so
+   * must not change. The save format keeps the blockId string and code separately, so
    * they get re-packed via packCell on load. If code turns into a different orientation here,
    * existing works break.
    */
@@ -87,7 +87,7 @@ describe('cycleFacing / toggleFlip', () => {
   it('the stairs orientation completes one cycle in 4 steps, never repeating an orientation along the way', () => {
     // **Do not pin the numeric ordering.** 0→1→2→3 is a leftover from the mistaken premise
     // that "d is the rotation amount" — the real device's ordering is 0=east / 1=west /
-    // 2=south / 3=north (#114). What needs to be preserved is the property that
+    // 2=south / 3=north. What needs to be preserved is the property that
     // "each press moves to a different orientation, returning to start after 4 presses"
     let code = defaultCode('stairs');
     const seen: number[] = [];
@@ -100,8 +100,8 @@ describe('cycleFacing / toggleFlip', () => {
     expect(code).toBe(defaultCode('stairs')); // returns to the start after 4 cycles
   });
 
-  it('the T-key orientation toggle matches the orientation you get from rotating the group 90 degrees (#114 review)', () => {
-    // when there are 2 code paths, one can be left on the old convention. In fact, in #114,
+  it('the T-key orientation toggle matches the orientation you get from rotating the group 90 degrees', () => {
+    // when there are 2 code paths, one can be left on the old convention. In fact,
     // only the group rotation was fixed and an extra addition was left in the T-key path
     for (const d of [0, 1, 2, 3] as const) {
       const code = encodeOrientation({ shape: 'stairs', weirdoDirection: d, upsideDown: false });
@@ -174,7 +174,7 @@ describe('orientationToNbtStates', () => {
 });
 
 /**
- * The **measured table** of stairs orientations, taken from the real device (#114).
+ * The **measured table** of stairs orientations, taken from the real device.
  *
  * This is the source of truth for blocksmith's stairs orientations. The display rotation
  * angle, group rotation, mirroring, and export are all derived from this table, so **if the
@@ -188,7 +188,7 @@ describe('orientationToNbtStates', () => {
  * It used to be assumed that "d × 90 degrees from a +Z reference pose", but on the real
  * device 0 and 1 are 180 degrees apart, and d turned out to be just a label, not a rotation amount.
  */
-describe('stairs orientation — real-device measured table (#114)', () => {
+describe('stairs orientation — real-device measured table', () => {
   const EAST = [1, 0] as const;
   const WEST = [-1, 0] as const;
   const SOUTH = [0, 1] as const;

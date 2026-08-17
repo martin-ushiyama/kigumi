@@ -1,5 +1,5 @@
 /**
- * **Assembly** of the catalogue (`src/data/blocks.json`) (#97 stage 4). Pure functions only.
+ * **Assembly** of the catalogue (`src/data/blocks.json`). Pure functions only.
  *
  * It holds only the part that takes the inclusion decisions (`curation.json`) and the upstream
  * facts (the snapshot) and lays them out. How upstream is read (resolving display names,
@@ -12,7 +12,7 @@
  * What to do when the parent of a derived block (slab / stairs) is not in the included
  * catalogue.
  *
- * **Tell "deliberately excluded" apart from "no such id is known"** (#97 stage 4 review, P1).
+ * **Tell "deliberately excluded" apart from "no such id is known"** (raised in review).
  * Without the distinction it was an error either way, so a material with derived blocks broke
  * generation the moment it was set to `included: false` — the central contract of `included`,
  * "you can drop something from the catalogue while keeping the decision", did not work for
@@ -79,7 +79,7 @@ export function buildCatalog({
     // **The representative colour is not decided here.** Colour is a property of the texture, so
     // `texture-colors.json` holds it and the catalogue does not touch it. Demanding a colour
     // here would create a cycle when including a new block: "without the catalogue you cannot
-    // fetch the texture / without the colour you cannot build the catalogue" (#137 review, P1)
+    // fetch the texture / without the colour you cannot build the catalogue" (raised in review)
     const entry = { id: fullId, nameJa, nameEn, category, shape: 'full', materialGroup: bare };
     if (hasPillarAxis(bare)) entry.states = { pillar_axis: 'y' };
     blocks.push(entry);

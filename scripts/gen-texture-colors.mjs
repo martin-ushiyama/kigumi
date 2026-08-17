@@ -1,5 +1,5 @@
 /**
- * Writes out the representative colour of each texture (#136).
+ * Writes out the representative colour of each texture.
  *
  *   node scripts/gen-texture-colors.mjs
  *
@@ -15,7 +15,7 @@
  * texture that upstream has newly made animated is not in frames yet, so it is treated as a
  * single frame and the blend of every frame is recorded as its representative colour. And
  * because `gen-texture-frames` then writes the correct frame count, **the generated outputs
- * disagree with each other while the command reports success** (#137 review, P1).
+ * disagree with each other while the command reports success** (raised in review).
  *
  * ## Relationship to the catalogue
  *
@@ -23,7 +23,7 @@
  * of the texture, so this is the only source of truth and the display side looks it up through
  * `textures.json`. Baking colour into the catalogue creates the cycle "without the catalogue
  * you cannot fetch the texture / without the colour you cannot build the catalogue", which
- * makes new blocks impossible to include (#137 review, P1).
+ * makes new blocks impossible to include (raised in review).
  */
 
 import { existsSync, readFileSync, writeFileSync } from 'node:fs';

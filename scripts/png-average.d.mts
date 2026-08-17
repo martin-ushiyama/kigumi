@@ -1,4 +1,4 @@
-/** Produces a representative colour from a PNG (a follow-on from #134). Implemented in png-average.mjs */
+/** Produces a representative colour from a PNG. Implemented in png-average.mjs */
 
 export interface DecodedPng {
   width: number;
@@ -18,7 +18,7 @@ export declare function decodePng(bytes: Uint8Array): DecodedPng;
  *
  * Passing `frameCount` looks at the first frame only (an animation with its frames stacked
  * vertically). **The frame count is the caller's responsibility** — it is not guessed from the
- * aspect ratio (the source of truth is the flipbook membership, #93).
+ * aspect ratio (the source of truth is the flipbook membership).
  * Throws when the height is not divisible by the frame count, or when there is not a single
  * opaque pixel
  */

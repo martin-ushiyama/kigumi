@@ -2,7 +2,7 @@ import type { UiKey } from '../core/i18n';
 import { onLangChange, state, t } from '../state';
 
 /**
- * Wires the text hardcoded into index.html into the language switch (#70, review round 2).
+ * Wires the text hardcoded into index.html into the language switch (raised in review).
  *
  * Round 1 review found that static markup text was left un-translatable. The cause
  * was that neither the `src/**` grep nor the string-extraction pass ever looked at

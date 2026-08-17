@@ -1,7 +1,7 @@
 import { expect, test, type Page } from '@playwright/test';
 
 /**
- * The axis gizmo (#148).
+ * The axis gizmo.
  *
  * Pins down that **the directions you read change as the viewpoint rotates**. The label positions and their
  * intensity are derived from the camera every frame, so getting the sign of the projection wrong turns into a
@@ -56,12 +56,12 @@ test.beforeEach(async ({ page }) => {
   await expect(page.locator('.axis-gizmo')).toBeVisible();
 });
 
-test('height (Y) is not shown — it is always screen up/down and obvious without looking (#148)', async ({ page }) => {
+test('height (Y) is not shown — it is always screen up/down and obvious without looking', async ({ page }) => {
   const rows = await labels(page);
   expect(rows.map((r) => r.label).sort()).toEqual(['+X', '+Z', '−X', '−Z']);
 });
 
-test('in the top view the four horizontal axes spread up, down, left, and right (#148)', async ({ page }) => {
+test('in the top view the four horizontal axes spread up, down, left, and right', async ({ page }) => {
   await page.keyboard.press('Shift+Digit7');
   await waitForSettled(page);
 
@@ -79,7 +79,7 @@ test('in the top view the four horizontal axes spread up, down, left, and right 
   for (const row of rows) expect(row.opacity, `${row.label} is not faded`).toBeGreaterThan(0.9);
 });
 
-test('in the front view only the axis pointing away is faded (#148)', async ({ page }) => {
+test('in the front view only the axis pointing away is faded', async ({ page }) => {
   await page.keyboard.press('Shift+Digit1');
   await waitForSettled(page);
 
@@ -90,7 +90,7 @@ test('in the front view only the axis pointing away is faded (#148)', async ({ p
   expect(at(rows, '−X').opacity).toBeGreaterThan(0.9);
 });
 
-test('the labels follow when the viewpoint is rotated (#148)', async ({ page }) => {
+test('the labels follow when the viewpoint is rotated', async ({ page }) => {
   const before = at(await labels(page), '+X');
 
   await page.keyboard.press('Shift+Digit3'); // to the side view
@@ -100,7 +100,7 @@ test('the labels follow when the viewpoint is rotated (#148)', async ({ page }) 
   expect({ x: after.x, y: after.y }).not.toEqual({ x: before.x, y: before.y });
 });
 
-test('the labels stay readable in dark mode (#148)', async ({ page }) => {
+test('the labels stay readable in dark mode', async ({ page }) => {
   await page.locator('#sidebar-rail .rail-theme').click();
   const contrast = await page.evaluate(() => {
     const lum = (c: string) => {

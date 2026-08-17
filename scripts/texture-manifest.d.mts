@@ -1,4 +1,4 @@
-/** The projection from the unified DB into the texture manifest (#97 stage 3). Implemented in texture-manifest.mjs */
+/** The projection from the unified DB into the texture manifest. Implemented in texture-manifest.mjs */
 import type { BlockRecord } from './block-db.d.mts';
 
 /** The shape the renderer handles. `top` is applied to both +y and -y (it is absent when it equals side) */
@@ -9,7 +9,7 @@ export interface ManifestEntry {
 
 /**
  * One ruling, with its reason, pinning down a decision that the upstream facts alone do not
- * determine. The background is in Issue #97; the source of truth is
+ * determine. The background is the unified DB; the source of truth is
  * `src/data/texture-ledger.json`
  */
 export interface TextureLedgerEntry {

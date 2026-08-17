@@ -1,4 +1,4 @@
-/** The final stage producing a representative colour per texture (#136 / #137). Implemented in gen-texture-colors.mjs */
+/** The final stage producing a representative colour per texture. Implemented in gen-texture-colors.mjs */
 
 /**
  * Builds the representative colours from a file list and the frame counts (no side effects).

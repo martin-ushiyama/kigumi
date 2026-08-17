@@ -8,7 +8,7 @@ import { setShape, setTool } from '../src/state';
 import { DocumentFixture } from './helpers/document-fixture';
 
 /**
- * The shape fill's basis is **the face that was touched** (#101).
+ * The shape fill's basis is **the face that was touched**.
  *
  * While the extrude direction was pinned to Y, only the floor got special-cased and building
  * a wall never lined up. What this checks is that "the face normal decides the plane and the
@@ -39,7 +39,7 @@ function installWindowStub(): void {
   g.window ??= { dispatchEvent: () => true };
 }
 
-describe('Shape fill — the touched face is the basis (#101)', () => {
+describe('Shape fill — the touched face is the basis', () => {
   let doc: DocumentFixture;
   let controls: EditorControlsHandle;
   let nextHit: Hit | null;
@@ -200,7 +200,7 @@ describe('Shape fill — the touched face is the basis (#101)', () => {
 
   it("the range doesn't jump to a different hit even if the projection goes null for a moment", () => {
     // even in 3D, the projection goes null the instant the ray becomes parallel to the plane. falling
-    // back to the hit path here would grab a cell on another face (e.g. the ground) and the range would jump (#101 review reproduced this path)
+    // back to the hit path here would grab a cell on another face (e.g. the ground) and the range would jump (review reproduced this path)
     nextHit = hitAt([5, 0, 0], [1, 0, 0]);
     const claim = controls.route.onPointerDown(pointer());
     if (claim === 'handled' || claim === null) throw new Error('claim was not returned');

@@ -4,7 +4,7 @@
  * before writing src/data/blocks.json (no guessed naming).
  *
  * **Which blocks are included and their categories live in `src/data/curation.json`**
- * (#97 stage 4). The source of truth for Japanese names is the official ja_JP.lang, and
+ *. The source of truth for Japanese names is the official ja_JP.lang, and
  * curation only fills the gaps it cannot supply. Representative colours do not belong to the
  * catalogue (texture-colors.json is the source of truth).
  * This file used to hold a 100-line hand-written list, but that was not a fact from Mojang — it
@@ -60,9 +60,9 @@ const langTextJa = readSnapshot('ja_JP.lang');
  * `tile.<parent>.<variant>.name` form and cannot be looked up) / `langValues` = the set of
  * strings that actually exist as display names.
  *
- * bedrock-parse.mjs owns the read rules. The block-db side (#97 stage 2) needs the same rules,
+ * bedrock-parse.mjs owns the read rules. The block-db side needs the same rules,
  * so they are **not written in two places** — hand-writing the same fact in several places is
- * the structure #97 is removing.
+ * the structure the unified DB removes.
  */
 const { exact: langExact, values: langValues } = parseLangEntries(langText);
 const { exact: langExactJa } = parseLangEntries(langTextJa);
@@ -132,7 +132,7 @@ if (errors.length) {
 }
 
 /**
- * The pose space (#131 PR 1). Built from the block states and value ranges upstream declares,
+ * The pose space. Built from the block states and value ranges upstream declares,
  * then folded per shape.
  *
  * **An unknown state stops the run.** Silently dropping a state that has been decided neither

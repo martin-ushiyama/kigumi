@@ -3,7 +3,7 @@ import { buildCatalog, classifyVariantBase } from '../scripts/catalog.mjs';
 import type { CuratedBlock } from '../scripts/curation.d.mts';
 
 /**
- * Rules for assembling the catalog (#97 stage 4).
+ * Rules for assembling the catalog.
  *
  * The upstream snapshot is gitignored and absent in CI, so the way upstream is read gets
  * injected as functions and verified against fixtures (the same shape as
@@ -93,7 +93,7 @@ describe('buildCatalog', () => {
 
   /**
    * The central contract of `included: false` — **a block can leave the catalog while the
-   * decision stays recorded** (#97 stage 4 review, P1). Previously, excluding a material that
+   * decision stays recorded** (raised in review). Previously, excluding a material that
    * had variants failed generation with an unknown-materialGroup error.
    */
   it('removes the variants along with an included: false material (generation does not fail)', () => {

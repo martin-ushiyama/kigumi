@@ -2,7 +2,7 @@ import { parseCellKey } from './types';
 import type { ComponentTemplate } from './component';
 
 /**
- * Component thumbnail layout (#69 Step 3).
+ * Component thumbnail layout.
  *
  * Listing just a name doesn't tell you what a component looks like, since a component
  * is fundamentally a **shape**. Taking a screenshot of the scene isn't a good fix

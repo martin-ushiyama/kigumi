@@ -1,4 +1,4 @@
-/** The read rules for the inclusion policy (#97 stage 4). Implemented in curation.mjs */
+/** The read rules for the inclusion policy. Implemented in curation.mjs */
 
 /** The order things appear in the catalogue. This is the palette order itself */
 export declare const CURATION_CATEGORIES: readonly ['stone', 'wood', 'soil'];

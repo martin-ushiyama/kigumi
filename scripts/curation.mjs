@@ -1,5 +1,5 @@
 /**
- * The **read rules** for the inclusion policy (`src/data/curation.json`) (#97 stage 4).
+ * The **read rules** for the inclusion policy (`src/data/curation.json`).
  * Pure functions only.
  *
  * What curation holds are the decisions that do not come from Mojang — what to include and
@@ -31,7 +31,7 @@ const ENTRY_KEYS = ['nameJa', 'category', 'included', 'note'];
  * exists, so it is not treated as a gap here.
  * **Deliberately excluded ids are returned in `excludedIds`** — if the caller (generating the
  * derived blocks) cannot tell "deliberately excluded" from "no such id is known", generation
- * breaks the moment something is excluded (#97 stage 4 review, P1).
+ * breaks the moment something is excluded (raised in review).
  *
  * @param {object} doc the parsed `src/data/curation.json`
  * @returns {{ blocks: Array<{id: string, nameJa: string|null, category: string}>, excludedIds: Set<string>, problems: string[] }}
@@ -54,14 +54,14 @@ export function curatedBlocks(doc) {
     // source of truth, and what is written here only fills the gaps for older blocks stored in
     // the `tile.<parent>.<variant>.name` form.
     // **It only takes effect when the official files cannot supply it** (the official ones are
-    // the source of truth, #135 review)
+    // the source of truth review)
     if (entry?.nameJa !== undefined && (typeof entry.nameJa !== 'string' || entry.nameJa.trim() === '')) {
       problems.push(`${id}: nameJa must be a string (it may be omitted when the official files supply it)`);
     }
     // **The representative colour does not belong to curation.** The average colour of the
     // texture is the source of truth, and leaving a place to write it here would make "which
     // one wins" impossible to tell ever again
-    // **Inclusion requires a boolean** (#97 stage 4 review, P1). Deciding with `!== true` would
+    // **Inclusion requires a boolean** (raised in review). Deciding with `!== true` would
     // treat a missing value, null, or the string "true" the same as a proper false, with no
     // diagnostic either. The point is to make inclusion an explicit, canonical decision, so
     // ambiguous values are rejected

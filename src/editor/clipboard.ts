@@ -10,7 +10,7 @@ import { resolveSelectionRefs, worldBboxOfRefs } from './ops';
 import type { NormalizedSelection } from './selection';
 
 /**
- * Portable copy data (made owner-local in #37 B1b).
+ * Portable copy data (owner-local).
  *
  * Copying a groups selection **carries owner-local coordinates + group transform as-is**
  * — baking them into world coordinates would break the shape when pasting a rotated
@@ -33,7 +33,7 @@ export interface ClipboardData {
     parent: number;
     hidden?: boolean;
     locked?: boolean;
-    /** If this is a component instance, its id (#69). Stays an instance at the paste destination too */
+    /** If this is a component instance, its id. Stays an instance at the paste destination too */
     templateId?: string;
     transform?: GroupTransform;
   }[];
@@ -167,7 +167,7 @@ function findPasteOffset(clip: ClipboardData): [number, number, number] | null {
  */
 export function buildPaste(doc: Document, clip: ClipboardData): OpResult {
   if (clip.cells.length === 0) return { error: 'noSelection' };
-  // Always guard here before building up a large ops array (shared limit, flagged in #8 review)
+  // Always guard here before building up a large ops array (shared limit, flagged in review)
   if (clip.cells.length > OP_MAX_CELLS) {
     return { error: 'tooLargeAfterDuplicate', errorVars: { count: clip.cells.length.toLocaleString(), max: OP_MAX_CELLS.toLocaleString() } };
   }

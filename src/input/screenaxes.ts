@@ -1,5 +1,5 @@
 /**
- * Makes arrow-key movement relative to **the currently visible screen** (#147).
+ * Makes arrow-key movement relative to **the currently visible screen**.
  *
  * If it were fixed to world X / Z, "which way does the screen move when you press ->"
  * would change every time the view rotates. That forces the user to mentally convert

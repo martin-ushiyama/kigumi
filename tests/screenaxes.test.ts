@@ -2,7 +2,7 @@ import { describe, expect, it } from 'vitest';
 import { screenAlignedNudge, type CameraBasis } from '../src/input/screenaxes';
 
 /**
- * Makes arrow-key movement screen-relative (#147).
+ * Makes arrow-key movement screen-relative.
  *
  * What matters here is just this one point: **"does it move on screen in the pressed
  * direction?"** We build a camera basis for each viewpoint and pin down that the 4
@@ -29,7 +29,7 @@ function lookingAtOrigin(eye: [number, number, number]): CameraBasis {
   return { right, forward, up };
 }
 
-describe('screen-relative nudge (#147)', () => {
+describe('screen-relative nudge', () => {
   it('height is always up/down regardless of viewpoint', () => {
     const basis = lookingAtOrigin([20, 18, 26]);
     expect(screenAlignedNudge('PageUp', basis)).toEqual([0, 1, 0]);
@@ -76,7 +76,7 @@ describe('screen-relative nudge (#147)', () => {
   });
 
   /**
-   * Horizontal 45 degrees (#150 review).
+   * Horizontal 45 degrees.
    *
    * Both right and away have equal-sized X and Z components, and the rounding rule (ties go
    * to X) means **both end up landing on X**. Giving up here would make every direction stop

@@ -3,7 +3,7 @@ import { CATALOG } from '../src/data/blocks';
 import { setActiveBlock, setSpareBlock, state, swapActiveAndSpare } from '../src/state';
 
 /**
- * State transitions for the active / spare block (#87).
+ * State transitions for the active / spare block.
  *
  * The screen side (press swatch -> picker -> apply) is covered by e2e (`e2e/block-swatch.spec.ts`).
  * The main purpose here is to pin down **that swapping goes through setActiveBlock** —

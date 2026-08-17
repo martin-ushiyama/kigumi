@@ -36,7 +36,7 @@ describe('texture manifest and catalog consistency', () => {
 });
 
 /**
- * Guards that the ledger (`texture-ledger.json`) **matches the committed manifest** (#97 stage 3).
+ * Guards that the ledger (`texture-ledger.json`) **matches the committed manifest**.
  *
  * The manifest is a projection from the integrated DB, but since neither the DB nor the
  * snapshot are tracked in git, CI cannot regenerate and cross-check it (regeneration is

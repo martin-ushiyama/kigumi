@@ -8,8 +8,8 @@ export interface CameraKeysOpts {
   /** The focus target for the F key (build's center and radius). null if none */
   getFocus: () => { center: THREE.Vector3; radius: number } | null;
   /**
-   * Whether to yield the arrow keys instead of using them for camera movement (#53,
-   * from a second review pass).
+   * Whether to yield the arrow keys instead of using them for camera movement
+   * (from a second review pass).
    *
    * **A single hook for the predicate that decides key ownership.** Previously the
    * shortcut table and this module judged it separately, which could produce a state
@@ -48,7 +48,7 @@ const UP = new THREE.Vector3(0, 1, 0);
 export interface CameraKeysHandle {
   update: (dt: number) => void;
   isSpaceHeld: () => boolean;
-  /** Receives window keydown forwarded from InputRouter (#12) (fallback for when the SHORTCUTS table lookup misses) */
+  /** Receives window keydown forwarded from InputRouter (fallback for when the SHORTCUTS table lookup misses) */
   onKeyDown: (e: KeyboardEvent) => void;
   onKeyUp: (e: KeyboardEvent) => void;
   onBlur: () => void;
@@ -67,7 +67,7 @@ export function initCameraKeys(opts: CameraKeysOpts): CameraKeysHandle {
   const homeTarget = controls.target.clone();
 
   // The old window keydown/keyup/blur listeners are consolidated into InputRouter
-  // (#12), with the logic unchanged, and exposed as onKeyDown/onKeyUp/onBlur (called by
+  //, with the logic unchanged, and exposed as onKeyDown/onKeyUp/onBlur (called by
   // the router as a fallback when the SHORTCUTS table lookup misses).
   function onKeyDown(e: KeyboardEvent): void {
     if (isTypingTarget(e.target)) return;

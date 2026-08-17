@@ -2,7 +2,7 @@ import type { PerspectiveCamera, Vector3 } from 'three';
 import * as THREE from 'three';
 
 /**
- * The axis gizmo in the viewport corner (#148).
+ * The axis gizmo in the viewport corner.
  *
  * **Always shows which way is +X and which way is +Z.** While building in 3D,
  * rotating the view makes it easy to lose track of which world axis "move right"

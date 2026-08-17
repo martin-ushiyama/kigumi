@@ -1,7 +1,7 @@
 import * as THREE from 'three';
 
 /**
- * Observe appearance **from the final data handed to the screen** (#131 PR 2).
+ * Observe appearance **from the final data handed to the screen**.
  *
  * ## Why not call the product-side functions
  *
@@ -9,7 +9,7 @@ import * as THREE from 'three';
  * called it "renderer-derived", **wiring mistakes into the geometry or instance
  * transform would slip through undetected**. It would only be cross-checking the
  * same function's return value against the ledger, without observing whether that
- * function is actually connected to the screen. Same shape as #114's "if both sides
+ * function is actually connected to the screen. Same shape as the stair-orientation one: "if both sides
  * share the same table, the round trip passes."
  *
  * So this file takes only the `InstancedMesh` that landed in the `THREE.Scene` as
@@ -22,7 +22,7 @@ import * as THREE from 'three';
  *
  * ## What becomes the signature
  *
- * Occupied volume alone isn't enough (#131). A pillar occupies all 8 cells on any
+ * Occupied volume alone isn't enough. A pillar occupies all 8 cells on any
  * of the X/Y/Z axes, so occupancy comes out the same regardless of axis. So this
  * also looks at **which material is assigned to which face**.
  *
@@ -33,7 +33,7 @@ import * as THREE from 'three';
  * `faces` alone isn't enough. materialIndex is just a number on the geometry side and
  * doesn't check correspondence with the `mesh.material` array, so **swapping side/top
  * when inserting into the array wouldn't be detected**
- * (#139 review finding).
+ *.
  * `faceTextures` looks up `mesh.material` and follows it all the way to the `map`'s
  * name, so it verifies "which texture shows up on which face" end to end.
  */

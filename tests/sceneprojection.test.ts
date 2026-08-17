@@ -18,7 +18,7 @@ function makeScene(): EditorScene {
 
 const FULL = packCell(0, 0);
 
-describe('SceneProjection — paint order (stackAt / winnerAt / winners) (#37)', () => {
+describe('SceneProjection — paint order (stackAt / winnerAt / winners)', () => {
   it('3-level paint order for a root-level cell → child group → grandchild group (later = more in front, winner is frontmost)', () => {
     const scene = makeScene();
     scene.tree.insertNode(node('g0', 'Child', null), 0);
@@ -96,7 +96,7 @@ describe('SceneProjection — paint order (stackAt / winnerAt / winners) (#37)',
   });
 });
 
-describe('SceneProjection — worldCell and rotated raw (#37)', () => {
+describe('SceneProjection — worldCell and rotated raw', () => {
   it('stairs in a 90-degree-rotated group rotate position and orientation into the same world direction (+X position → -Z position, orientation also east → north)', () => {
     const scene = makeScene();
     scene.tree.insertNode(node('g0', 'Rotated', null), 0);
@@ -110,7 +110,7 @@ describe('SceneProjection — worldCell and rotated raw (#37)', () => {
     expect(entry!.worldCell).toEqual([0, 0, -1]);
     expect(entry!.ref).toEqual({ ownerId: 'g0', localCell: [1, 0, 0] });
     const o = decodeOrientation('stairs', unpackCell(entry!.raw).code);
-    // rotating 0=east by +Y 90 degrees gives north = 3 (from the measured table, #114). The same
+    // rotating 0=east by +Y 90 degrees gives north = 3 (from the measured table). The same
     // direction the position rotates from +X→-Z
     expect(o).toEqual({ shape: 'stairs', weirdoDirection: 3, upsideDown: false });
   });
@@ -128,7 +128,7 @@ describe('SceneProjection — worldCell and rotated raw (#37)', () => {
     const entry = projection.winnerAt([-1, 0, 0]); // 180 degrees: +X → -X
     expect(entry).not.toBeNull();
     const o = decodeOrientation('stairs', unpackCell(entry!.raw).code);
-    // 180 degrees, so 0=east → 1=west (from the measured table, #114)
+    // 180 degrees, so 0=east → 1=west (from the measured table)
     expect(o).toEqual({ shape: 'stairs', weirdoDirection: 1, upsideDown: false });
   });
 
@@ -145,7 +145,7 @@ describe('SceneProjection — worldCell and rotated raw (#37)', () => {
   });
 });
 
-describe('SceneProjection — immutable snapshot contract (#37)', () => {
+describe('SceneProjection — immutable snapshot contract', () => {
   it('mutating the original EditorScene after construction does not change the projection result', () => {
     const scene = makeScene();
     scene.tree.insertNode(node('g0', 'A', null), 0);
@@ -184,7 +184,7 @@ describe('SceneProjection — immutable snapshot contract (#37)', () => {
   });
 });
 
-describe('SceneProjection — rejecting invalid aggregates / unknown shapes (#37)', () => {
+describe('SceneProjection — rejecting invalid aggregates / unknown shapes', () => {
   it('throws at construction time if a cell has an owner group that does not exist in the tree (does not silently ignore it)', () => {
     const scene = makeScene();
     scene.cells.set('ghost', makeCellKey(0, 0, 0), FULL);
@@ -206,7 +206,7 @@ describe('SceneProjection — rejecting invalid aggregates / unknown shapes (#37
     expect(() => buildSceneProjection(scene, shapeOf)).toThrow(/unknown catalogIndex/);
   });
 
-  it('throws for an unknown-catalog cell even with an identity transform (no rotation) (#38 review regression)', () => {
+  it('throws for an unknown-catalog cell even with an identity transform (no rotation) (a review regression)', () => {
     const scene = makeScene();
     scene.cells.set(null, makeCellKey(0, 0, 0), packCell(99, 0)); // does not slip through even directly under root with no rotation
     expect(() => buildSceneProjection(scene, shapeOf)).toThrow(/unknown catalogIndex/);
@@ -266,7 +266,7 @@ describe('SceneProjection — rejecting invalid aggregates / unknown shapes (#37
     expect(() => assertValidRuntimeScene(scene, shapeOf)).toThrow(/owner consistency violation/);
   });
 
-  it('OwnerVoxelStore.set rejects an invalid CellKey at the entry point (#38 review regression)', () => {
+  it('OwnerVoxelStore.set rejects an invalid CellKey at the entry point (a review regression)', () => {
     const scene = makeScene();
     expect(() => scene.cells.set(null, 'abc', 0)).toThrow(/invalid CellKey/);
     expect(() => scene.cells.set(null, '1,2', 0)).toThrow(/invalid CellKey/); // too few elements

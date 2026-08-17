@@ -132,11 +132,11 @@ describe('listUncurated — the set difference after removing already-decided id
 
 /**
  * The rule of taking the longest suffix can leave the shorter side **shrunk to a single
- * item as a result** (#124 review). That single item stays in series but is dropped by the
+ * item as a result**. That single item stays in series but is dropped by the
  * CLI's default (2+ items), and the `inSeries` check also excludes it from singles, so even
  * with `--singles` it disappears from every listing.
  */
-describe('a series that shrinks does not vanish from the listing (#124 review)', () => {
+describe('a series that shrinks does not vanish from the listing', () => {
   it('a group left with only 1 item after taking the longest suffix is not kept as a series', () => {
     // 3 copper_bulb items move to `copper_bulb`, leaving 1 behind under `bulb`
     const series = groupBySuffix([

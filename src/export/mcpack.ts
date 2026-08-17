@@ -12,7 +12,7 @@ export const STRUCTURE_NAMESPACE = 'bs';
  * on every export.
  *
  * (Whether the game updates it in place on re-import is a separate concern that
- * needs version design → #133)
+ * needs version design)
  */
 function hash32(input: string): number {
   let hash = 0x811c9dc5;
@@ -45,7 +45,7 @@ function nameDigest(name: string): string {
  * step would give **names declared equivalent different identifiers**
  * (`Road/A` vs `road/a`, `___` vs empty input) — the place where the rule is
  * declared and the place it's applied would drift apart (review comment on
- * #130).
+ * in review).
  */
 function canonicalName(name: string): string {
   return name
@@ -90,7 +90,7 @@ const REPRESENTABLE = /^[a-z0-9_-]+$/;
  * strings after stripping unrepresentable characters**. Once characters are
  * stripped, their distinctions are already gone, so comparing the
  * post-strip strings misses cases like "one character became one `_`"
- * (review comment on #130).
+ * (raised in review).
  *
  * Names already written within the equivalence rules (`My Road v2` /
  * `ishi-mix_01`) pass through unchanged as before.
@@ -114,7 +114,7 @@ export function sanitizeStructureName(name: string): string {
  *
  * **Must never change between exports.** Minecraft identifies packs by UUID,
  * so assigning a new UUID on every export would spawn a new pack for the
- * same project each time (review comment on #130). The same project name
+ * same project each time (raised in review). The same project name
  * always produces the same pack identity, so packs don't multiply.
  *
  * (Whether re-importing updates the pack in place is decided by the version;
@@ -158,7 +158,7 @@ export function revisionToVersion(revision: number): [number, number, number] {
 }
 
 /**
- * @param exportRevision Export count (remembered by the project file, #133).
+ * @param exportRevision Export count (remembered by the project file).
  *   **Increment and pass it every time.** With the same value, Bedrock
  *   treats the import as "same or lower version" and ignores it
  */
@@ -171,7 +171,7 @@ export function buildMcpack(structureName: string, mcstructure: Uint8Array, expo
       // this display name, but `/structure load` takes the name derived from
       // the structures/ path — the two don't match. Typing based on the
       // display name alone wouldn't work, so the literal command form is
-      // included alongside it (#127)
+      // included alongside it
       name: `blocksmith - ${name} (${STRUCTURE_NAMESPACE}:${name})`,
       // The pack manifest is data stored and kept on the Minecraft side,
       // independent of the editor's display language (a pack exported while
@@ -187,7 +187,7 @@ export function buildMcpack(structureName: string, mcstructure: Uint8Array, expo
       // requires a monotonically increasing version. The content hash isn't
       // guaranteed to increase with edit order (it can actually go down
       // going from 1 cell to 2 cells), so without persisted state there's no
-      // way to guarantee monotonicity (#133). The count is remembered by the
+      // way to guarantee monotonicity. The count is remembered by the
       // project file
       version: revisionToVersion(exportRevision),
       min_engine_version: [1, 21, 0],

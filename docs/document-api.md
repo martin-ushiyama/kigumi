@@ -1,8 +1,8 @@
 # Read/write API boundary of Document / EditorScene / WorldIndex
 
 `Document.world` / `Document.tree` used to be exposed as concrete objects, letting any layer
-call `SceneTree` mutation methods or `VoxelWorld.stage()` (#10). This was resolved with Reader
-types + protected concrete fields. Later, #37 B1b moved the source of truth to the owner-local
+call `SceneTree` mutation methods or `VoxelWorld.stage()`. This was resolved with Reader
+types + protected concrete fields. Later B1b moved the source of truth to the owner-local
 `EditorScene` and removed `VoxelWorld` from the runtime: what `Document` derives for reading is
 now the `WorldIndex` read-model. This file is the source of truth for the naming and
 responsibilities of the read APIs and the write APIs.
@@ -20,7 +20,7 @@ Document (facade)
 ├─ get tree(): SceneTreeReader       (public, read-only)
 ├─ get scene(): EditorSceneReader    (public, read-only; ops build DocOps / persistence serializes from it)
 ├─ beginSession(placementOwner)      (returns an EditSession — the window for immediate feedback during drags:
-│                                     stagePreview(intents) / stageMoveRefs / commit / cancel, #11)
+│                                     stagePreview(intents) / stageMoveRefs / commit / cancel)
 ├─ nextGroupId()                     (window for group ID allocation)
 └─ applyTransaction / commitStaged / applyEdits / applyEditsAsNewGroup / undo / redo /
    replaceAll / clearAll / openHistorySession / closeHistorySession
@@ -51,14 +51,14 @@ node.childIds.push('x');      // push also compiles while childIds is a plain st
 ```
 
 — a loophole where **you can write even though you came through a Reader type** (found and
-fixed in the 2026-07 #19 review). `ReadonlyGroupNode` makes every property `readonly` and
+fixed in review, 2026-07). `ReadonlyGroupNode` makes every property `readonly` and
 `childIds` a `readonly string[]`, so both property assignment and destructive array methods
 are rejected at compile time.
 
 Similarly, if `SceneTree.insertNode(node, index)` stored the passed `node` in the `Map` as-is,
 the caller could later mutate it through the reference (alias) it kept, so the node is stored
 after a defensive copy: `{ ...node, childIds: [...node.childIds] }`, plus a deep clone of
-`transform` when present (#37 — the same alias would otherwise reach the pivot/translate
+`transform` when present (the same alias would otherwise reach the pivot/translate
 arrays inside the transform).
 
 On the `WorldIndexReader` side, `get` / `entries` / `bounds` return primitives or by-value
@@ -70,10 +70,10 @@ are deeply frozen — so no leak of this kind exists.
 During a drag (paint stroke, rectangle move) we need to reflect an immediate preview every
 frame without polluting the undo history. The old implementation had `input/controls.ts` /
 `input/selecttool.ts` hold a raw `VoxelWorld` instance and call `world.stage()` directly —
-that was the concrete case of "writes bypassing Document" (#10).
+that was the concrete case of "writes bypassing Document".
 
 Today the input layer calls `Document.beginSession(placementOwner)` and works only through the
-returned `EditSession` (#11): `stagePreview(intents)` / `stageMoveRefs(refs, delta)` reflect
+returned `EditSession`: `stagePreview(intents)` / `stageMoveRefs(refs, delta)` reflect
 into scene + index immediately without recording history, `commit()` turns the diff against
 the session baseline into a single `Transaction` (via `commitStaged`), and `cancel()` restores
 the baseline. The input layer never holds concrete world objects and never implements its own
@@ -111,7 +111,7 @@ production can never reach becomes constructible in tests.
 ## CellKey (string key for cell coordinates)
 
 The `"x,y,z"` string key is centralized in `makeCellKey` / `parseCellKey` in `core/cell.ts`
-(the bottom layer of core, split out of `core/types.ts` in #37 PR B1a to avoid an import
+(the bottom layer of core, split out of `core/types.ts` to avoid an import
 cycle; `core/types.ts` keeps a compatibility re-export so existing `from './types'` imports
 still work). Every entry point that accepts a `CellKey` string from outside validates it with
 `assertCanonicalLocalCellKey` (same file).
@@ -124,7 +124,7 @@ const [x, y, z] = parseCellKey(key);
 ```
 
 Hand-written patterns like `${x},${y},${z}` / `key.split(',').map(Number)` still remain in
-many places under `editor/` / `input/` / `ui/` / `project/` / `render/`. The scope of #10 was
+many places under `editor/` / `input/` / `ui/` / `project/` / `render/`. The original scope was
 "restrict world/tree mutation to Document" and did not include a full CellKey replacement (a
 judgment based on the issue's note: "a minimal API boundary that does not break existing
 behavior"). New code must use `makeCellKey` / `parseCellKey`. Replacing existing code is

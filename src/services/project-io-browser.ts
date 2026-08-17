@@ -14,7 +14,7 @@ function downloadBlob(blob: Blob, filename: string): void {
  * The real browser implementation of `ProjectIO` (`document` / `Blob` / `URL` / `localStorage` / timer).
  * `../services/project.ts` (the ProjectService body) never imports this file — only main.ts
  * (composition root) assembles this and injects it, e.g. `createProjectService({ io: createBrowserProjectIO() })`
- * (#14 PR1 review feedback: separates the browser I/O implementation from the service body).
+ * (separates the browser I/O implementation from the service body).
  */
 export function createBrowserProjectIO(): ProjectIO {
   return {

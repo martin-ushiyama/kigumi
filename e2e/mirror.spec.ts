@@ -1,14 +1,14 @@
 import { expect, test, type Page } from '@playwright/test';
 
 /**
- * Pins down the key-binding wiring of mirroring (#63).
+ * Pins down the key-binding wiring of mirroring.
  *
  * The logic of `buildMirror` / `mirrorRaw` is covered by the unit tests, but
  * **whether Shift+X / Shift+Y / Shift+Z actually reach that op** depends on the matches predicate
  * in SHORTCUTS and on the router's execution order, and can only be observed here.
  *
  * camerakeys only excludes ctrl/meta/alt, so **Shift+Z has always been handled as raising the viewpoint**
- * (#65 review P1). The router does not fall through to camerakeys once something matches, so if
+ *. The router does not fall through to camerakeys once something matches, so if
  * "only take it over when there is a selection" is not honored, Shift+Z with no selection becomes a dead key.
  * That boundary is pinned down here.
  *
@@ -83,7 +83,7 @@ test('Shift+X mirrors the selection on the X axis / two presses restore it', asy
   // The bbox is x=0..2, so mirrorSum=2: x=0→2 / 1→1 / 2→0
   expect(mirrored).toEqual(['0,0', '2,0', '2,1', '1,0'].sort());
 
-  // Mirroring does not touch the transform (it is expressed on the entity side, the design decision of #63)
+  // Mirroring does not touch the transform (it is expressed on the entity side, by design)
   expect(await page.evaluate((id) => window.__bs.doc.tree.getNode(id)?.transform, groupId)).toBeUndefined();
 
   await page.keyboard.press('Shift+X');
@@ -130,7 +130,7 @@ test('Ctrl+Shift+Z stays redo (it is not swallowed by mirror)', async ({ page })
   expect(await occupiedCells(page)).toEqual(mirrored); // the mirror was redone (not mirrored a second time)
 });
 
-test('with no selection Shift+Z is not taken over and falls through to the camera (#65 review P1)', async ({ page }) => {
+test('with no selection Shift+Z is not taken over and falls through to the camera', async ({ page }) => {
   await seedProject(page);
   await page.keyboard.press('v'); // select tool, but select nothing
   await page.evaluate(() => window.__bs.selection.set({ kind: 'none' }));

@@ -6,7 +6,7 @@
   box-sizing: border-box;
 }
 
-/* Default theme is light. Dark mode is overridden by design-system.css's [data-theme='dark'] (#144) */
+/* Default theme is light. Dark mode is overridden by design-system.css's [data-theme='dark'] */
 :root {
   color-scheme: light;
 }
@@ -79,7 +79,7 @@ body {
   padding-inline: 7px;
 }
 
-/* Stacked swatch pair (#87). Same layout as Photoshop's foreground/background
+/* Stacked swatch pair. Same layout as Photoshop's foreground/background
    colors: front = the block being placed now (top-left), back = the reserve
    (bottom-right). Swaps with the X key */
 /* Height matches the content (two offset, overlapping swatches). Since the
@@ -499,7 +499,7 @@ body {
   user-select: none;
 }
 
-/* Icon rail along the left edge. Panel switching is consolidated here (#61).
+/* Icon rail along the left edge. Panel switching is consolidated here.
    Horizontal tabs get thinner per item as items increase, but a rail only
    needs to grow vertically */
 #sidebar-rail {
@@ -720,7 +720,7 @@ body {
   text-overflow: ellipsis;
 }
 
-/* Block usage list (#48). Fixed at the bottom of the right panel, scrolls internally as rows grow */
+/* Block usage list. Fixed at the bottom of the right panel, scrolls internally as rows grow */
 #block-usage {
   /* **Don't shrink this.** The inspector can scroll on its own, so it's the
      one that shrinks when space is tight. Letting this shrink instead would
@@ -1573,7 +1573,7 @@ body {
 /* Drop indicator at the top/bottom edge of a row. Class names are assigned
    by on-screen position — since it's inverted relative to sibling index
    order (the front is displayed on top), using before/after would leave it
-   ambiguous which "before" is meant (#110) */
+   ambiguous which "before" is meant */
 #layers .layer-row.drop-above {
   box-shadow: inset 0 2px 0 0 var(--accent);
 }
@@ -1699,7 +1699,7 @@ body {
   white-space: nowrap;
 }
 
-/* --- Shape dropdown for range fill (#64, same layout as Figma's shape tool) --- */
+/* --- Shape dropdown for range fill (same layout as Figma's shape tool) --- */
 
 .shape-control {
   display: flex;
@@ -1775,7 +1775,7 @@ body {
   padding-top: 6px;
 }
 
-/* Per-shape parameters (#64). Only show the ones that apply to that shape */
+/* Per-shape parameters. Only show the ones that apply to that shape */
 .shape-menu .shape-params {
   display: flex;
   flex-direction: column;
@@ -1812,7 +1812,7 @@ body {
   display: none;
 }
 
-/* Repaint the selected range (#64 PR-C) */
+/* Repaint the selected range */
 .inspector-repaint {
   display: flex;
   flex-direction: column;
@@ -1824,7 +1824,7 @@ body {
   width: 100%;
 }
 
-/* Component list (#69 Step 3). Same skeleton as the recipe panel, with a thumbnail column added */
+/* Component list. Same skeleton as the recipe panel, with a thumbnail column added */
 #components {
   font-size: 13px;
   overflow-y: auto;
@@ -1883,7 +1883,7 @@ body {
   background: var(--bs-surface-control-hover);
 }
 
-/* Component instance (#69 Step 3c). A light purple that won't be confused with the selection blue */
+/* Component instance. A light purple that won't be confused with the selection blue */
 #layers .layer-row-instance {
   background: color-mix(in srgb, rebeccapurple 8%, transparent);
 }
@@ -1899,7 +1899,7 @@ body {
   opacity: 0.85;
 }
 
-/* Component list controls (#69) */
+/* Component list controls */
 #components .component-name-input {
   flex: 1;
   min-width: 0;
@@ -1922,7 +1922,7 @@ body {
   background: var(--bs-surface-control-hover);
 }
 
-/* Banner for component-editing mode (#69). No other controls are shown, so this is the only thing visible */
+/* Banner for component-editing mode. No other controls are shown, so this is the only thing visible */
 #components .component-editing {
   display: flex;
   align-items: center;
@@ -1933,7 +1933,7 @@ body {
   border-bottom: 1px solid var(--panel-border);
 }
 
-/* Axis gizmo (#148). Fixed to a corner of the viewport, rotating to match
+/* Axis gizmo. Fixed to a corner of the viewport, rotating to match
    camera orientation. Placing it in 3D space would make it disappear off
    screen once the project moves away from the origin */
 .axis-gizmo {

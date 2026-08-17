@@ -10,7 +10,7 @@ import {
 } from '../scripts/bedrock-parse.mjs';
 
 /**
- * Rules for reading the upstream files (#97 stage 2).
+ * Rules for reading the upstream files.
  *
  * The real files (`data/bedrock/*`) belong to Mojang under All rights reserved, so they are
  * gitignored and **do not exist in CI**. The rules are therefore extracted into pure functions
@@ -129,7 +129,7 @@ describe('expandFaceRefs — expands the three upstream forms into 6 faces', () 
   });
 });
 
-describe('expandFaceRefs — validates the values even when every key is present (#97 stage 2 review)', () => {
+describe('expandFaceRefs — validates the values even when every key is present', () => {
   const sixFaces = (value: unknown) => ({
     down: value,
     up: value,

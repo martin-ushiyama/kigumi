@@ -1,8 +1,8 @@
 import { expect, test, type Page } from '@playwright/test';
 
 /**
- * E2E protecting the "Space = pan only" implementation from PR #6.
- * Covers the fifth item of Issue #8 "the E2E tests to protect first" (Space pan + tool suppression).
+ * E2E protecting the "Space = pan only" implementation.
+ * Covers the fifth item of "the E2E tests to protect first" (Space pan + tool suppression).
  *
  * A review comment (2026-07-20) noted that dragging synchronously right after the Space keydown
  * has a track record of missing the one-frame target clear problem in camerakeys.ts,

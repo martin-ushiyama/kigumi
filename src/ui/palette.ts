@@ -10,13 +10,13 @@ type Category = BlockDef['category'];
 
 /**
  * **Kept as a function.** A module-level constant would bake in the language at
- * load time, leaving stale labels behind even after a re-render on language switch (#70)
+ * load time, leaving stale labels behind even after a re-render on language switch
  */
 const categoryLabel = (cat: Category): string =>
   ({ stone: t('palette.stone'), wood: t('palette.wood'), soil: t('palette.soil'), misc: t('palette.misc') })[cat];
 
 const SHAPE_ORDER: Record<Shape, number> = { full: 0, slab: 1, stairs: 2 };
-/** Same as above: a module-level constant would bake in the language on switch (#70) */
+/** Same as above: a module-level constant would bake in the language on switch */
 const shapeLabel = (shape: Shape): string =>
   ({ full: '', slab: t('palette.slab'), stairs: t('palette.stairs') })[shape];
 

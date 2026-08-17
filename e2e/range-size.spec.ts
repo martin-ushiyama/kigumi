@@ -1,7 +1,7 @@
 import { expect, test, type Page } from '@playwright/test';
 
 /**
- * The dimension readout during a range operation (#83).
+ * The dimension readout during a range operation.
  *
  * The counting itself (inclusive of both ends / cell count / upper limit) belongs to `tests/rangesize.test.ts`.
  * What is checked here is **when it appears**: only during an operation, and gone once committed.
@@ -97,7 +97,7 @@ test('it disappears once committed', async ({ page }) => {
 /**
  * Right after committing, the completion toast takes over the status bar, so looking only at that moment makes it
  * seem like the dimensions are gone. This also confirms they do not come back after the toast withdraws
- * (#83 review: on the Shift+click path, since removed, the old dimensions reappeared about 2.5 seconds later).
+ * (on the Shift+click path, since removed, the old dimensions reappeared about 2.5 seconds later).
  */
 test('after committing, the dimensions do not come back once the toast disappears', async ({ page }) => {
   const a = await groundPos(page, 2, 2);

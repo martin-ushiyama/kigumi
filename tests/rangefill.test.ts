@@ -4,10 +4,10 @@ import { OP_MAX_CELLS, SHAPE_MAX_SCAN_CELLS } from '../src/core/limits';
 import { resolveRangeCells, type RangeFillInput } from '../src/editor/rangefill';
 
 /**
- * The contract for which cells a range operation (shape fill) touches (#64).
+ * The contract for which cells a range operation (shape fill) touches.
  *
  * There used to be a mode (overlay / place / erase) that pinned down "which operation
- * passes the shape through," but it was removed in #103 along with the Shift+click bulk
+ * passes the shape through," but it was removed along with the Shift+click bulk
  * operation. What remains is the contract that "the selected shape/parameters are correctly
  * passed through to generation" plus the limits.
  */

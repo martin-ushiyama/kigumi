@@ -2,7 +2,7 @@ import type { Cell } from './types';
 import { makeCellKey } from './types';
 import { createEmitter, type Unsubscribe } from './emitter';
 
-/** VoxelWorld change notification event types (#13). stage/stageMany pass the changed cells' keys together */
+/** VoxelWorld change notification event types. stage/stageMany pass the changed cells' keys together */
 export type WorldChange =
   | { kind: 'cells'; keys: readonly string[] }
   | { kind: 'replaceAll' }
@@ -22,7 +22,7 @@ const key = makeCellKey;
 /**
  * VoxelWorld's read-only contract. Passed to render/input/ui as this type so the write
  * methods (stage/stageMany/clear/replaceAll) can't be called on it at the type level.
- * Writes are restricted to going through Document (src/core/document.ts) (#10).
+ * Writes are restricted to going through Document (src/core/document.ts).
  */
 export interface WorldReader {
   readonly size: number;
@@ -41,7 +41,7 @@ export class VoxelWorld implements WorldReader {
   private map = new Map<string, number>();
   private readonly emitter = createEmitter<WorldChange>();
 
-  /** #13: supports multiple subscribers, returns an unsubscribe function (the old onChange used a single callback slot, which would conflict with future multi-feature use) */
+  /** Supports multiple subscribers, returns an unsubscribe function (the old onChange used a single callback slot, which would conflict with future multi-feature use) */
   subscribe(fn: (event: WorldChange) => void): Unsubscribe {
     return this.emitter.subscribe(fn);
   }

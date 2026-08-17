@@ -5,7 +5,7 @@ import { SelectionStore } from '../src/editor/selection';
 import { DocumentFixture } from './helpers/document-fixture';
 
 /**
- * Precondition tests for ghost preview (#37 B1b). Even making group drag a "ghost that
+ * Precondition tests for ghost preview. Even making group drag a "ghost that
  * doesn't move the source of truth" only relocates where the weight sits if the overlay
  * side rebuilds the InstancedMesh on every pointermove, so this pins down structurally
  * that `setDragOffset()` never triggers a rebuild.
@@ -39,7 +39,7 @@ function instancedMeshOf(scene: THREE.Scene): THREE.InstancedMesh | undefined {
   return rootOf(scene).children.find((c): c is THREE.InstancedMesh => c instanceof THREE.InstancedMesh);
 }
 
-describe('SelectionOverlay — ghost translation (#37 B1b)', () => {
+describe('SelectionOverlay — ghost translation', () => {
   it('setDragOffset does not rebuild the InstancedMesh, keeping the same instance', () => {
     const { scene, overlay } = setup([[0, 0, 0], [1, 0, 0], [2, 0, 0]]);
     const before = instancedMeshOf(scene);
