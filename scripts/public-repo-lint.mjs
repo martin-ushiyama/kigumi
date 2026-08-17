@@ -24,8 +24,7 @@ const __dirname = dirname(fileURLToPath(import.meta.url));
 export const REPO_ROOT = resolve(__dirname, '..');
 
 // The same class architecture-lint.mjs uses, so the two guards agree on what "Japanese" is.
-// Half-width katakana is included: it is Japanese written entirely outside the usual kana blocks.
-const JAPANESE = /[々〆぀-ゟ゠-ヿ一-鿿ｦ-ﾟ]/;
+const JAPANESE = /[〆\p{Script=Han}\p{Script=Hiragana}\p{Script=Katakana}]/u;
 
 // The account every commit is written with. This one is public by construction — it is the
 // owner segment of the repository URL and the copyright line in LICENSE — so it is spelled out

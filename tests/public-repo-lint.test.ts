@@ -361,11 +361,24 @@ describe('checkCommitMessages', () => {
     expect(violations[0]).toContain('the commit message');
   });
 
-  it('rejects half-width katakana, which sits outside the usual kana blocks', () => {
+  // Each of these is Japanese that a hand-written kana-and-kanji range misses.
+  it.each([
+    ['half-width katakana', 'ﾆﾎﾝｺﾞ'],
+    ['the ideographic zero', '〇'],
+    ['the closing mark', '〆'],
+    ['a kanji outside the basic plane', '𠮷'],
+  ])('rejects %s in a commit message', (_label, sample) => {
     const dir = scratchRepo();
     commit(dir, 'initial');
-    commit(dir, 'fix: ﾆﾎﾝｺﾞ');
+    commit(dir, `fix: ${sample}`);
     expect(checkCommitMessages(dir, 'HEAD~1..HEAD')).toHaveLength(1);
+  });
+
+  it('does not mistake ordinary English for Japanese', () => {
+    const dir = scratchRepo();
+    commit(dir, 'initial');
+    commit(dir, 'fix: p S c r i p t Han Hiragana Katakana');
+    expect(checkCommitMessages(dir, 'HEAD~1..HEAD')).toEqual([]);
   });
 
   it('rejects a name and a co-author trailer in the body', () => {

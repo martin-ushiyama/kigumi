@@ -285,9 +285,14 @@ export function checkStateTypeImports(srcRoot = SRC_ROOT) {
  * @returns {string[]} the violation messages (empty when there are none)
  */
 const DISPLAY_LAYERS = ['input', 'ui', 'project', 'export', 'services'];
-// Hiragana, katakana, CJK ideographs, the iteration and closing marks, and half-width katakana.
-// Half-width katakana is easy to leave out and is still Japanese, so it is in.
-const JAPANESE = /[々〆぀-ゟ゠-ヿ一-鿿ｦ-ﾟ]/;
+// Hiragana, katakana and Han, by Unicode script rather than by hand-written ranges. Spelled out
+// as ranges this kept missing things: half-width katakana, the ideographic zero, the extension
+// blocks, the kanji that live outside the basic plane. U+3006, the closing mark, is the one
+// addition — it is script Common rather than Han, so the properties alone do not reach it.
+//
+// The characters themselves are not written here. This guard rejects them in a comment, and
+// naming them would make the file that defines the rule the only one that breaks it.
+const JAPANESE = /[〆\p{Script=Han}\p{Script=Hiragana}\p{Script=Katakana}]/u;
 const ALLOW_MARKER = 'i18n-allow';
 const LITERAL_ALLOWED_FILES = [join('ui', 'help.ts')];
 
