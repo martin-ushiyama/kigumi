@@ -342,27 +342,44 @@ export function checkCommitContents(repoRoot, range) {
     const short = sha.slice(0, 8);
     const dir = mkdtempSync(join(tmpdir(), 'public-repo-lint-'));
     try {
+      // The path of an entry that has no readable blob still has to be checked. A submodule is a
+      // commit object rather than a blob, and a name that cannot be written to this filesystem
+      // has no file either, yet both publish their path.
+      const checkPathOnly = (rel) => {
+        for (const hit of forbiddenTokens(rel)) {
+          violations.push(`${short}: a forbidden word in the path ${rel} (hash ${hit.hash})`);
+        }
+        if (JAPANESE.test(rel)) violations.push(`${short}: Japanese in the path ${rel}`);
+      };
+
       const present = [];
       for (const rel of paths) {
-        let blob;
+        let type;
         try {
-          blob = execFileSync('git', ['cat-file', 'blob', `${sha}:${rel}`], {
-            cwd: repoRoot,
-            encoding: 'buffer',
-            maxBuffer: 256 * 1024 * 1024,
-          });
+          type = execFileSync('git', ['cat-file', '-t', `${sha}:${rel}`], { cwd: repoRoot, encoding: 'utf8' }).trim();
         } catch {
-          // Not in this commit's tree — the commit deleted it. Whatever it held was already read
-          // at the commit that introduced it.
+          // Not in this commit's tree — the commit deleted it. Whatever it held was read at the
+          // commit that introduced it, and a change that removes something is not at fault for it.
           continue;
         }
+        if (type !== 'blob') {
+          checkPathOnly(rel);
+          continue;
+        }
+        const blob = execFileSync('git', ['cat-file', 'blob', `${sha}:${rel}`], {
+          cwd: repoRoot,
+          encoding: 'buffer',
+          maxBuffer: 256 * 1024 * 1024,
+        });
         const full = join(dir, rel);
         try {
           mkdirSync(dirname(full), { recursive: true });
           writeFileSync(full, blob);
         } catch {
-          // A name git accepts but this filesystem does not. Say so rather than pass in silence.
-          violations.push(`${short}: ${rel} could not be materialised for inspection`);
+          // A name git accepts but this filesystem does not. The path is still checked, and the
+          // contents are reported as unread rather than passed over in silence.
+          checkPathOnly(rel);
+          violations.push(`${short}: the contents of ${rel} could not be read for inspection`);
           continue;
         }
         present.push(rel);

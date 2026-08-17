@@ -68,8 +68,10 @@ jobs:
         with:
           node-version-file: '.nvmrc'
 
-      # No `npm ci` on purpose. The guard uses only node builtins and git, so it can report a
-      # violation in seconds instead of waiting on an install.
+      # The history guard runs the comment check over each commit, and that check parses with the
+      # TypeScript compiler, so the dependencies have to be here.
+      - run: npm ci
+
       - name: tracked files (document language / personal names)
         run: node scripts/public-repo-lint.mjs
 

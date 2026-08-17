@@ -310,6 +310,22 @@ describe('checkCommitContents', () => {
     expect(checkCommitContents(dir, 'HEAD')).toHaveLength(1);
   });
 
+  it('checks the path of an entry that is not a blob, such as a submodule', () => {
+    const dir = scratchRepo();
+    track(dir, 'base.md', 'Base.\n');
+    commit(dir, 'initial');
+    const head = execFileSync('git', ['rev-parse', 'HEAD'], { cwd: dir, encoding: 'utf8' }).trim();
+    // A gitlink: the entry resolves to a commit object, so there is no blob to read.
+    execFileSync('git', ['update-index', '--add', '--cacheinfo', `160000,${head},${GIVEN_NAME}-vendor`], {
+      cwd: dir,
+      encoding: 'utf8',
+    });
+    commit(dir, 'add a submodule');
+    const violations = checkCommitContents(dir, 'HEAD~1..HEAD');
+    expect(violations).toHaveLength(1);
+    expect(violations[0]).toContain('in the path');
+  });
+
   it('does not fail a commit for content it removes', () => {
     const dir = scratchRepo();
     track(dir, 'notes.md', `Reviewed by ${GIVEN_NAME}.\n`);
