@@ -367,6 +367,8 @@ describe('checkCommitMessages', () => {
     ['the ideographic zero', '〇'],
     ['the closing mark', '〆'],
     ['a kanji outside the basic plane', '𠮷'],
+    ['the prolonged sound mark, whose primary script is Common', 'ー'],
+    ['the ideographic full stop', '。'],
   ])('rejects %s in a commit message', (_label, sample) => {
     const dir = scratchRepo();
     commit(dir, 'initial');
@@ -374,10 +376,16 @@ describe('checkCommitMessages', () => {
     expect(checkCommitMessages(dir, 'HEAD~1..HEAD')).toHaveLength(1);
   });
 
-  it('does not mistake ordinary English for Japanese', () => {
+  // The middle dot is script-extended to Han but belongs to ordinary English too, so it is
+  // deliberately excluded. The rest guards against the expression collapsing into its own letters.
+  it.each([
+    ['plain words', 'fix: p S c r i p t Han Hiragana Katakana'],
+    ['a middle dot', 'fix: read A · B as one'],
+    ['accents and dashes', 'fix: café — naïve … résumé'],
+  ])('does not mistake %s for Japanese', (_label, message) => {
     const dir = scratchRepo();
     commit(dir, 'initial');
-    commit(dir, 'fix: p S c r i p t Han Hiragana Katakana');
+    commit(dir, message);
     expect(checkCommitMessages(dir, 'HEAD~1..HEAD')).toEqual([]);
   });
 

@@ -121,7 +121,10 @@ export default tseslint.config(
   {
     files: ['**/*.mjs'],
     languageOptions: {
-      ecmaVersion: 2022,
+      // 2024 for the regular expression `v` flag, which the language guard uses to subtract a
+      // character from a set of Unicode script extensions. Node 24 (.nvmrc) has had it for a
+      // long while; only the parser needed telling.
+      ecmaVersion: 2024,
       sourceType: 'module',
       globals: globals.node,
     },
