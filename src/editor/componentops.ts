@@ -23,7 +23,7 @@ import type { OpResult } from './ops';
 import type { NormalizedSelection } from './selection';
 
 /**
- * Registering and placing a component (#69 Step 1).
+ * Registering and placing a component.
  *
  * **An instance also holds cells like a regular group** (option B). Adding an owner
  * with no physical body would force every existing builder to carry a branch for it, so
@@ -33,7 +33,7 @@ import type { NormalizedSelection } from './selection';
  * Nothing special is done for paint. `PatternPaint` doesn't hold the pattern itself and
  * always derives it from world coordinates (`patternSampleAt`), so **the pattern
  * changes whenever the placement location changes** — this structurally satisfies "the
- * pattern-paint algorithm is decided by coordinates" (settled in #69).
+ * pattern-paint algorithm is decided by coordinates".
  */
 
 /** Result of registering. Call `store.add(template)` only after the tx has applied successfully */
@@ -63,9 +63,9 @@ export function buildCreateComponent(
   if (!rootNode) return { error: 'groupNotFound' };
   // **Only look at a live marker** — a group whose marker points to a component that's
   // been removed from the list is just a regular group, so it can be made into a
-  // component again (#142 review P1)
+  // component again
   if (doc.templateIdOf(rootId) !== null) return { error: 'componentAlreadyInstance' };
-  // **Refuse if an instance exists among the descendants** (#142 review P1). Nesting is
+  // **Refuse if an instance exists among the descendants**. Nesting is
   // out of initial scope, and extracting as-is would drop the child's marker and
   // collapse it into a regular group — an unrequested detach. Checking only the root
   // wouldn't guard against this, so the whole selected subtree is checked first
@@ -200,7 +200,7 @@ export function buildPlaceComponent(
  * The rotation center (`pivot2`) is decided **from the component's contents**. Making
  * this `[0, 0]` would center a rotation right after placing on the origin, sending an
  * instance placed far away flying off (same contract as using the bounds center for a
- * transform-unset group's first rotation, #37).
+ * transform-unset group's first rotation).
  */
 export function placementTransform(
   template: ComponentTemplate,
@@ -218,7 +218,7 @@ export function placementTransform(
   // **Subtract off the location it was made at.** Cells are owner-local, but for a group
   // with no transform, local == world, so a component made high up or far away has that
   // position baked into its cell coordinates. Placing it as-is would put it away from
-  // the click position (#69)
+  // the click position
   const [ox, oy, oz] = componentMinCorner(template);
   return {
     angleSteps: 0,
@@ -234,7 +234,7 @@ export function placementTransform(
  * **This is the source of truth for everything placement-related.** The min corner,
  * ghost preview, placement result, and range checks all read this. Using
  * `template.cells`'s local coordinates as-is would offset "the location shown" from "the
- * location actually placed" by however much a child node was moved (#142 review P1).
+ * location actually placed" by however much a child node was moved.
  *
  * **The root's transform is not applied.** It gets swapped in at the placement position
  * when placing, so what's being looked at here is "the shape of the contents as seen
@@ -298,7 +298,7 @@ export function componentPlacementOffsets(template: ComponentTemplate): Cell[] {
   return componentProjectedCells(template).map(([x, y, z]) => [x - ox, y - oy, z - oz]);
 }
 
-/** Reverts instances of a component removed from the list back to plain groups (#69: don't mix "decide to remove" with "decide to detach") */
+/** Reverts instances of a component removed from the list back to plain groups (don't mix "decide to remove" with "decide to detach") */
 export function buildDetachInstancesOf(doc: Document, templateId: string): OpResult {
   const ops: DocOp[] = [];
   for (const node of doc.tree.allNodesPreOrder()) {
@@ -312,7 +312,7 @@ export function buildDetachInstancesOf(doc: Document, templateId: string): OpRes
 export { cloneComponent };
 
 /**
- * Propagates an edit to a component out to all of that component's instances (#69 Step
+ * Propagates an edit to a component out to all of that component's instances (Step
  * 2).
  *
  * **Built as a single transaction.** Applying per-instance would leave a work with "only
@@ -330,7 +330,7 @@ export { cloneComponent };
  * | Root's contents (cells, paint, child groups) | **Replaced with the component's** |
  *
  * **If an instance was edited directly, that edit is lost here.** "Sync wins" is this
- * approach's contract (#69 option B). Detach first if you want to change one instance
+ * approach's contract. Detach first if you want to change one instance
  * individually.
  */
 export function buildSyncInstancesOf(doc: Document, template: ComponentTemplate): OpResult {
@@ -339,7 +339,7 @@ export function buildSyncInstancesOf(doc: Document, template: ComponentTemplate)
   // **Having none placed at all is not a failure.** There's simply nothing to sync, so
   // an empty tx is returned — turning this into an error would mean editing a component
   // that hasn't been placed anywhere could never finalize, leaving no way out of edit
-  // mode either (#142 review P1)
+  // mode either
   const roots = [...doc.tree.allNodesPreOrder()].filter((node) => node.templateId === template.id);
   if (!roots.length) return { tx: { ops: [] } };
   if (roots.length * template.cells.length > OP_MAX_CELLS) {
@@ -352,7 +352,7 @@ export function buildSyncInstancesOf(doc: Document, template: ComponentTemplate)
     // Check up front, before building the op, whether the placed result fits within
     // range (don't leave things half-placed on failure). **Look at projected cells
     // through the world coordinates produced by that instance's effective transform**
-    // (#142 review P1) — measuring with the raw local key plus only the root's translate
+    // — measuring with the raw local key plus only the root's translate
     // added would miss child-node moves and root rotation, letting it slip past this
     // check. If it only fails on the applied-time invariant, that's after the history
     // session has closed, breaking the state along with everything that was being edited
@@ -413,7 +413,7 @@ export function buildSyncInstancesOf(doc: Document, template: ComponentTemplate)
 }
 
 /**
- * Detaches a single instance from its component (Figma's "Detach instance", #69 Step 2).
+ * Detaches a single instance from its component (Figma's "Detach instance" Step 2).
  *
  * The contents stay as-is; only the `templateId` marker is removed. **From then on, it
  * won't follow further edits to the component.** Unlike "decide to remove"
@@ -430,7 +430,7 @@ export function buildDetachInstance(doc: Document, groupId: string): OpResult {
 }
 
 /**
- * Enters component edit mode (#69).
+ * Enters component edit mode.
  *
  * **Hides everything else and shows only the component's contents.** An instance's
  * contents aren't normally editable, so fixing one needs a place to show "the component
@@ -445,7 +445,7 @@ export function buildDetachInstance(doc: Document, groupId: string): OpResult {
  * everything changed during editing. The only thing that remains in the work is the
  * single change "the instance became a new shape" (recording intermediate steps in
  * history would restore the editing screen on an undo after exiting, leaving the mode
- * flag set without the mode itself, #142 review P1).
+ * flag set without the mode itself review P1).
  */
 export function buildEnterComponentEdit(
   doc: Document,
@@ -472,7 +472,7 @@ export function buildEnterComponentEdit(
 }
 
 /**
- * Exits component edit mode (#69).
+ * Exits component edit mode.
  *
  * Extracts the working group's contents, writes them back to the component, and
  * propagates them to placed instances. The working group is deleted and hidden items
@@ -493,7 +493,7 @@ export function collectComponentEdit(
 }
 
 /**
- * State that only exists for the duration of edit mode (#69 / #142 review P1).
+ * State that only exists for the duration of edit mode.
  *
  * **One-to-one with the history session.** Holding this separately as a screen-side
  * variable would let an undo remove just the session's prerequisite (the working group)
@@ -561,13 +561,13 @@ export function endComponentEdit(
 
   // From here on, the session is closed. **Edit mode ends no matter what happens** —
   // if it rolled back but the mode flag stayed set, there'd be no way left to exit
-  // (#142 review P1)
+  //
   doc.closeHistorySession(session.historyMark);
   if (!collected) return { template: null };
 
   const synced = buildSyncInstancesOf(doc, collected.template);
   if (!('tx' in synced)) return { template: null, failed: synced };
-  // **Bundles replacing the definition with rebuilding the instances into one** (#142
+  // **Bundles replacing the definition with rebuilding the instances into one** (raised in
   // review P1). Being in separate history entries would let undo revert only one side,
   // mixing shapes that differ despite sharing an id. Document overwrites `before` with
   // the measured value, so it's enough to declare only `after` here

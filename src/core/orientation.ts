@@ -42,7 +42,7 @@ export function isValidOrientationCode(value: unknown): value is number {
 }
 
 /**
- * Reserved catalogIndex used for the **void cell** (#113). Not a real catalog entry.
+ * Reserved catalogIndex used for the **void cell**. Not a real catalog entry.
  *
  * Void is a cell that means "blocksmith isn't placing anything here" — stacking it in front
  * hides whatever's behind it (a hole). **It doesn't carve anything away, so it can still be
@@ -71,13 +71,13 @@ export function packCell(catalogIndex: number, code: number): number {
 /** Cell value for the void cell. It has no concept of orientation, so code is always 0 */
 export const VOID_CELL = packCell(VOID_CATALOG_INDEX, 0);
 
-/** Whether this cell value is void (#113). Not out-of-catalog indices in general — only the reserved index counts as void */
+/** Whether this cell value is void. Not out-of-catalog indices in general — only the reserved index counts as void */
 export function isVoidCell(raw: number): boolean {
   return Math.floor(raw / ORIENTATION_BITS) === VOID_CATALOG_INDEX;
 }
 
 /**
- * Builds the value to paint (#113). **Void has no orientation, so the code is discarded.**
+ * Builds the value to paint. **Void has no orientation, so the code is discarded.**
  *
  * Calling `packCell` directly would let you build a value where void carries an orientation
  * code (`packCell(VOID, 3)`). `isVoidCell` would still return true for it, so it would work,
@@ -143,7 +143,7 @@ export function stairsFacingXZ(weirdoDirection: 0 | 1 | 2 | 3): readonly [number
  * **This is the single path that rotates stair orientation.** The T-key / inspector
  * orientation cycle, group rotation (`transform.ts::rotateRaw`), and the projection all go
  * through this. Writing `weirdoDirection + steps` would produce 180-degree jumps like
- * east→west (since 0 and 1 are 180 degrees apart) — in fact, the #114 review found exactly
+ * east→west (since 0 and 1 are 180 degrees apart) — in fact, review found exactly
  * that old addition still lingering in the T-key path. Keeping this as a single copyable
  * implementation is what guarantees one side never goes stale on its own.
  *
@@ -216,7 +216,7 @@ export function encodeOrientation(o: Orientation): number {
  * there's never a second definition).
  *
  * **Not exported** — the meaning model is `Orientation` alone; the state assignment exists
- * purely for save/export purposes (#138 review note).
+ * purely for save/export purposes.
  */
 function orientationToStates(o: Orientation): StateAssignment {
   switch (o.shape) {

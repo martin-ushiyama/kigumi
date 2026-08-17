@@ -5,7 +5,7 @@ import { CURATION_CATEGORIES, curatedBlocks } from '../scripts/curation.mjs';
 import type { CurationEntry } from '../scripts/curation.d.mts';
 
 /**
- * Rules for reading the inclusion policy (`src/data/curation.json`) (#97 stage 4).
+ * Rules for reading the inclusion policy (`src/data/curation.json`).
  *
  * Regenerating with `gen-blocks` needs the upstream snapshot (gitignored), so it cannot run in CI.
  * Both curation and the catalog are committed, though, so **their correspondence can always be
@@ -75,7 +75,7 @@ describe('curation reading rules', () => {
       );
     });
 
-    /** The representative color does not belong to curation (the texture average is the source of truth, #137 review) */
+    /** The representative color does not belong to curation (the texture average is the source of truth review) */
     it('rejects a written color as an unknown key', () => {
       // It is removed from the type as well, so this side confirms at runtime that it "can no longer be written"
       const withColor = { category: 'stone', color: '#111111', included: true } as never;
@@ -88,7 +88,7 @@ describe('curation reading rules', () => {
 
     /**
      * Because the check was `!== true`, a missing value / null / the string "true" were all
-     * treated the same as a legitimate false, with no diagnostic (#97 stage 4 review, P1).
+     * treated the same as a legitimate false, with no diagnostic (raised in review).
      * The point is to record inclusion as an explicit decision, so ambiguous values are rejected.
      */
     it.each([

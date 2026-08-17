@@ -16,7 +16,7 @@ export const EXPORT_MAX_VOLUME = 2 ** 21;
 export const OP_MAX_CELLS = 32768;
 
 /**
- * Upper bound on the bbox volume that shape generation is **allowed to scan** (#64 review).
+ * Upper bound on the bbox volume that shape generation is **allowed to scan**.
  *
  * A separate constraint from the generated cell count limit (OP_MAX_CELLS). Even when a
  * hollow shape's result is much smaller than the bbox volume, every cell still needs to be
@@ -44,7 +44,7 @@ export function isValidCell(x: number, y: number, z: number): boolean {
 }
 
 /**
- * Whether valid as an owner-local coordinate (#37). Unlike isValidCell for world space, this
+ * Whether valid as an owner-local coordinate. Unlike isValidCell for world space, this
  * doesn't require y >= 0 — a negative group-local y is legitimate after inverse transforms
  * or a future reparent. The upper bound is the same COORD_LIMIT as world (a safeguard against pathological files).
  */

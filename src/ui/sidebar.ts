@@ -22,7 +22,7 @@ const TABS: { id: 'layers' | 'palette' | 'recipes' | 'components'; labelKey: UiK
 ];
 
 /**
- * The icon rail on the far left + the panel to its right (#61).
+ * The icon rail on the far left + the panel to its right.
  *
  * Panel switching uses **a vertical rail rather than horizontal tabs.** Tabs
  * split the available width evenly, so each one gets thinner and eventually can't
@@ -52,11 +52,11 @@ export function initSidebarTabs(root: HTMLElement, railRoot: HTMLElement): Sideb
   railNav.setAttribute('role', 'tablist');
   railNav.setAttribute('aria-orientation', 'vertical');
   // Multiple tablists coexist on screen at once (e.g. the change picker's "method" tabs).
-  // Without a label, assistive tech can't tell which switch this is (#61 review)
+  // Without a label, assistive tech can't tell which switch this is
   railNav.setAttribute('aria-label', t('rail.sidePanels'));
 
   /**
-   * The block-name language toggle (#70). UI labels are fixed to English, so this
+   * The block-name language toggle. UI labels are fixed to English, so this
    * is the only thing it switches. The OSS default is English, with this letting
    * Japanese speakers flip to JA.
    */
@@ -84,7 +84,7 @@ export function initSidebarTabs(root: HTMLElement, railRoot: HTMLElement): Sideb
   }
 
   /**
-   * The screen-theme toggle (#144). Built the same way as the language toggle —
+   * The screen-theme toggle. Built the same way as the language toggle —
    * anything that "switches instantly and remembers the choice" lives on the rail
    */
   const themeButton = createButton({
@@ -129,7 +129,7 @@ export function initSidebarTabs(root: HTMLElement, railRoot: HTMLElement): Sideb
   };
   for (const tab of TABS) {
     const panel = panelEls[tab.id]!;
-    // Claiming role=tab requires an association with a matching tabpanel (#61
+    // Claiming role=tab requires an association with a matching tabpanel (raised in
     // review). Hidden panels also get `hidden` set, removing them from assistive tech's reading order
     panel.setAttribute('role', 'tabpanel');
     panel.setAttribute('aria-labelledby', `rail-tab-${tab.id}`);
@@ -166,7 +166,7 @@ export function initSidebarTabs(root: HTMLElement, railRoot: HTMLElement): Sideb
     for (const tab of TABS) {
       const btn = railButtons.get(tab.id)!;
       const on = active === tab.id;
-      // Also called on language switch, so labels are re-resolved here every time (#70)
+      // Also called on language switch, so labels are re-resolved here every time
       btn.setAttribute('aria-label', t(tab.labelKey));
       btn.title = t(tab.labelKey);
       const label = btn.querySelector('.rail-item-label');
@@ -198,7 +198,7 @@ export function initSidebarTabs(root: HTMLElement, railRoot: HTMLElement): Sideb
     e.preventDefault();
     // The router listens for keydown on window, so without stopping it here, the
     // arrow keys would **also leak into selection nudge-move or camera movement**.
-    // Movement within the rail is fully contained right here (#61 review)
+    // Movement within the rail is fully contained right here
     e.stopPropagation();
     active = order[next]!;
     syncRail();

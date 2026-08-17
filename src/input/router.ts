@@ -27,7 +27,7 @@ export interface GestureClaim {
 
 /**
  * A single entry in the pointer-side route table. Priority is exactly the order of the
- * array passed when the router is built (POINTER_ROUTES from the #12 plan). If
+ * array passed when the router is built (POINTER_ROUTES). If
  * onPointerDown returns null, it falls through to the next route; 'handled' consumes
  * the event without creating a claim; returning a GestureClaim makes the router capture
  * the pointer and dedicate all further events with that pointerId to it.
@@ -58,7 +58,7 @@ export interface InputRouterOpts {
    * broadcast.
    */
   escapeHandlers: readonly EscapeHandler[];
-  /** Prioritized routes for pointerdown (#12 PR2). Array order = priority */
+  /** Prioritized routes for pointerdown. Array order = priority */
   pointerRoutes?: readonly PointerRouteHandler[];
 }
 
@@ -70,13 +70,13 @@ export interface InputRouter {
 }
 
 /**
- * The single receiving point for keyboard + pointer input (#12 PR1 keyboard / PR2 pointer).
+ * The single receiving point for keyboard + pointer input.
  *
  * keyboard: (1) typing/modal check -> (2) Escape broadcast -> (3) SHORTCUTS table lookup -> (4) camerakeys fallback
  * pointer: evaluates pointerRoutes in order; once a claim is established, it owns all
  * further events with that pointerId.
  *
- * selecttool.ts was also folded into this router in #12 PR3 (the edit-tools route
+ * selecttool.ts was also folded into this router (the edit-tools route
  * returns null while state.tool === 'select', yielding to the select-tool route to
  * preserve the exclusive relationship). Direct listener registration on canvas/window
  * has been removed from both controls.ts and selecttool.ts — this router is now the

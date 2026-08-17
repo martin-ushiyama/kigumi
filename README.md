@@ -131,25 +131,25 @@ npm run fetch-bedrock-snapshot -- --commit <sha>   # commit を据え置いて�
 
 ### 統合 DB (block-db)
 
-スナップショットの 4 ソースを 1 レコードへ束ねた `data/block-db.json` を作れる (#97 段階 2)。ネットワークは要らない。
+スナップショットの 4 ソースを 1 レコードへ束ねた `data/block-db.json` を作れる。ネットワークは要らない。
 
 ```bash
 npm run build:block-db            # data/block-db.json を作る
 npm run build:block-db -- --check # 書かずに、組み立てられるかと要約だけ出す
 ```
 
-- **テクスチャ manifest (`src/data/textures.json`) はここからの射影**。射影は `scripts/texture-manifest.mjs` が持つ (#97 段階 3、下記「テクスチャ表示」)。DB 自体はアプリから読まない — 収録分だけを射影したものをコミットする
+- **テクスチャ manifest (`src/data/textures.json`) はここからの射影**。射影は `scripts/texture-manifest.mjs` が持つ (下記「テクスチャ表示」)。DB 自体はアプリから読まない — 収録分だけを射影したものをコミットする
 - **lossless** — 面ごとの指定と候補の複数性を落とさない。`{ side, top }` への縮約は射影側の仕事
 - 上流の値はそのままの形で持ち、6 面への展開結果は持たない (同じ事実を 2 つの形で持つと片方が古くなる)。展開が要る側は `expandFaceRefs` を呼ぶ
 - 解釈できないもの・欠けているものは黙って埋めず `diagnostics` に出す
 - アニメーションのコマ数は持たない。物理コマ数には PNG の寸法が要り 4 ソースからは導出できないので、正本はアニメーションテクスチャ側 (下記)
-- 日本語名・カテゴリ・代表色・収録可否も持たない。これは Mojang 由来ではなく**こちらの判断**なので `src/data/curation.json` が持つ (#97 段階 4、下記「収録ポリシー」)
+- 日本語名・カテゴリ・代表色・収録可否も持たない。これは Mojang 由来ではなく**こちらの判断**なので `src/data/curation.json` が持つ (下記「収録ポリシー」)
 - 生成物は gitignore。上流の事実をほぼそのまま束ねたものなので、上流ファイルを再配布しない判断と揃える。コミットするのは収録分だけを射影した `src/data/*.json`
 - build 時に、収録カタログが DB 経由で 6 面すべて実ファイルまで到達するかを検査する (manifest への射影が成立する前提なので、崩れたら止める)
 
 ### 収録ポリシー (curation)
 
-**何を収録するか / 日本語名 / カテゴリ / 代表色は `src/data/curation.json`** (#97 段階 4)。Mojang 由来の事実ではなく**こちらの判断**なので、上流スナップショットと分けて持つ。以前は `gen-blocks.mjs` の中に 100 行の手書きリストとして入っていて、上流を読む規則と混ざっていた。
+**何を収録するか / 日本語名 / カテゴリ / 代表色は `src/data/curation.json`**。Mojang 由来の事実ではなく**こちらの判断**なので、上流スナップショットと分けて持つ。以前は `gen-blocks.mjs` の中に 100 行の手書きリストとして入っていて、上流を読む規則と混ざっていた。
 
 ```json
 "minecraft:crimson_stem": { "nameJa": "真紅の幹", "category": "wood", "color": "#5c1f38", "included": true }
@@ -188,9 +188,9 @@ npm run fetch-textures   # Mojang 公式 bedrock-samples から取得して publ
 
 PNG は「1 枚でもあれば」ではなく**対象が全件揃っているか**で判定する。一部だけ取得済みの状態を「実寸まで検証済み」と名乗ると、残りが古いまま通る。
 
-- **収録ブロックとテクスチャ manifest は同じ集合**であることが CI 契約 (#92)。片方だけ増減したらテストが落ちるので、「何種のうち何種」を数えて書き留める必要がない
-- 実ファイル名の正本は上流の `terrain_texture.json` (#92)。命名規則からの推測では届かないものがある — 例えば `crimson_stem` の実ファイルは `huge_fungus/crimson_log_side` で、crimson だけ "log" 名になっている
-- **手書きの対応表は持たない** (#97 段階 3)。`src/data/textures.json` は統合 DB (`data/block-db.json`) からの射影で、`scripts/texture-manifest.mjs` が 6 面 → `{ side, top? }` に潰す。上流の事実だけでは決まらない判断 (旧世代 data value 多重化のどれを採るか / 下面を捨てること / 現行と見た目が変わる裁定) は `src/data/texture-ledger.json` に理由付きで置き、**裁定と違う結果になったら生成が落ちる**
+- **収録ブロックとテクスチャ manifest は同じ集合**であることが CI 契約。片方だけ増減したらテストが落ちるので、「何種のうち何種」を数えて書き留める必要がない
+- 実ファイル名の正本は上流の `terrain_texture.json`。命名規則からの推測では届かないものがある — 例えば `crimson_stem` の実ファイルは `huge_fungus/crimson_log_side` で、crimson だけ "log" 名になっている
+- **手書きの対応表は持たない**。`src/data/textures.json` は統合 DB (`data/block-db.json`) からの射影で、`scripts/texture-manifest.mjs` が 6 面 → `{ side, top? }` に潰す。上流の事実だけでは決まらない判断 (旧世代 data value 多重化のどれを採るか / 下面を捨てること / 現行と見た目が変わる裁定) は `src/data/texture-ledger.json` に理由付きで置き、**裁定と違う結果になったら生成が落ちる**
 - 上下で絵が違うブロック (砂岩系) は下面が捨てられる。renderer は `top` を +y と -y の両方に貼るため。承認は ledger の `dropsDownFace`
 - テクスチャ未取得のブロックは自動的にフラットカラーにフォールバックする (取得の有無に関わらず動作する)
 

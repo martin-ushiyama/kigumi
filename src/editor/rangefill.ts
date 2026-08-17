@@ -10,7 +10,7 @@ import {
 } from '../core/shapes';
 
 /**
- * Determines the cells touched by a range operation (shape fill) (#64).
+ * Determines the cells touched by a range operation (shape fill).
  *
  * Writing this as a conditional branch inside `controls.ts`'s DOM handler would bury
  * the contract somewhere untestable. This factors it out as a pure function, pinned
@@ -18,7 +18,7 @@ import {
  *
  * It used to have a `mode` (overlay / place / erase), with a branch for Shift+click
  * range place / erase that bypassed shapes entirely, but that whole operation family
- * was removed in #103. The entry point for range operations is shape fill alone, always
+ * was removed. The entry point for range operations is shape fill alone, always
  * generating from the currently selected shape.
  */
 export type RangeFillInput = {

@@ -20,7 +20,7 @@ test('the app starts and the Figma-style shell and viewport are displayed', asyn
   await expect(page.locator('#sidebar-left')).toBeVisible();
   await expect(page.locator('#world-controls')).toBeVisible();
   await expect(page.locator('#inspector')).toBeVisible();
-  // 2 stacked swatches + the swap (#87) + 5 edit tools + the shape dropdown caret (#64) + undo / redo.
+  // 2 stacked swatches + the swap + 5 edit tools + the shape dropdown caret + undo / redo.
   // Adding shapes does not add tool buttons (a single caret folds all the shapes away)
   await expect(page.locator('#toolbar button')).toHaveCount(11);
   await expect(page.locator('#world-controls button')).toHaveCount(6); // 3 viewpoints + ground + texture
@@ -50,14 +50,14 @@ test('the document bar fits inside the left sidebar, and the canvas and right pa
   const sidebar = page.locator('#sidebar-left');
   expect(await sidebar.evaluate((el) => el.scrollWidth > el.clientWidth)).toBe(false);
 
-  // Only "export" is permanently visible. Save / load / clear live inside the menu (#61).
+  // Only "export" is permanently visible. Save / load / clear live inside the menu.
   // The menu itself is a child of documentBar (so it is thrown away together when render rebuilds it),
   // hence counting by "is it permanently visible"
   const bar = (await page.locator('#sidebar-left .sidebar-document').boundingBox())!;
   await expect(page.locator('#sidebar-left .sidebar-document .bs-button:visible')).toHaveCount(1);
 
   // The weight of a filled button comes from its area, not its color. At full width it would be the strongest
-  // element in a white panel, so it sits on the same row as the save state at content width (#61)
+  // element in a white panel, so it sits on the same row as the save state at content width
   const exportBox = (await page.locator('#sidebar-left .document-export').boundingBox())!;
   expect(exportBox.width).toBeLessThan(bar.width * 0.45);
   const stateBox = (await page.locator('#sidebar-left .document-save-state').boundingBox())!;
@@ -65,14 +65,14 @@ test('the document bar fits inside the left sidebar, and the canvas and right pa
   expect(exportBox.height).toBeLessThanOrEqual(32); // it did not wrap
 
   // The header must not squeeze the canvas. Back when 4 buttons were always expanded with horizontal tabs
-  // it was 260px, which felt heavy next to Figma's rail (#61)
+  // it was 260px, which felt heavy next to Figma's rail
   const headerBottom = await page
     .locator('#sidebar-left .sidebar-document')
     .evaluate((el) => Math.round(el.getBoundingClientRect().bottom));
   expect(headerBottom).toBeLessThanOrEqual(120);
 });
 
-test('panel switching happens on the icon rail at the far left (#61)', async ({ page }) => {
+test('panel switching happens on the icon rail at the far left', async ({ page }) => {
   await page.goto('/');
   await expect(page.locator('#viewport')).toBeVisible();
 
@@ -102,7 +102,7 @@ test('panel switching happens on the icon rail at the far left (#61)', async ({ 
   await expect(panel('layers')).toHaveCount(1);
 });
 
-test('arrow keys on the rail do not leak through to the canvas — with a selection (the nudge path) (#61 review)', async ({ page }) => {
+test('arrow keys on the rail do not leak through to the canvas — with a selection (the nudge path)', async ({ page }) => {
   await page.goto('/');
   await expect(page.locator('#viewport')).toBeVisible();
 
@@ -134,7 +134,7 @@ test('arrow keys on the rail do not leak through to the canvas — with a select
   expect(await occupied()).toBe(cellBefore);
 });
 
-test('arrow keys on the rail do not leak through to the canvas — with nothing selected (the camera path) (#61 review)', async ({ page }) => {
+test('arrow keys on the rail do not leak through to the canvas — with nothing selected (the camera path)', async ({ page }) => {
   await page.goto('/');
   await expect(page.locator('#viewport')).toBeVisible();
 
@@ -158,7 +158,7 @@ test('arrow keys on the rail do not leak through to the canvas — with nothing 
   expect(await camera()).toEqual(before); // the camera does not move
 });
 
-test('every tablist on screen has a name and they are distinguishable from each other (#61 review)', async ({ page }) => {
+test('every tablist on screen has a name and they are distinguishable from each other', async ({ page }) => {
   await page.goto('/');
   await expect(page.locator('#viewport')).toBeVisible();
 
@@ -168,7 +168,7 @@ test('every tablist on screen has a name and they are distinguishable from each 
   const pos = await page.evaluate(() => window.__bs.groundScreenPos(5, 5));
   await page.mouse.click(pos.x, pos.y);
   await expect.poll(() => page.evaluate(() => window.__bs.world.size)).toBe(1);
-  // Grab it by testid rather than by text (it became an icon-only button, #146)
+  // Grab it by testid rather than by text (it became an icon-only button)
   await page.locator('#block-usage [data-testid="usage-change"]').first().click();
   await expect(page.locator('.block-change-picker')).toBeVisible();
 
@@ -181,7 +181,7 @@ test('every tablist on screen has a name and they are distinguishable from each 
   expect(names).toContain('サイドパネル');
 });
 
-test('rail items are associated with their tabpanels (#61 review)', async ({ page }) => {
+test('rail items are associated with their tabpanels', async ({ page }) => {
   await page.goto('/');
   await expect(page.locator('#viewport')).toBeVisible();
 
@@ -201,7 +201,7 @@ test('rail items are associated with their tabpanels (#61 review)', async ({ pag
   await expect(page.locator('#sidebar-left #recipes')).toHaveAttribute('hidden', /.*/);
 });
 
-test('the rail is pinned to the far left of the three-column layout (#61)', async ({ page }) => {
+test('the rail is pinned to the far left of the three-column layout', async ({ page }) => {
   await page.goto('/');
   await expect(page.locator('#viewport')).toBeVisible();
 
@@ -214,7 +214,7 @@ test('the rail is pinned to the far left of the three-column layout (#61)', asyn
   expect(await page.evaluate(() => document.documentElement.scrollWidth <= document.documentElement.clientWidth)).toBe(true);
 });
 
-test('the file menu opens next to the logo on the rail and closes on toggle (#61)', async ({ page }) => {
+test('the file menu opens next to the logo on the rail and closes on toggle', async ({ page }) => {
   await page.goto('/');
   await expect(page.locator('#viewport')).toBeVisible();
 
@@ -239,7 +239,7 @@ test('the file menu opens next to the logo on the rail and closes on toggle (#61
   await expect(menu).toBeHidden();
 });
 
-test('buttons do not inherit the browser default of 16px (#61)', async ({ page }) => {
+test('buttons do not inherit the browser default of 16px', async ({ page }) => {
   await page.goto('/');
   await expect(page.locator('#viewport')).toBeVisible();
 
@@ -281,7 +281,7 @@ test('the save state sits right below the work name and follows through to autos
   await expect(saveState).toHaveText(/^自動保存 \d{2}:\d{2}$/);
 });
 
-test('the language toggle switches the UI and block names, and the choice survives a reload (#70)', async ({ page }) => {
+test('the language toggle switches the UI and block names, and the choice survives a reload', async ({ page }) => {
   await page.goto('/');
   await expect(page.locator('#viewport')).toBeVisible();
   await page.keyboard.press('1');
@@ -303,7 +303,7 @@ test('the language toggle switches the UI and block names, and the choice surviv
   await expect(page.locator('#block-usage')).toContainText('Stone');
 
   // The contents of panels that are not open follow along as well. The components list builds its heading and
-  // its empty-state hint by hand, so without subscribing to language changes it stays Japanese (#142 review P1)
+  // its empty-state hint by hand, so without subscribing to language changes it stays Japanese
   await page.locator('#sidebar-rail .rail-item').nth(3).click();
   const components = page.locator('#sidebar-left #components');
   await expect(components).not.toContainText('コンポーネント');
@@ -316,7 +316,7 @@ test('the language toggle switches the UI and block names, and the choice surviv
   await expect(page.locator('#sidebar-rail .rail-item').first()).toContainText('Layers');
 });
 
-test('a default name is decided by the language at creation time and does not change retroactively (#70)', async ({ page }) => {
+test('a default name is decided by the language at creation time and does not change retroactively', async ({ page }) => {
   await page.goto('/');
   await expect(page.locator('#viewport')).toBeVisible();
 
@@ -340,14 +340,14 @@ test('a default name is decided by the language at creation time and does not ch
 });
 
 /**
- * Tab is not claimed by a 2D/3D switch (#120).
+ * Tab is not claimed by a 2D/3D switch.
  *
  * Removing 2D mode handed it back to the browser's standard focus movement. **Both "2D does not appear" and
  * "focus left the original element" are weak assertions** — the former was never going to appear, and the latter
  * would also pass for a broken implementation that swallows Tab and merely blurs (focus falling to body).
- * This pins down **that focus advanced to the known next element** (#120 review, second round).
+ * This pins down **that focus advanced to the known next element**.
  */
-test('Tab works as the browser standard focus movement and no 2D UI appears (#120)', async ({ page }) => {
+test('Tab works as the browser standard focus movement and no 2D UI appears', async ({ page }) => {
   await page.goto('/');
   await expect(page.locator('#viewport')).toBeVisible();
 

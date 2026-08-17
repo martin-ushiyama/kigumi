@@ -28,14 +28,14 @@ export interface VoidCellSource {
 }
 
 /**
- * Outline overlay for void cells (#113).
+ * Outline overlay for void cells.
  *
  * Void cells never win = they are **never drawn**, so without this there's no on-screen cue at
  * all. The grab path (`selectableRefAt`) already returns void entries so hit-testing works, but
  * if there's no way to see where to point, it can't really be grabbed in practice. This is the
  * premise behind "a hole can be moved later."
  *
- * **Not toggled by display mode** (#113 stage 3). To avoid introducing a new mode-dependent
+ * **Not toggled by display mode**. To avoid introducing a new mode-dependent
  * quirk where it's ungrabbable only in texture mode. If it gets in the way, hiding that group
  * in the layers panel makes it disappear (`voidCells()` excludes effectiveHidden).
  *
@@ -76,7 +76,7 @@ export class VoidEdges {
   }
 
   /**
-   * Whether to show the outline (#146).
+   * Whether to show the outline.
    *
    * Heavy use of void cells fills the screen with lines and obscures the shape being built.
    * The cue is needed while placing, but gets in the way when viewing the whole thing.

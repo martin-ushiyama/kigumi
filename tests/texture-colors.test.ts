@@ -9,7 +9,7 @@ import textureManifest from '../src/data/textures.json';
 import rawCatalog from '../src/data/blocks.json';
 
 /**
- * The **regeneration-in-a-clean-environment contract** for representative colors (#137 review P1).
+ * The **regeneration-in-a-clean-environment contract** for representative colors.
  *
  * The representative color is the texture's average color, but PNGs are gitignored fetched
  * assets, and the upstream regeneration workflow does not fetch PNGs. So `gen-blocks` reads
@@ -39,7 +39,7 @@ describe('representative color regeneration contract', () => {
   /**
    * **The catalog does not carry color.** If it did, it would create a cycle ("no catalog
    * means no texture fetch" / "no color means no catalog"), making it impossible to add new
-   * blocks (#137 review P1). Color is joined in from texture-colors.json at load time
+   * blocks. Color is joined in from texture-colors.json at load time
    */
   it('blocks.json carries no color (so registering new entries does not create a cycle)', () => {
     const withColor = (rawCatalog as Record<string, unknown>[]).filter((b) => 'color' in b);
@@ -58,7 +58,7 @@ describe('representative color regeneration contract', () => {
 
   /**
    * The source of truth for animation is `texture-frames.json` (derived from flipbook
-   * membership, #93). The representative color takes its frame count from there, so
+   * membership). The representative color takes its frame count from there, so
    * **there should be no frame count that has a color but is missing from the source of
    * truth** = the frame count is never guessed
    */
@@ -84,7 +84,7 @@ function stripPng(values: number[]): Uint8Array {
  * If colors are generated **before** the frame-count source of truth, a texture that just
  * became animated upstream gets baked as an average across all frames. Worse, the later
  * step writes the correct frame count, so the command succeeds while the outputs disagree
- * with each other (#137 review P1)
+ * with each other
  */
 describe('representative colors are generated after the frame source of truth is updated', () => {
   const files = ['new_animated.png'];

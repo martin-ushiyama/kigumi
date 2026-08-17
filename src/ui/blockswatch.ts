@@ -9,7 +9,7 @@ import { createButton } from './primitives';
 const MANIFEST = textureManifest as Record<string, { side: string; top?: string }>;
 
 /**
- * The stacked swatch at the left end of the toolbar (#87). Plays the same role as
+ * The stacked swatch at the left end of the toolbar. Plays the same role as
  * foreground/background color in Photoshop — front = the block placed now, back =
  * the spare. Swapped with the `X` key.
  *

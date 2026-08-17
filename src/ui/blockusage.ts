@@ -12,7 +12,7 @@ import { createIcon } from './icons';
 import { blockName, onLangChange, opError, t } from '../state';
 
 /**
- * The "Block usage" panel on the right side (#48).
+ * The "Block usage" panel on the right side.
  *
  * Each row opens a Figma-like picker to run **block replacement** or **pattern
  * paint**. It doesn't depend on the left sidebar's selection state — the picker
@@ -34,7 +34,7 @@ export function initBlockUsage(
   recipeStore: RecipeStore,
   toast: (msg: string) => void,
   /**
-   * The block-change picker (#87). **Exactly one instance** is created in the
+   * The block-change picker. **Exactly one instance** is created in the
    * composition root and handed around. The toolbar's stacked swatch opens the same
    * instance too — generating one here as well would leave two popovers with the
    * same id hanging off the body.
@@ -259,7 +259,7 @@ export function initBlockUsage(
 
   doc.subscribe(render);
 
-  onLangChange(render); // Follows block-name language switches (#70)
+  onLangChange(render); // Follows block-name language switches
   selection.subscribe(render);
   render();
 }

@@ -3,7 +3,7 @@ import { isVoidCell, unpackCell } from '../core/orientation';
 import type { CellKey } from '../core/types';
 
 /**
- * A tally of "what blocks exist right now and how many" (#48).
+ * A tally of "what blocks exist right now and how many".
  *
  * The counting unit is **catalog block type only** — orientation code is folded away,
  * because what the user wants to see in the panel is "42 oak stairs," not "12 oak
@@ -12,12 +12,12 @@ import type { CellKey } from '../core/types';
  *
  * Overlaps (multiple owners at the same world coordinate) are counted as **1 per ref**.
  * An invisible layer underneath is still part of the build, and it affects both export
- * size and layer row count (now that #46 introduced stacking mode, counting only the
+ * size and layer row count (now that stacking mode exists, counting only the
  * winner would no longer match reality).
  *
- * **Air (#113) is not counted.** It has no catalog entry, so it can't be shown as a
+ * **Air is not counted.** It has no catalog entry, so it can't be shown as a
  * row; including it only in the total would create a state where "the row numbers
- * don't add up to the total" (#113 stage 5). The dropping happens **on the counting
+ * don't add up to the total". The dropping happens **on the counting
  * side** — leaving it to a display-side "hide non-catalog entries" filter would split
  * the handling between where things are counted and where they're shown, and the same
  * mismatch would reappear.

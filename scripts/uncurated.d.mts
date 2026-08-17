@@ -1,4 +1,4 @@
-/** The list of blocks not yet included (#97 stage 5). Implemented in uncurated.mjs */
+/** The list of blocks not yet included. Implemented in uncurated.mjs */
 import type { TextureVariant } from './bedrock-parse.d.mts';
 
 /**

@@ -9,7 +9,7 @@ import {
 } from '../src/core/textureframe';
 
 /**
- * Cropping out the first frame (#93).
+ * Cropping out the first frame.
  *
  * What this pins down is **the calculation only**. Whether the real PNG actually has
  * 5 frames requires the PNG itself, so we can't know that here (CI has no PNGs).

@@ -71,7 +71,7 @@ describe('dispatchShortcut', () => {
   });
 
   /**
-   * #41 review P1: if a shortcut that changes the Document is allowed to run during a
+   * A review finding: if a shortcut that changes the Document is allowed to run during a
    * gesture, the basis the in-progress preview relies on shifts, and one of them silently
    * disappears on commit. If the exclusion condition were copied into each entry's matches,
    * a missed one wouldn't be caught, so we reject it in bulk on the dispatch side instead.

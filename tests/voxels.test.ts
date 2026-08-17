@@ -1,7 +1,7 @@
 import { describe, expect, it, vi } from 'vitest';
 import { VoxelWorld, type WorldChange } from '../src/core/voxels';
 
-describe('VoxelWorld — subscribe/notify (#13)', () => {
+describe('VoxelWorld — subscribe/notify', () => {
   it('subscribe returns an unsubscribe function, and calling it stops further notifications', () => {
     const world = new VoxelWorld();
     const fn = vi.fn();
@@ -63,7 +63,7 @@ describe('VoxelWorld — subscribe/notify (#13)', () => {
     expect(world.get(0, 0, 0)).toBe(1);
   });
 
-  it('if one listener throws, other listeners are still called and stage() itself does not throw (safety at the source, design moved to emitter, originally from #22)', () => {
+  it('if one listener throws, other listeners are still called and stage() itself does not throw (safety at the source, design moved to emitter)', () => {
     const world = new VoxelWorld();
     const after = vi.fn();
     world.subscribe(() => {

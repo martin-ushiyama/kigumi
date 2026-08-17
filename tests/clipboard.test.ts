@@ -24,7 +24,7 @@ describe('snapshotSelection — cells', () => {
     expect(clip!.origin).toEqual([2, 3, 4]);
     expect(clip!.groups).toEqual([]);
     expect(clip!.cells).toHaveLength(2);
-    // #37 B1b: the cells tuple is [ownerIndex, x, y, z, value]. ownerIndex -1 = fragment root
+    // The cells tuple is [ownerIndex, x, y, z, value]. ownerIndex -1 = fragment root
     for (const [ownerIndex] of clip!.cells) expect(ownerIndex).toBe(-1);
 
     const byValue = new Map(clip!.cells.map((c) => [c[4], c]));
@@ -57,7 +57,7 @@ describe('snapshotSelection — groups', () => {
     const clip = snapshotSelection(doc, doc.groupSelection('p'));
     expect(clip).not.toBeNull();
     // the topmost entry always carries a "transform that collapses the original parent chain"
-    // (pivot comes from subtree bounds, #37 B1b review P2). In this scene the parent chain is
+    // (pivot comes from subtree bounds B1b review P2). In this scene the parent chain is
     // identity, so translate stays 0
     expect(clip!.groups).toEqual([
       { name: 'parent', parent: -1, transform: { angleSteps: 0, translate: [0, 0, 0], pivot2: parentPivot } },
@@ -82,7 +82,7 @@ describe('buildPaste', () => {
     expect(doc.world.get(1, 0, 0)).toBe(1); // pasted at the +X neighbor (bbox width 1)
   });
 
-  it('returns an error for a clipboard exceeding OP_MAX_CELLS (review #8 finding)', () => {
+  it('returns an error for a clipboard exceeding OP_MAX_CELLS', () => {
     const doc = makeDoc();
     const cells: [number, number, number, number, number][] = [];
     for (let i = 0; i <= OP_MAX_CELLS; i++) cells.push([i, 0, 0, 1, -1]);
@@ -186,7 +186,7 @@ describe('buildPaste', () => {
 });
 
 /**
- * Doesn't bake a pivot when copying a group with an unset transform (#37 B1b review P2).
+ * Doesn't bake a pivot when copying a group with an unset transform.
  *
  * Root cause: the logic for "materializing an unset transform into numbers" had split into
  * two places, and only the clipboard side baked in `pivot2: [0, 0]`. The look right after

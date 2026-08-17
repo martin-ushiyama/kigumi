@@ -1,7 +1,7 @@
 import { expect, test, type Page } from '@playwright/test';
 
 /**
- * Pins down the two regressions raised in the review (#24) of Issue #12 PR1
+ * Pins down the two regressions raised in review
  * (unifying keyboard handling in InputRouter):
  * - With the select tool and nothing selected / mid-drag, arrow keys should fall back to camerakeys camera movement
  *   (the nudge entry in SHORTCUTS must not claim them exclusively)
@@ -145,7 +145,7 @@ test('Delete with a selection deletes the selection', async ({ page }) => {
   await expect.poll(() => worldSize(page)).toBe(0);
 });
 
-test('even while still on the place tool, arrow keys nudge when there is a selection (#53)', async ({ page }) => {
+test('even while still on the place tool, arrow keys nudge when there is a selection', async ({ page }) => {
   // Place one block with the place tool, then click the layer-panel row to select it while staying on that tool
   // (without switching to select = the state right after choosing from the layers panel)
   const pos = await groundScreenPos(page, 4, 4);
@@ -168,7 +168,7 @@ test('even while still on the place tool, arrow keys nudge when there is a selec
   await expect.poll(() => worldSize(page)).toBe(1);
 });
 
-test('arrow keys during a selection drag do not nudge and are passed to the camera (#53 review, third round)', async ({ page }) => {
+test('arrow keys during a selection drag do not nudge and are passed to the camera', async ({ page }) => {
   // Place one block, grab it with the select tool, and **stay mid-drag without releasing the button**
   const pos = await groundScreenPos(page, 4, 4);
   await page.keyboard.press('1');

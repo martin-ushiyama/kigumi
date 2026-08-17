@@ -34,7 +34,7 @@ import { blockName, matchesBlockQuery, onLangChange, t } from '../state';
  * Drop-target zone for group rows. Cell rows don't have this (always the single "move into
  * this group" choice).
  *
- * **Named after the on-screen position** (#110). It used to reuse the sibling array's
+ * **Named after the on-screen position**. It used to reuse the sibling array's
  * `'before' | 'after'` wording, but display renders front-most at the top while the array
  * treats front as the back — **the directions are reversed**, so the same words would leave
  * it ambiguous which "before" is meant.
@@ -58,10 +58,10 @@ function setIconButtonLabel(button: HTMLButtonElement, label: string): void {
   button.title = label;
 }
 
-/** Outward-facing interface of the layers panel (#49). The keyboard path calls it from SHORTCUTS */
+/** Outward-facing interface of the layers panel. The keyboard path calls it from SHORTCUTS */
 export interface LayersPanel {
   /**
-   * Whether Shift+↑ / ↓ **can be handled as a layers operation** (no side effects, #49 review P1).
+   * Whether Shift+↑ / ↓ **can be handled as a layers operation** (no side effects review P1).
    *
    * `dispatchShortcut` consumes the key without looking at `run`'s return value, so whether to
    * accept it has to be decided on the shortcut table's `matches` side. When false, it falls
@@ -105,11 +105,11 @@ export function initLayers(
   const expandedIds = new Set<string>();
   let renamingId: string | null = null;
   let lastSelFingerprint = '';
-  /** The drag target (#44). If the grabbed row is part of the selection, the whole selection moves; otherwise just that one row */
+  /** The drag target. If the grabbed row is part of the selection, the whole selection moves; otherwise just that one row */
   let dragged: DragPayload | null = null;
 
   /**
-   * **Locks in the selection the moment it's grabbed** (#44 review P1).
+   * **Locks in the selection the moment it's grabbed**.
    *
    * Grabbing a row outside the current selection with no modifier key moves the selection to
    * just that row (same as Finder / Explorer / Figma). The goal is to **always keep "what was
@@ -139,7 +139,7 @@ export function initLayers(
   }
 
   /**
-   * State for the Shift+↑↓ range selection (#49). **Kept as row identity keys** — a row's
+   * State for the Shift+↑↓ range selection. **Kept as row identity keys** — a row's
    * index shifts on re-render or collapse, but a key can still be tracked down.
    *
    * `anchorKey` is the fixed end of the range (the row from the single selection); `cursorKey`
@@ -163,17 +163,17 @@ export function initLayers(
   };
 
   /**
-   * Shift+↑↓: grows / shrinks the selection along the layers panel row order (#49).
+   * Shift+↑↓: grows / shrinks the selection along the layers panel row order.
    *
    * Rows of a different kind (group row ↔ block row) are skipped — `Selection` can't
-   * represent a mix as an exclusive union (#43). At the end, **the key is still consumed**
+   * represent a mix as an exclusive union. At the end, **the key is still consumed**
    * (letting it fall through to nudge or camera movement with nothing happening would mean
    * "holding Shift suddenly moves blocks").
    *
    * The return value is "was the key accepted as a layers operation?" If false, the caller
    * (SHORTCUTS) falls back to nudge / camera as usual.
    */
-  /** Filter string (#45). Empty means no filtering */
+  /** Filter string. Empty means no filtering */
   let filterText = '';
 
   /** Whether the name shown on the row (group name / block's localized display name) contains the filter string */
@@ -184,7 +184,7 @@ export function initLayers(
     const localRaw = doc.scene.cells.get(row.ref.ownerId, makeCellKey(...row.ref.localCell));
     if (localRaw === undefined) return false;
     const def = getCatalog()[unpackCell(localRaw).catalogIndex];
-    // **Only match text that's actually shown on screen** (#45 review P1). The catalog ID
+    // **Only match text that's actually shown on screen**. The catalog ID
     // (minecraft:* etc.) isn't displayed in the row, so implicitly OR-ing it in would make
     // filtering unreadable ("why did this stay in the results?"). If ID search is needed,
     // add it separately as an explicit syntax like `id:minecraft:stone`
@@ -192,7 +192,7 @@ export function initLayers(
   }
 
   /**
-   * The currently visible row order (#45). Both rendering and keyboard movement go through
+   * The currently visible row order. Both rendering and keyboard movement go through
    * this — to structurally avoid mismatches like "the cursor moves to a row that's not on
    * screen" while filtering.
    */
@@ -203,7 +203,7 @@ export function initLayers(
   }
 
   /**
-   * Resolves the target of Shift+↑↓ (#49). No side effects — both `canExtendSelection` and
+   * Resolves the target of Shift+↑↓. No side effects — both `canExtendSelection` and
    * `extendSelection` go through this, upholding the contract that "if matches is true, run
    * always consumes the key."
    */
@@ -252,14 +252,14 @@ export function initLayers(
   const isAncestor = (ancestorId: string, id: string): boolean => doc.tree.isAncestor(ancestorId, id);
 
   /**
-   * Shift+↑↓: grows / shrinks the selection along the layers panel row order (#49).
+   * Shift+↑↓: grows / shrinks the selection along the layers panel row order.
    *
    * There are two kinds of rows this skips over:
    * - **Rows of a different kind** (group row ↔ block row) — `Selection` can't represent a
-   *   mix as an exclusive union (#43)
+   *   mix as an exclusive union
    * - **Rows dropped by normalization** — including a parent and child in the range at the
    *   same time makes one of them disappear, throwing the internal cursor out of sync with
-   *   the actual Selection (#49 review P1)
+   *   the actual Selection
    *
    * At the end, nothing changes, but **the key is still consumed** (letting it fall through
    * to nudge or camera movement with nothing happening would mean "holding Shift suddenly
@@ -324,7 +324,7 @@ export function initLayers(
 
   /** Moves whatever's being dragged (groups or cells, doesn't matter) to the front as a child
    *  of groupId (null = unclassified/root). In the sibling array, last = front = the top child
-   *  in the display (#110). Whatever got dropped ends up somewhere visible.
+   *  in the display. Whatever got dropped ends up somewhere visible.
    *  A cell only changes ownership (no ordering concept); a group is reparented (moving into
    *  itself or a descendant is rejected by buildReparentGroups). Even with multiple targets,
    *  it's one transaction = one undo */
@@ -350,7 +350,7 @@ export function initLayers(
     }
     if (dragged.ids.includes(targetId)) return;
     const siblings = doc.tree.childrenOf(targetParentId);
-    // **On-screen up/down and sibling-array front/back are reversed** (#110). Display renders
+    // **On-screen up/down and sibling-array front/back are reversed**. Display renders
     // front at the top while the sibling array treats front as the back, so "drop above the
     // target = move it in front of the target" means inserting it after the target in the array
     const position = zone === 'above' ? 'after' : 'before';
@@ -439,7 +439,7 @@ export function initLayers(
 
     /**
      * A single-cell row. Identity is the ref (owner + owner-local); displayed coordinates are
-     * the projected world position (#37 B1b). `localRaw` is oriented owner-local, but since
+     * the projected world position. `localRaw` is oriented owner-local, but since
      * the row only uses catalogIndex, rotation doesn't matter here.
      */
     function renderCellRow(ref: CellRef, localRaw: number, depth: number): void {
@@ -476,7 +476,7 @@ export function initLayers(
         // align with Figma)
         if (e.ctrlKey || e.metaKey || e.shiftKey) selection.toggleCell({ ref, worldCell: world });
         else selection.set(cellSelectionOf([{ ref, worldCell: world }]));
-        setAnchor({ kind: 'cell', ref }); // Shift+↑↓ range selection uses this as its fixed end (#49)
+        setAnchor({ kind: 'cell', ref }); // Shift+↑↓ range selection uses this as its fixed end
       });
 
       // Drag and drop (can't be grabbed while locked, consistent with the protection documented in the README)
@@ -521,17 +521,17 @@ export function initLayers(
       const childGroupIds = doc.tree.childrenOf(id);
       // Direct cells are pulled from the owner-local store (the membership index has been removed)
       const directCells = [...doc.scene.cells.entriesOf(id)];
-      // **Instances don't expand their contents** (#69). What's inside is a copy of the
+      // **Instances don't expand their contents**. What's inside is a copy of the
       // component, and any edit gets overwritten the moment the component is edited.
       // Expanding it would show something you can touch but that won't stick.
       const isInstance = doc.templateIdOf(id) !== null;
       const isExpandable = !isInstance && (childGroupIds.length > 0 || directCells.length > 0);
-      // While filtering, staying collapsed would make matches unreachable, so it's always treated as expanded (#45)
+      // While filtering, staying collapsed would make matches unreachable, so it's always treated as expanded
       const expanded = filtering ? true : expandedIds.has(id);
       const caret = document.createElement('span');
       caret.className = 'caret';
       caret.textContent = isExpandable ? (expanded ? '▾' : '▸') : '';
-      // Makes the caret a complete no-op while filtering (#45 review P1 / second pass).
+      // Makes the caret a complete no-op while filtering (raised in review).
       //
       // The display is always expanded, but click still rewrote expandedIds, so clicking did
       // nothing visible while leaving a delayed state change — it would collapse the instant
@@ -556,7 +556,7 @@ export function initLayers(
 
       const isSelected = sel.kind === 'groups' && sel.ids.includes(id);
       row.classList.toggle('active', isSelected);
-      // A component instance (#69 Step 3c). **Shown with both an icon and a lighter color** —
+      // A component instance. **Shown with both an icon and a lighter color** —
       // color alone would be confused with a selected row, and an icon alone would be hard
       // to spot among a row of collapsed items
       row.classList.toggle('layer-row-instance', isInstance);
@@ -645,7 +645,7 @@ export function initLayers(
         // align with Figma)
         if (e.ctrlKey || e.metaKey || e.shiftKey) selection.toggleGroup(id);
         else selection.set({ kind: 'groups', ids: [id] });
-        setAnchor({ kind: 'group', id }); // Shift+↑↓ range selection uses this as its fixed end (#49)
+        setAnchor({ kind: 'group', id }); // Shift+↑↓ range selection uses this as its fixed end
       });
 
       // Drag and drop (can't be grabbed while locked, including inherited from ancestors; disabled during rename to prevent accidental changes)
@@ -682,8 +682,8 @@ export function initLayers(
       tree.appendChild(row);
     }
 
-    // visibleLayerRows is the single source of truth for row order (#45). To keep rendering
-    // and keyboard movement (#49) from disagreeing on the definition of "visible row," the
+    // visibleLayerRows is the single source of truth for row order. To keep rendering
+    // and keyboard movement from disagreeing on the definition of "visible row," the
     // recursion lives there rather than here
     const rows = currentRows();
     for (const row of rows) {
@@ -707,7 +707,7 @@ export function initLayers(
     }
   }
 
-  // ---- Persistent header (#45). render() only swaps out the contents of treeHost, so
+  // ---- Persistent header. render() only swaps out the contents of treeHost, so
   //      caret position and focus during typing don't get lost on re-render ----
   root.innerHTML = '';
   const header = document.createElement('div');
@@ -741,7 +741,7 @@ export function initLayers(
    * The header is built once, outside `render()` (rebuilding it while the search field is
    * focused would lose the input). To make up for that, **only the text is re-applied on
    * every language switch** — if t() were left evaluated at creation time, it would keep the
-   * language from startup (#89).
+   * language from startup.
    */
   function applyHeaderLabels(): void {
     search.placeholder = t('layers.filter');
@@ -772,8 +772,8 @@ export function initLayers(
   doc.subscribe(render);
 
   onLangChange(() => {
-    applyHeaderLabels(); // The header is outside render(), so re-apply it separately (#89)
-    render(); // Block names inside the tree (#70)
+    applyHeaderLabels(); // The header is outside render(), so re-apply it separately
+    render(); // Block names inside the tree
   });
   selection.subscribe(render);
   render();

@@ -10,13 +10,13 @@ export interface PatternPaint {
   readonly recipeId: string;
   /**
    * Which arrangement number this is when the same recipe is reapplied
-   * (0 or greater, less than `PATTERN_VARIANTS`, #69).
+   * (0 or greater, less than `PATTERN_VARIANTS`).
    *
    * **The pattern itself isn't stored here** — it's derived from world coordinates
    * every time (`patternSampleAt`). Baking in the sampled position would mean
    * duplication / component expansion copies the binding along with it, so
    * **every instance would end up with the same pattern**. To satisfy "pattern
-   * painting is a coordinate-driven algorithm" (settled in #69), position-dependent
+   * painting is a coordinate-driven algorithm", position-dependent
    * data is never persisted.
    */
   readonly variant: number;
@@ -82,7 +82,7 @@ export class PatternPaintStore implements PatternPaintReader {
   }
 
   /**
-   * Write multiple refs together, firing **a single notification** (#76 review: staged remap for cell drag).
+   * Write multiple refs together, firing **a single notification** (staged remap for cell drag).
    *
    * During a drag, each pointermove rebuilds from the baseline, so calling `write` for
    * every selected cell × every move fires that many notifications. Batch the writes
@@ -188,11 +188,11 @@ const STRATIFIED_RANKS_4 = [
   10, 2, 6, 14,
 ] as const;
 
-/** Total number of arrangements cycled through when the same recipe is reapplied (#69). */
+/** Total number of arrangements cycled through when the same recipe is reapplied. */
 export const PATTERN_VARIANTS = 16;
 
 /**
- * Build a stratified sample from **world coordinates** (#69).
+ * Build a stratified sample from **world coordinates**.
  *
  * The key point is seeding from world, not owner:
  *
@@ -200,7 +200,7 @@ export const PATTERN_VARIANTS = 16;
  *   doesn't give every instance the same pattern. Moving (dragging) also changes the
  *   pattern, but that's accepted as a consequence of "a coordinate-driven algorithm"
  * - **Pattern is stable across save -> load** — group ids get re-allocated, but world
- *   coordinates are preserved (this satisfies a P1 flagged in the #60 review, without
+ *   coordinates are preserved (this satisfies a point flagged in review, without
  *   baking in the sampled position)
  *
  * World coordinates aren't a cell's identity (see `cellref.ts`), but what's used here
@@ -229,7 +229,7 @@ export function patternSampleAt(recipeId: string, worldCell: Cell, layoutVariant
 }
 
 /**
- * Next arrangement number when a recipe is "reapplied" (#69).
+ * Next arrangement number when a recipe is "reapplied".
  *
  * Previously the variant was reverse-derived from the sampled position (`sample`) by
  * brute-forcing all 16 possibilities. Now that `PatternPaint` holds the variant
@@ -271,7 +271,7 @@ export function samplePatternAt(
  * Resolve the current display raw value from a binding.
  *
  * The sampled position isn't retained — it's **derived from the world coordinates at
- * that moment** (#69). The same binding produces a different pattern depending on
+ * that moment**. The same binding produces a different pattern depending on
  * where it's placed.
  */
 export function resolvePatternRaw(

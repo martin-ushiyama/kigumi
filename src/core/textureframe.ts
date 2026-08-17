@@ -2,7 +2,7 @@ import textureFrames from '../data/texture-frames.json';
 
 /**
  * Calculation for cropping out the first frame of an animated texture
- * (a 16xN vertically-stacked sprite sheet) (#93).
+ * (a 16xN vertically-stacked sprite sheet).
  *
  * Minecraft's animated textures ship as a single PNG with frames stacked vertically.
  * Pasting it as-is looks vertically squashed, so only the first frame is shown.
@@ -14,7 +14,7 @@ import textureFrames from '../data/texture-frames.json';
  * If each consumer computed this separately, one of them could end up flipped without anyone noticing.
  */
 
-/** Base path for texture delivery. If references were scattered, one could break without anyone noticing (#94) */
+/** Base path for texture delivery. If references were scattered, one could break without anyone noticing */
 export const TEXTURE_BASE = 'textures/blocks/';
 
 const FRAMES = textureFrames as Record<string, number>;
@@ -47,7 +47,7 @@ export function firstFrameBackground(frameCount: number): { size: string; positi
  *
  * Switching to a background image would collapse this to a single calculation, but
  * `layers.ts`'s `<img>` has a path that catches load failures via the error event and
- * falls back to a flat color (a background image can't detect that failure, #94). This
+ * falls back to a flat color (a background image can't detect that failure). This
  * keeps the `<img>` while applying the same frame count.
  */
 export function firstFrameImageHeight(frameCount: number): string {

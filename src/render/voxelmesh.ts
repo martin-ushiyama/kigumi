@@ -64,7 +64,7 @@ class BlockTypeMesh {
             tex.magFilter = THREE.NearestFilter;
             tex.minFilter = THREE.NearestFilter;
             tex.colorSpace = THREE.SRGBColorSpace;
-            // Animated textures (16xN stacked vertically) only get the first frame applied (#93).
+            // Animated textures (16xN stacked vertically) only get the first frame applied.
             // Applying the raw texture would squeeze every frame onto one face. Use the same
             // helper as the UI side to compute values (calculating flipY separately in each
             // place ends up flipping one of them upside down).
@@ -182,7 +182,7 @@ class BlockTypeMesh {
     this.mesh.setMatrixAt(i, tmpMatrix);
   }
 
-  /** Copies the instance transform from fromIndex to toIndex as-is (#15, used by the incremental
+  /** Copies the instance transform from fromIndex to toIndex as-is (used by the incremental
    *  update's swap-with-last). Doesn't go through the current world value — by the time this is
    *  called, world may already reflect other changes from the same batch, so recomputing from
    *  world would produce a wrong value if the source cell is itself deleted in the same batch
@@ -211,7 +211,7 @@ class BlockTypeMesh {
     const old = this.mesh;
     const oldCount = old.count;
     this.mesh = this.createMesh(capacity, material);
-    // Carry over existing instance transforms to the new mesh (#15 review fix: the original
+    // Carry over existing instance transforms to the new mesh (a review fix: the original
     // rebuild()-only implementation re-ran setInstance() on every instance right after resize,
     // so the data loss never surfaced. The incremental-update path only calls setInstance() for
     // the single new instance, so without this copy, all existing instances would reset to their
@@ -242,7 +242,7 @@ const Y_AXIS = new THREE.Vector3(0, 1, 0);
 const X_AXIS = new THREE.Vector3(1, 0, 0);
 const Z_AXIS = new THREE.Vector3(0, 0, 1);
 
-/** Which bucket a single cell belongs to. The instance index within the bucket stays in sync with order[] (#15) */
+/** Which bucket a single cell belongs to. The instance index within the bucket stays in sync with order[] */
 interface CellAssignment {
   bucketKey: string;
   index: number;
@@ -262,7 +262,7 @@ interface ResolvedCell {
  * so the bucket key is `${catalogIndex}:${upsideDown?1:0}`
  * (full/slab always use `${catalogIndex}:0`; up/down is just a translation of the instance matrix).
  *
- * #15: applies per-cell diffs (add/remove/update) to buckets via `onWorldChange`.
+ * Applies per-cell diffs (add/remove/update) to buckets via `onWorldChange`.
  * Keeps `registry` (cellKey → bucket + instance index) and `order` (bucket → cellKey list in
  * instance order) in sync as a pair; deletion uses swap-with-last, moving the last instance
  * into the freed index. `replaceAll` / `clear` and `markDirty()` (catalog changes, doc changes,
@@ -282,7 +282,7 @@ export class VoxelMesh {
    * `loader` is replaceable. **Texture loading depends on the DOM (ImageLoader)**, so in
    * environments without a browser the default loader won't run and materials never get assigned.
    * Tests that verify which face a material lands on pass in a synchronously-resolving loader here
-   * so they **exercise the same material-assignment path as production** (#139 review feedback).
+   * so they **exercise the same material-assignment path as production**.
    * There's a default, so normal callers don't need to change anything.
    */
   constructor(
@@ -309,11 +309,11 @@ export class VoxelMesh {
     this.markDirty();
   }
 
-  /** Receives WorldIndex content-change events. `cells` triggers an incremental update, `replaceAll` schedules a full rebuild (#13 / #37 B1b) */
+  /** Receives WorldIndex content-change events. `cells` triggers an incremental update, `replaceAll` schedules a full rebuild */
   onWorldChange(event: WorldIndexChange): void {
     if (event.kind === 'cells') {
       // WorldIndex passes us a Cell (3 numeric values). Internal dedup is handled by a Set of
-      // string keys, so we run it through makeCellKey here (#37 B1b: receive it directly with no boundary adapter in between)
+      // string keys, so we run it through makeCellKey here (receive it directly with no boundary adapter in between)
       for (const cell of event.cells) this.pendingKeys.add(makeCellKey(cell[0], cell[1], cell[2]));
       this.dirty = true;
       return;
@@ -405,7 +405,7 @@ export class VoxelMesh {
     if (!bt || !order || !old) return;
 
     // swap-with-last: copy the last instance's transform as-is into the freed index, then pop.
-    // Don't recompute from world.get() (#15 review feedback: if movedKey itself is also slated for
+    // Don't recompute from world.get() (review feedback: if movedKey itself is also slated for
     // removal within the same event batch, world has already been updated with the whole batch by
     // this point, so recomputing would produce a wrong value. A direct copy of the instance buffer
     // stays correct regardless of world's state)

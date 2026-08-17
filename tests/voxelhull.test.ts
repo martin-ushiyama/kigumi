@@ -2,7 +2,7 @@ import { describe, expect, it } from 'vitest';
 import { buildVoxelHull } from '../src/core/voxelhull';
 
 /**
- * Assemble only the faces exposed on the outside (#69 Step 3b).
+ * Assemble only the faces exposed on the outside.
  *
  * **If even one internal face remains, drawing it translucent causes z-fighting for depth
  * and produces visible cracks.** This is a bug you can only spot by looking at the render,

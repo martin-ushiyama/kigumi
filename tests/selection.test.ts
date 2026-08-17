@@ -76,7 +76,7 @@ describe('SelectionStore — toggleCell / toggleGroup', () => {
 
   it('toggleGroup: replaces from a non-groups state, re-toggling the same id returns to none', () => {
     const doc = makeDoc();
-    // #37 B1b: sanitize now requires "an id that exists in the tree", so provide a real one
+    // Sanitize now requires "an id that exists in the tree", so provide a real one
     doc.insertGroup({ id: 'g0', name: 'G0', parentId: null, childIds: [] }, 0);
     const sel = new SelectionStore(doc);
     sel.set(doc.cellSelection([0, 0, 0]));
@@ -196,7 +196,7 @@ describe('SelectionStore — validate (drops dead ids/cells)', () => {
   });
 });
 
-describe('SelectionStore — excluding hidden/locked (review #2 finding)', () => {
+describe('SelectionStore — excluding hidden/locked', () => {
   it("set(): a hidden or locked group doesn't enter the selection", () => {
     const doc = makeDoc();
     doc.insertGroup({ id: 'h', name: 'hidden', parentId: null, childIds: [], hidden: true }, 0);
@@ -249,7 +249,7 @@ describe('SelectionStore — excluding hidden/locked (review #2 finding)', () =>
   });
 });
 
-describe('SelectionStore — subscribe/notify (#13)', () => {
+describe('SelectionStore — subscribe/notify', () => {
   it('subscribe returns an unsubscribe function, and calling it stops further notifications', () => {
     const doc = makeDoc();
     const sel = new SelectionStore(doc);
@@ -263,7 +263,7 @@ describe('SelectionStore — subscribe/notify (#13)', () => {
 });
 
 /**
- * The invariant for group selection (#37 B1b review P1).
+ * The invariant for group selection.
  *
  * Root cause: the `Selection` groups variant didn't guarantee "exists / unique / outermost
  * only." Ctrl/Shift selection in Layers can put both a parent and a child into `ids` at the

@@ -14,11 +14,11 @@ import { DocumentFixture } from './helpers/document-fixture';
 import { toIndexChange } from './helpers/world-index-events';
 
 /**
- * Large-scale scenario measurements (#35) that #33/#34 (correctness of incremental updates,
- * single-cell edit performance) can't catch, one of #15's completion criteria.
+ * Large-scale scenario measurements that the unit tests (correctness of incremental updates,
+ * single-cell edit performance) can't catch.
  */
 
-// #35 review follow-up: wrap createShapeGeometry (the sole entry point where BlockTypeMesh
+// A review follow-up: wrap createShapeGeometry (the sole entry point where BlockTypeMesh
 // creates geometry) without swapping out the implementation, so we can track the call count
 // (= how many times a bucket/BlockTypeMesh gets created)
 vi.mock('../src/render/geometry', async (importOriginal) => {
@@ -51,7 +51,7 @@ function p95(samples: number[]): number {
 }
 
 /**
- * The performance contract for the ghost preview (#37 B1b design rev.8).
+ * The performance contract for the ghost preview.
  *
  * The point of turning a group drag into "a ghost that never moves the source of truth" is to
  * eliminate the structural rebuild on every pointermove (p95 17.4ms at 22³, 230ms at 48³).
@@ -59,7 +59,7 @@ function p95(samples: number[]): number {
  * moved elsewhere — so we pin down both "it's fast" and "allocation does not increase" **through
  * the real wiring, `setDragOffset → update`**.
  */
-describe('#37 B1b: performance contract of the ghost drag preview', () => {
+describe('performance contract of the ghost drag preview', () => {
   for (const count of [512, 1000]) {
     it(`p95 stays at or under 8ms across 60 pointermoves with ${count} cells selected (via the real setDragOffset → update wiring)`, () => {
       const scene = new THREE.Scene();
@@ -114,7 +114,7 @@ describe('#37 B1b: performance contract of the ghost drag preview', () => {
   });
 });
 
-describe('#15 follow-up: large-scale performance measurement (#35)', () => {
+describe('large-scale performance measurement', () => {
   it('frame time stays within budget for a 1,000-cell drag (1 batch) on top of an existing 10,648-cell base', () => {
     const scene = new THREE.Scene();
     const world = new VoxelWorld();
@@ -206,8 +206,8 @@ describe('#15 follow-up: large-scale performance measurement (#35)', () => {
       expect(totalGeometryCreated - totalGeometryDisposed).toBe(1);
     });
 
-    it('for textures (via TextureLoader) too, the gap between creation and disposal counts does not keep growing with edit count (#36 review follow-up)', async () => {
-      // #36 review finding: test:a/test:b are absent from the textures.json manifest, so
+    it('for textures (via TextureLoader) too, the gap between creation and disposal counts does not keep growing with edit count', async () => {
+      // A review finding: test:a/test:b are absent from the textures.json manifest, so
       // tryLoadTexture() returns early and the texture creation/dispose path never ran at all.
       // Use ids that are registered in the manifest (both side-only, the noTop single-material
       // path) and swap in a fake that resolves TextureLoader.load synchronously, so we can
@@ -264,8 +264,8 @@ describe('#15 follow-up: large-scale performance measurement (#35)', () => {
       expect(maxAliveGeometries).toBe(1);
     });
 
-    it('even in the reverse order where a texture load completes after its bucket was already disposed, the late-arriving texture still gets disposed and does not keep growing (#36 review follow-up)', async () => {
-      // #36 review finding: the previous test always waits for the load to finish before moving to
+    it('even in the reverse order where a texture load completes after its bucket was already disposed, the late-arriving texture still gets disposed and does not keep growing', async () => {
+      // A review finding: the previous test always waits for the load to finish before moving to
       // the next edit each round, so only the normal order — "load completes → applyMaterial → the
       // next edit disposes it" — ever runs. The `if (this.disposed) sideTex.dispose()` branch in
       // BlockTypeMesh.tryLoadTexture() (voxelmesh.ts:82) only ever executes in the reverse order,
@@ -347,16 +347,16 @@ describe('#15 follow-up: large-scale performance measurement (#35)', () => {
 });
 
 /**
- * The cost of a void cell's outline (#113 stage 3) must not push the cost of ordinary edits up to
+ * The cost of a void cell's outline must not push the cost of ordinary edits up to
  * the whole world's scale.
  *
  * `VoidEdges` **follows every world change regardless of kind** (since toggling a group's
  * visibility or reordering it also changes how voids look). That's why `voidCells()` gets called
  * "every time an ordinary block is placed." If that scanned the entire stack, then **even in a
  * world with zero voids**, every single-cell edit would sweep the whole world
- * (#122 review: measured about 3ms per call with 100,000 real blocks).
+ * (measured about 3ms per call with 100,000 real blocks).
  */
-describe('#113 stage 3: enumerating voids does not scale with world size', () => {
+describe('enumerating voids does not scale with world size', () => {
   /** builds a world of real blocks only (places zero voids) */
   function worldWithBlocks(size: number): DocumentFixture {
     const doc = new DocumentFixture(() => 'full');

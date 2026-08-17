@@ -2,7 +2,7 @@ import { describe, expect, it } from 'vitest';
 import { buildBlockDb, formatBlockDb, summarizeBlockDb, textureReachability } from '../scripts/block-db.mjs';
 
 /**
- * The contract for assembling the combined DB (#97 stage 2).
+ * The contract for assembling the combined DB.
  *
  * The real files are gitignored and absent in CI, so the contract is pinned down with
  * **small inputs shaped like the upstream ones**. Three things are protected here:
@@ -97,7 +97,7 @@ describe('buildBlockDb — joining the 4 sources', () => {
     expect(build({ source }).source).toEqual(source);
   });
 
-  it('does not carry textureFrames (not derivable from the 4 sources; #93 is the source of truth)', () => {
+  it('does not carry textureFrames (not derivable from the 4 sources; the frame record is the source of truth)', () => {
     expect(JSON.stringify(record)).not.toContain('textureFrames');
   });
 
@@ -230,7 +230,7 @@ describe('buildBlockDb — surfaces gaps in diagnostics instead of filling them 
   });
 });
 
-describe('buildBlockDb — keeps entries missing from data_items, contents included (#97 stage 2 review)', () => {
+describe('buildBlockDb — keeps entries missing from data_items, contents included', () => {
   /** The same shape as `double_stone_slab` in the real data. A legacy aggregate name, but it does have textures */
   const db = build({
     resourcePackBlocks: {
@@ -274,7 +274,7 @@ describe('buildBlockDb — keeps entries missing from data_items, contents inclu
   });
 });
 
-describe('textureReachability — whether all 6 faces reach a real file (#97 stage 2 review)', () => {
+describe('textureReachability — whether all 6 faces reach a real file', () => {
   const recordWith = (refs: unknown, resolved: Record<string, unknown[]>) => ({
     textures: { refs, resolved },
   }) as Parameters<typeof textureReachability>[0];

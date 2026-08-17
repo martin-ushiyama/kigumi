@@ -4,12 +4,12 @@ import type { Hit } from '../core/types';
 import type { WorldIndexReader } from '../core/worldindex';
 import { pick, type CellProbe } from '../input/picking';
 
-/** The minimal contract main.ts passes into this service from a canvas element (#14 PR2, receives the DOM dependency through the smallest possible interface) */
+/** The minimal contract main.ts passes into this service from a canvas element (receives the DOM dependency through the smallest possible interface) */
 export interface PickingCanvas {
   getBoundingClientRect(): { left: number; top: number; width: number; height: number };
 }
 
-/** The minimal contract covering only the PointerEvent properties this service uses (#14 PR2 review feedback) */
+/** The minimal contract covering only the PointerEvent properties this service uses */
 export interface PointerLike {
   clientX: number;
   clientY: number;
@@ -21,7 +21,7 @@ export interface PickingServiceOpts {
   canvas: PickingCanvas;
   camera: THREE.Camera;
   /**
-   * Derived read-model (#37 B1b). This used to be a pair, `world: WorldReader` + `isCellHidden`,
+   * Derived read-model. This used to be a pair, `world: WorldReader` + `isCellHidden`,
    * but since WorldIndex's winner resolution now excludes hidden internally, injecting a
    * visibility filter is no longer needed.
    */
@@ -46,7 +46,7 @@ export interface PickingService {
   dragProject: (e: PointerLike, mode: DragProjectMode) => [number, number, number] | null;
   /**
    * Shape-fill's **plane stage**: casts a ray onto the plane containing the touched face to
-   * determine the target cell (#101).
+   * determine the target cell.
    *
    * With the approach of taking the placement cell from the hit, dragging outside the existing
    * block would fall onto a different face (often the ground), and the plane along the touched
@@ -62,7 +62,7 @@ export interface PickingService {
     face: FaceRef,
   ) => [number, number, number] | null;
   /**
-   * Shape-fill's **extrude stage**: determines how many cells to extend along the face's axis (#78 / #101).
+   * Shape-fill's **extrude stage**: determines how many cells to extend along the face's axis.
    *
    * Casts onto a plane that contains the face's axis and faces the camera as directly as possible, and reads only that axis's component.
    */
@@ -73,7 +73,7 @@ export interface PickingService {
   ) => [number, number, number] | null;
 }
 
-/** Picking extracted from main.ts (pick / placement coordinates / drag projection). #14 PR2 / #37 B1b */
+/** Picking extracted from main.ts (pick / placement coordinates / drag projection) */
 export function createPickingService(opts: PickingServiceOpts): PickingService {
   const { canvas, camera, index } = opts;
 

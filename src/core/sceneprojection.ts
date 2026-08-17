@@ -8,7 +8,7 @@ import { assertValidEditorScene, type EditorSceneReader } from './ownervoxels';
 import { isValidCell } from './limits';
 
 /**
- * SceneProjection (#37): the single source of truth that projects the owner-local editing
+ * SceneProjection: the single source of truth that projects the owner-local editing
  * model into world coordinates and resolves overlaps (multiple owners at the same world
  * coordinate) via paint order.
  * renderer / picking / export all use this projection and winner determination (never
@@ -20,14 +20,14 @@ import { isValidCell } from './limits';
  * correct projection").
  */
 
-/** CellRef's source of truth is cellref.ts (core's bottom layer). Re-exported here to preserve existing import paths (#37 PR B1a) */
+/** CellRef's source of truth is cellref.ts (core's bottom layer). Re-exported here to preserve existing import paths */
 export type { CellRef };
 
 /**
  * Injection point that resolves a cell's raw value into "the raw value currently used for
  * display" (used to resolve live patterns).
  *
- * **World coordinates are passed too** (#69) — because pattern-fill designs are derived from
+ * **World coordinates are passed too** — because pattern-fill designs are derived from
  * world coordinates. Both the projection and the incremental update already have world
  * coordinates computed at hand, so it's cheaper to pass them along than to have the resolver
  * re-derive the transform chain. Resolvers that don't need it can ignore the third argument.
@@ -63,8 +63,8 @@ const EMPTY_STACK: readonly ProjectionEntry[] = Object.freeze([]);
  * front→back child order as back→front paint order (a cell directly under a parent sits at
  * the back of that parent's subtree, and later sibling subtrees sit further to the front).
  *
- * This one list is what decides everything for stackAt/winnerAt/winners. WorldIndex's (#37
- * PR B1a) owner-rank cache is also built from this — so the order calculation is never
+ * This one list is what decides everything for stackAt/winnerAt/winners. WorldIndex's
+ * owner-rank cache is also built from this — so the order calculation is never
  * reimplemented anywhere else.
  */
 export function ownerPaintOrder(tree: Pick<TransformTreeReader, 'childrenOf'>): OwnerId[] {
@@ -80,7 +80,7 @@ export function ownerPaintOrder(tree: Pick<TransformTreeReader, 'childrenOf'>): 
 }
 
 /**
- * Predicate that decides "which owner does this void cell hide" (#113).
+ * Predicate that decides "which owner does this void cell hide".
  *
  * An injection point so `winnerOfStack` doesn't need to hold a reference to the tree
  * directly. `SceneProjection` builds this from a live tree, while `WorldIndex` builds it from
@@ -89,7 +89,7 @@ export function ownerPaintOrder(tree: Pick<TransformTreeReader, 'childrenOf'>): 
 export type VoidHidesOwner = (voidOwnerId: OwnerId, otherOwnerId: OwnerId) => boolean;
 
 /**
- * The **single implementation** of void's effective scope (#113).
+ * The **single implementation** of void's effective scope.
  *
  * > A void cell never reaches outside the group it belongs to. What it hides is everything
  * > further back than it, within its **parent group's subtree** (sibling groups / their
@@ -118,9 +118,9 @@ export function makeVoidHidesOwner(parentOf: (ownerId: string) => OwnerId): Void
 /**
  * The winner of a stack (back→front) = **the frontmost, non-hidden, real block**.
  * The single implementation of the winner rule, shared by SceneProjection.build and
- * WorldIndex's incremental update (#37 design: the winner rule lives in one shared helper).
+ * WorldIndex's incremental update (the winner rule lives in one shared helper).
  *
- * A void cell (#113) is never a winner. Walking front to back, whenever a void is hit, its
+ * A void cell is never a winner. Walking front to back, whenever a void is hit, its
  * scope's back entries are skipped and the search continues. **A coordinate that becomes a
  * hole has a null winner** — both the renderer and export read the winner, so "nothing here"
  * is communicated consistently to both.
@@ -173,7 +173,7 @@ export class SceneProjection {
 
   /**
    * Enumerates the stack for every world key (hidden included, each stack back→front).
-   * The entry point for WorldIndex (#37 PR B1a) to ingest this projection result directly on
+   * The entry point for WorldIndex to ingest this projection result directly on
    * a full rebuild after a structural change — so projection and paint order are never
    * reimplemented on the WorldIndex side.
    */
@@ -217,7 +217,7 @@ export class SceneProjection {
       }
     }
 
-    // Void's effective scope is also part of the winner rule. Parents are looked up from the live tree (#113)
+    // Void's effective scope is also part of the winner rule. Parents are looked up from the live tree
     const voidHidesOwner = makeVoidHidesOwner((ownerId) => scene.tree.getNode(ownerId)?.parentId ?? null);
 
     const frozenStacks = new Map<CellKey, readonly ProjectionEntry[]>();
@@ -240,7 +240,7 @@ export function buildSceneProjection(
 }
 
 /**
- * Invariants for the runtime scene (#37 B1b, design rev.5). Where `assertValidEditorScene`
+ * Invariants for the runtime scene. Where `assertValidEditorScene`
  * only checks the consistency of owner references and owner-local coordinates, this checks
  * **whether the post-projection world coordinates are in range**, across every entry
  * including hidden/occluded ones.

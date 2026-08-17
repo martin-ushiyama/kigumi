@@ -2,7 +2,7 @@ import type { BlockDef } from './types';
 import { createEmitter, type Unsubscribe } from './emitter';
 import { freshLibraryId, planLibraryMerge, type LibraryMergePlan } from './library';
 
-/** RecipeStore's change-notification event kind (#13). Only one kind, since persist() is the sole change path */
+/** RecipeStore's change-notification event kind. Only one kind, since persist() is the sole change path */
 export type RecipeStoreChange = { kind: 'change' };
 
 /** A recipe entry. Keyed by blockId (index isn't used, so it survives catalog reordering) */
@@ -25,7 +25,7 @@ interface RecipeStorage {
 }
 
 /**
- * Keep only the entries usable for sampling (#48 review finding).
+ * Keep only the entries usable for sampling.
  *
  * **The condition for "can this be drawn" lives in exactly one place.** If
  * `sampleRecipe` and `isDrawableRecipe` each wrote the same condition separately,
@@ -57,7 +57,7 @@ export function sampleRecipe(
 }
 
 /**
- * Whether a recipe can actually be sampled (#48 review finding, P1).
+ * Whether a recipe can actually be sampled (a review finding).
  *
  * `RecipeStore.create()` **creates a recipe with empty entries and selects it**, so
  * "a recipe is selected" alone doesn't guarantee it's usable. `sampleRecipe` also
@@ -66,7 +66,7 @@ export function sampleRecipe(
  *
  * **The check goes through the same `drawableEntries` as `sampleRecipe`** — copying
  * the condition instead would let the UI and actual processing diverge if only one
- * side changed (#48 review finding, second pass).
+ * side changed (a review finding).
  */
 export function isDrawableRecipe(recipe: MixRecipe, indexOf: (blockId: string) => number | undefined): boolean {
   return drawableEntries(recipe, indexOf).length > 0;
@@ -119,9 +119,9 @@ const RECIPE_ID_PREFIX = 'r';
 export type RecipeMergePlan = LibraryMergePlan<MixRecipe>;
 
 /**
- * Plan adding file-sourced recipes without deleting existing ones (#126).
+ * Plan adding file-sourced recipes without deleting existing ones.
  *
- * The actual rules live in `planLibraryMerge` (shared with components, #69).
+ * The actual rules live in `planLibraryMerge` (shared with components).
  * Here we only supply the definition of a recipe's "same content".
  */
 export function planRecipeMerge(existing: MixRecipe[], incoming: MixRecipe[]): RecipeMergePlan {
@@ -141,7 +141,7 @@ export class RecipeStore {
     this.load();
   }
 
-  /** #13: supports multiple subscribers, returns an unsubscribe function */
+  /** Supports multiple subscribers, returns an unsubscribe function */
   subscribe(fn: (event: RecipeStoreChange) => void): Unsubscribe {
     return this.emitter.subscribe(fn);
   }
@@ -177,7 +177,7 @@ export class RecipeStore {
    * Replace the entire list. **For e2e setup only** (via `window.__bs`).
    *
    * **Never used for loading work files.** It would wipe out existing recipes, so
-   * loading always goes through `planRecipeMerge` + `applyMerge` instead (#69 precursor).
+   * loading always goes through `planRecipeMerge` + `applyMerge` instead.
    */
   replaceAll(recipes: MixRecipe[]): void {
     this.recipes = recipes.map((r) => cloneRecipe(r));
@@ -188,8 +188,7 @@ export class RecipeStore {
    * Apply a `planRecipeMerge` plan (for work-file loading).
    *
    * **Doesn't remove existing recipes.** Recipes belong to the user, not the work —
-   * this is to prevent "opened someone else's work and my own recipes disappeared"
-   * (#69 precursor).
+   * this is to prevent "opened someone else's work and my own recipes disappeared".
    */
   applyMerge(plan: RecipeMergePlan): void {
     if (!plan.additions.length) return;

@@ -46,15 +46,15 @@ describe('architecture-lint — the current source satisfies the layer dependenc
     expect(checkPrimitiveDependencies()).toEqual([]);
   });
 
-  it('checkDisplayLiterals: zero violations (no hardcoded Japanese in the display layer or index.html, #70)', () => {
+  it('checkDisplayLiterals: zero violations (no hardcoded Japanese in the display layer or index.html)', () => {
     expect(checkDisplayLiterals()).toEqual([]);
   });
 
-  it('checkErrorMessageLeaks: zero violations (state.ts is the only place that reads a raw exception message, #70)', () => {
+  it('checkErrorMessageLeaks: zero violations (state.ts is the only place that reads a raw exception message)', () => {
     expect(checkErrorMessageLeaks()).toEqual([]);
   });
 
-  it('checkFrozenTranslations: zero violations (translations are not baked in at module initialization, #85)', () => {
+  it('checkFrozenTranslations: zero violations (translations are not baked in at module initialization)', () => {
     expect(checkFrozenTranslations()).toEqual([]);
   });
 
@@ -68,7 +68,7 @@ describe('architecture-lint — the current source satisfies the layer dependenc
   });
 });
 
-describe('architecture-lint — the guards actually fire (regression tests keeping the #17/#18 review findings from recurring)', () => {
+describe('architecture-lint — the guards actually fire (regression tests keeping review findings from recurring)', () => {
   const probeFiles: string[] = [];
   const probeDirs: string[] = [];
 
@@ -102,7 +102,7 @@ describe('architecture-lint — the guards actually fire (regression tests keepi
     expect(violations.some((v) => v.includes('import "external-package"'))).toBe(true);
   });
 
-  it('detects a reproduced render → state type import (#17 finding: keeps the violation fixed in that PR from returning)', () => {
+  it('detects a reproduced render → state type import (keeps the violation fixed in that PR from returning)', () => {
     writeProbe('render/__arch_probe_state_type__.ts', "import type { DisplayMode } from '../state';\nexport type _Probe = DisplayMode;\n");
     const violations = checkStateTypeImports();
     expect(violations.some((v) => v.includes('render') && v.includes('state.ts'))).toBe(true);
@@ -117,7 +117,7 @@ describe('architecture-lint — the guards actually fire (regression tests keepi
     expect(violations.some((v) => v.includes('ui'))).toBe(true);
   });
 
-  it('detects a reproduced namespace type import (`import type * as X from "../state"`) (#18 finding: the loophole of only checking the {} form)', () => {
+  it('detects a reproduced namespace type import (`import type * as X from "../state"`) (the loophole of only checking the {} form)', () => {
     writeProbe(
       'ui/__arch_probe_state_namespace__.ts',
       "import type * as StateTypes from '../state';\nexport type _Probe = StateTypes.Tool;\n",
@@ -126,19 +126,19 @@ describe('architecture-lint — the guards actually fire (regression tests keepi
     expect(violations.some((v) => v.includes('ui') && v.includes('state.ts'))).toBe(true);
   });
 
-  it('detects a reproduced state type dependency written with an extension (`from "../state.js"`) (#18 finding: dodging layerOf exact matching)', () => {
+  it('detects a reproduced state type dependency written with an extension (`from "../state.js"`) (dodging layerOf exact matching)', () => {
     writeProbe('render/__arch_probe_state_jsext__.ts', "import type { DisplayMode } from '../state.js';\nexport type _Probe = DisplayMode;\n");
     const violations = checkStateTypeImports();
     expect(violations.some((v) => v.includes('render') && v.includes('state.ts'))).toBe(true);
   });
 
-  it('detects a reproduced template-literal dynamic import (`import(\\`../main\\`)`) (#18 repeat finding: missed because only StringLiteral was scanned)', () => {
+  it('detects a reproduced template-literal dynamic import (`import(\\`../main\\`)`) (a repeat finding: missed because only StringLiteral was scanned)', () => {
     writeProbe('input/__arch_probe_dynamic_main_template__.ts', "export async function probe() {\n  return import(`../main`);\n}\n");
     const violations = checkLayerDependencies();
     expect(violations.some((v) => v.includes('input') && v.includes('main'))).toBe(true);
   });
 
-  it('detects a reproduced type portion of a mixed re-export (`export { state, type Tool } from "../state"`) (#18 repeat finding: ExportSpecifier.isTypeOnly was not traversed)', () => {
+  it('detects a reproduced type portion of a mixed re-export (`export { state, type Tool } from "../state"`) (a repeat finding: ExportSpecifier.isTypeOnly was not traversed)', () => {
     writeProbe('ui/__arch_probe_export_mixed__.ts', "export { state, type Tool } from '../state';\n");
     const violations = checkStateTypeImports();
     expect(violations.some((v) => v.includes('ui') && v.includes('state.ts'))).toBe(true);
@@ -146,7 +146,7 @@ describe('architecture-lint — the guards actually fire (regression tests keepi
 
   it(
     'treats a dynamic import with interpolation (`import(\\`../${target}\\`)`) as a violation unconditionally, because the target cannot be resolved statically ' +
-      '(#18 repeat finding: handling unused dynamic imports through a per-case allowlist leaves room for evasion; banning undecidability itself is safer)',
+      '(a repeat finding: handling unused dynamic imports through a per-case allowlist leaves room for evasion; banning undecidability itself is safer)',
     () => {
       writeProbe(
         'input/__arch_probe_dynamic_interp__.ts',
@@ -157,7 +157,7 @@ describe('architecture-lint — the guards actually fire (regression tests keepi
     },
   );
 
-  // --- Guard against hardcoded Japanese in the display layer (#70 review, round 2) ---
+  // --- Guard against hardcoded Japanese in the display layer ---
   // The same "missed translation" surfaced twice — first the 2D pane name, then the region
   // aria-label in index.html — so instead of enumerating cases we fail them mechanically.
   // These tests pin down that the guard actually fires.
@@ -184,7 +184,7 @@ describe('architecture-lint — the guards actually fire (regression tests keepi
   });
 
   // throw can be excluded not because "throw is for developers" but because
-  // **the type system guarantees the display boundary never emits a raw message** (#70 review, round 3).
+  // **the type system guarantees the display boundary never emits a raw message** (raised in review).
   // That guarantee itself is pinned down by tests/i18n-boundary.test.ts.
   it('does not flag Japanese inside a throw (the display boundary never emits a raw message)', () => {
     writeProbe(
@@ -207,7 +207,7 @@ describe('architecture-lint — the guards actually fire (regression tests keepi
     expect(checkDisplayLiterals(SRC_ROOT, CLEAN_HTML).some((v) => v.includes('__arch_probe_ja_core__'))).toBe(false);
   });
 
-  // --- Guard against bypassing the display boundary (#70 review, round 4) ---
+  // --- Guard against bypassing the display boundary ---
   // Making errorText's fallback mandatory protects "inside the boundary" through types, but a path
   // that assembles e.message on its own without passing through the boundary cannot be prevented by
   // types (the file.text() failure in main.ts actually leaked this way).
@@ -229,7 +229,7 @@ describe('architecture-lint — the guards actually fire (regression tests keepi
     expect(checkErrorMessageLeaks().some((v) => v.includes('__arch_probe_msg_leak_input__'))).toBe(true);
   });
 
-  it('detects a bypass that pulls message out through destructuring (#72)', () => {
+  it('detects a bypass that pulls message out through destructuring', () => {
     writeProbe(
       'ui/__arch_probe_msg_destructure__.ts',
       'export function probe(e: Error): string {\n  const { message } = e;\n  return message;\n}\n',
@@ -237,7 +237,7 @@ describe('architecture-lint — the guards actually fire (regression tests keepi
     expect(checkErrorMessageLeaks().some((v) => v.includes('__arch_probe_msg_destructure__'))).toBe(true);
   });
 
-  it('detects renamed destructuring too (#72)', () => {
+  it('detects renamed destructuring too', () => {
     writeProbe(
       'ui/__arch_probe_msg_renamed__.ts',
       'export function probe(e: Error): string {\n  const { message: text } = e;\n  return text;\n}\n',
@@ -245,7 +245,7 @@ describe('architecture-lint — the guards actually fire (regression tests keepi
     expect(checkErrorMessageLeaks().some((v) => v.includes('__arch_probe_msg_renamed__'))).toBe(true);
   });
 
-  it('does not flag destructuring of properties other than message (#72 false-positive guard)', () => {
+  it('does not flag destructuring of properties other than message (a false-positive guard)', () => {
     writeProbe(
       'ui/__arch_probe_msg_other__.ts',
       'export function probe(o: { name: string; cause: string }): string {\n  const { name, cause } = o;\n  return name + cause;\n}\n',
@@ -253,7 +253,7 @@ describe('architecture-lint — the guards actually fire (regression tests keepi
     expect(checkErrorMessageLeaks().some((v) => v.includes('__arch_probe_msg_other__'))).toBe(false);
   });
 
-  it('detects reading message through a string-literal index too (#72 review)', () => {
+  it('detects reading message through a string-literal index too', () => {
     writeProbe(
       'ui/__arch_probe_msg_bracket__.ts',
       "export const show = (e: Error): string => e['message'];\n",
@@ -261,7 +261,7 @@ describe('architecture-lint — the guards actually fire (regression tests keepi
     expect(checkErrorMessageLeaks().some((v) => v.includes('__arch_probe_msg_bracket__'))).toBe(true);
   });
 
-  it('detects destructuring with a computed key too (#72 review)', () => {
+  it('detects destructuring with a computed key too', () => {
     writeProbe(
       'ui/__arch_probe_msg_computed__.ts',
       "export function probe(e: Error): string {\n  const { ['message']: text } = e;\n  return text;\n}\n",
@@ -269,7 +269,7 @@ describe('architecture-lint — the guards actually fire (regression tests keepi
     expect(checkErrorMessageLeaks().some((v) => v.includes('__arch_probe_msg_computed__'))).toBe(true);
   });
 
-  it('does not flag indexing with a dynamic key — the key is not determined statically (#72 review)', () => {
+  it('does not flag indexing with a dynamic key — the key is not determined statically', () => {
     // Pin down that this is out of scope. The reason it cannot be caught is
     // "not decidable from the syntax", not "type information is required".
     writeProbe(
@@ -279,10 +279,10 @@ describe('architecture-lint — the guards actually fire (regression tests keepi
     expect(checkErrorMessageLeaks().some((v) => v.includes('__arch_probe_msg_dynamic__'))).toBe(false);
   });
 
-  it('does not flag String(e) — pins down that it is outside the syntactic guard (#72)', () => {
+  it('does not flag String(e) — pins down that it is outside the syntactic guard', () => {
     // Explicitly pin down what cannot be caught. So nobody later reads this as "the guard
     // exists, therefore we are safe", the detection scope is recorded in the tests and not
-    // only in a doc comment (that assumption is exactly what caused 4 rounds in #70).
+    // only in a doc comment (that assumption is exactly what caused four review rounds).
     writeProbe(
       'ui/__arch_probe_msg_stringify__.ts',
       'export const show = (e: unknown): string => String(e);\n',
@@ -323,7 +323,7 @@ describe('architecture-lint — the guards actually fire (regression tests keepi
     expect(checkStateTypeImports().some((v) => v.includes('__arch_probe_state_value__'))).toBe(false);
   });
 
-  it('detects a dependency from a core subdirectory to input regardless of nesting depth (#17 finding: dodging a fixed-depth pattern)', () => {
+  it('detects a dependency from a core subdirectory to input regardless of nesting depth (dodging a fixed-depth pattern)', () => {
     probeDirs.push(join(SRC_ROOT, 'core', 'nested'));
     writeProbe('core/nested/__arch_probe_nested__.ts', "import type { Hit } from '../../input/picking';\nexport type _Probe = Hit;\n");
     const violations = checkLayerDependencies();
@@ -336,7 +336,7 @@ describe('architecture-lint — the guards actually fire (regression tests keepi
     expect(violations.some((v) => v.includes('main'))).toBe(true);
   });
 
-  it('detects a reproduced main dependency through a dynamic import (`import("../main")`) (#18 finding: the static-import-only loophole)', () => {
+  it('detects a reproduced main dependency through a dynamic import (`import("../main")`) (the static-import-only loophole)', () => {
     writeProbe('input/__arch_probe_dynamic_main__.ts', "export async function probe() {\n  return import('../main');\n}\n");
     const violations = checkLayerDependencies();
     expect(violations.some((v) => v.includes('input') && v.includes('main'))).toBe(true);
@@ -344,7 +344,7 @@ describe('architecture-lint — the guards actually fire (regression tests keepi
 
   it(
     'detects a reproduced dependency from a horizontal layer (input) to services ' +
-      '(#14 PR1 review finding: when the services layer was added it was only registered in ALLOWED — there was no regression fixture that actually violated the rule and failed)',
+      '(when the services layer was added it was only registered in ALLOWED — there was no regression fixture that actually violated the rule and failed)',
     () => {
       writeProbe('services/__arch_probe_services_target__.ts', 'export const probeValue = 1;\n');
       writeProbe(
@@ -358,7 +358,7 @@ describe('architecture-lint — the guards actually fire (regression tests keepi
 
   it(
     'catches editor referencing HTMLElement (a DOM type outside the 5 registered identifiers) through the tsconfig.editor.json type check ' +
-      '(#18 finding: the limits of a fixed no-restricted-globals list. Dropping DOM from lib bans every DOM identifier without maintaining a fixed list)',
+      '(the limits of a fixed no-restricted-globals list. Dropping DOM from lib bans every DOM identifier without maintaining a fixed list)',
     () => {
       writeProbe('editor/__arch_probe_dom_type__.ts', 'export type T = HTMLElement;\nexport function probe(): string {\n  return document.title;\n}\n');
       const result = runEditorTypecheck();
@@ -368,7 +368,7 @@ describe('architecture-lint — the guards actually fire (regression tests keepi
     15000,
   );
 
-  it('detects a translation evaluated at module scope (#85 finding: keeps the regression where only the category kept its old label after a language switch from recurring)', () => {
+  it('detects a translation evaluated at module scope (keeps the regression where only the category kept its old label after a language switch from recurring)', () => {
     writeProbe(
       'ui/__arch_probe_frozen_t__.ts',
       "import { t } from '../state';\nconst LABELS = { a: t('palette.stone') };\nexport const probe = LABELS;\n",

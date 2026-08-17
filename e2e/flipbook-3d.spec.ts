@@ -1,7 +1,7 @@
 import { expect, test, type Page } from '@playwright/test';
 
 /**
- * Cutting out the first frame on the 3D side (#93, the fifth consumer).
+ * Cutting out the first frame on the 3D side (the fifth consumer).
  *
  * The UI side (background images / `<img>`) is covered by `flipbook-first-frame.spec.ts`. 3D is a separate path
  * where `voxelmesh.ts` sets `repeat` / `offset` on a three.js texture, and **the vertical direction is inverted

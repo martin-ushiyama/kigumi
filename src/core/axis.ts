@@ -1,7 +1,7 @@
 /**
  * World axis numbering, and the rule for reading an axis from a face normal.
  *
- * Shared by shape-fill's face-relative operations (#101), the cylinder axis, and orientation codes.
+ * Shared by shape-fill's face-relative operations, the cylinder axis, and orientation codes.
  *
  * The `input` layer can't depend on the `services` layer, so the axis concept used by both is placed in core.
  */
@@ -10,7 +10,7 @@
 export type Axis = 0 | 1 | 2;
 
 /**
- * The face that was touched. Axis alone isn't enough — the **sign** is needed too (#101).
+ * The face that was touched. Axis alone isn't enough — the **sign** is needed too.
  *
  * The face's plane sits on a block boundary: if the normal is positive it lands in front of
  * the placement cell (`anchor[axis]`), if negative it lands behind it (`anchor[axis] + 1`).

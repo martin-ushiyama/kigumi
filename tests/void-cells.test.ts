@@ -20,7 +20,7 @@ import { VOID_BLOCK_ID, serializeProjectV5, validateProjectV3 } from '../src/pro
 import { DocumentFixture } from './helpers/document-fixture';
 
 /**
- * Void cells (#113) — a non-destructive shape carve that layers over the front to make a hole.
+ * Void cells — a non-destructive shape carve that layers over the front to make a hole.
  *
  * Established rule:
  * > A void never reaches outside the group it belongs to. What disappears is everything behind
@@ -143,7 +143,7 @@ describe('winnerOfStack — a void never becomes the winner, and hides what is b
   });
 });
 
-// ---- from here on, regression tests that **exercise the real entry points** (#113 stage 2 review P0) ----
+// ---- from here on, regression tests that **exercise the real entry points** ----
 //
 // The block above hand-assembles ProjectionEntry values and only exercises the winner rule in
 // isolation. That alone didn't test "can we even reach this state" — which is how we missed that
@@ -174,7 +174,7 @@ function sceneWithVoidOverWall(): EditorScene {
   return scene;
 }
 
-describe('the canonical transform paths pass through void values (#113 stage 2 review P0)', () => {
+describe('the canonical transform paths pass through void values', () => {
   it('rotateRaw returns void unchanged (does not throw as an unknown catalog value)', () => {
     for (const steps of [0, 1, 2, 3] as const) {
       expect(rotateRaw(VOID_CELL, steps, shapeOf)).toBe(VOID_CELL);
@@ -195,7 +195,7 @@ describe('the canonical transform paths pass through void values (#113 stage 2 r
   });
 });
 
-describe('SceneProjection can build with a void present (#113 stage 2 review P0)', () => {
+describe('SceneProjection can build with a void present', () => {
   it('the projection for a scene containing a void can be built', () => {
     expect(() => buildSceneProjection(sceneWithVoidOverWall(), shapeOf)).not.toThrow();
   });
@@ -241,7 +241,7 @@ describe('SceneProjection can build with a void present (#113 stage 2 review P0)
   });
 });
 
-describe('WorldIndex can build and incrementally update with a void present (#113 stage 2 review P0)', () => {
+describe('WorldIndex can build and incrementally update with a void present', () => {
   it('an index can be built from a scene containing a void', () => {
     expect(() => WorldIndex.fromScene(sceneWithVoidOverWall(), shapeOf)).not.toThrow();
   });
@@ -277,12 +277,12 @@ describe('WorldIndex can build and incrementally update with a void present (#11
   });
 });
 
-// ---- a void must not vanish across save → load (#113, a precondition for stage 3) ----
+// ---- a void must not vanish across save → load ----
 //
 // Autosave runs on every Document change, so if the save format doesn't know about voids, we get
 // data loss: "a placed void disappears on page reload." Close this off before making voids placeable.
 
-describe('the save format does not drop voids (#113)', () => {
+describe('the save format does not drop voids', () => {
   const catalogFor = (): BlockDef[] => [
     { id: 'minecraft:stone', nameJa: '石', nameEn: 'Stone', category: 'stone', color: '#7d7d7d', shape: 'full', materialGroup: 'stone' },
   ];
@@ -362,7 +362,7 @@ describe('the save format does not drop voids (#113)', () => {
   });
 });
 
-describe('creating a void group inside a rotated parent (#113 stage 3 review)', () => {
+describe('creating a void group inside a rotated parent', () => {
   const catalogFor = (): BlockDef[] => [
     { id: 'minecraft:stone', nameJa: '石', nameEn: 'Stone', category: 'stone', color: '#7d7d7d', shape: 'full', materialGroup: 'stone' },
   ];
@@ -423,7 +423,7 @@ describe('creating a void group inside a rotated parent (#113 stage 3 review)', 
   void catalogFor;
 });
 
-// ---- how it's shown (#113 stage 3): a void never becomes the winner, so its coordinates are queried through a separate channel ----
+// ---- how it's shown: a void never becomes the winner, so its coordinates are queried through a separate channel ----
 
 describe('WorldIndex.voidCells — the enumeration the outline reads', () => {
   it('returns the coordinates of a placed void (does not show up in entries())', () => {
@@ -485,14 +485,14 @@ describe('WorldIndex.voidCells — the enumeration the outline reads', () => {
   });
 });
 
-// ---- how it's counted (#113 stage 5): a void does not count as a block ----
+// ---- how it's counted: a void does not count as a block ----
 //
 // The "how many placed" number exists to reflect the count that will line up in the world on
 // export. A hole is not a thing that gets placed. The dropping happens on **the counting side** —
 // leaving it to the display side's "don't show out-of-catalog entries" filter would let the
 // counting and the display diverge (only the total would end up including the void).
 
-describe('a void does not count toward the block total (#113 stage 5)', () => {
+describe('a void does not count toward the block total', () => {
   /** a minimal reader holding only per-owner cells */
   function usageReader(cells: Record<string, [string, number][]>): BlockUsageReader {
     return {

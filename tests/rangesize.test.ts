@@ -3,7 +3,7 @@ import { OP_MAX_CELLS, SHAPE_MAX_SCAN_CELLS } from '../src/core/limits';
 import { rangeSizeOf, formatRangeSize, type RangeShape } from '../src/core/rangesize';
 
 /**
- * The dimensions displayed during a range operation (#83).
+ * The dimensions displayed during a range operation.
  *
  * bbox normalization lives in `bboxOfCorners`, so this only decides "how many blocks is
  * that." Computing it inline in `controls.ts` would mean writing the same min/max in 3
@@ -45,7 +45,7 @@ describe('rangeSizeOf — derives X × Y × Z from 2 points', () => {
   });
 });
 
-describe('rangeSizeOf — only flags rejection when it can be asserted for certain (#83 review)', () => {
+describe('rangeSizeOf — only flags rejection when it can be asserted for certain', () => {
   it('for a shape that fills the bbox, the generation limit can be asserted from the bbox volume', () => {
     // OP_MAX_CELLS = 32768 = 32^3, so exactly 32^3 passes and a 33-cube side exceeds it
     expect(rangeSizeOf([0, 0, 0], [31, 31, 31], SOLID_BOX).cells).toBe(OP_MAX_CELLS);

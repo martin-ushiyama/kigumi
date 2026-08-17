@@ -33,7 +33,7 @@ import { FALLBACK_PROJECT_NAME } from '../core/i18n';
  *   groups is pre-order (parent always has a lower index), parent is that array's index (-1 = root)
  * - version 3: owner-local cells + group transform (see section below)
  * - version 4: v3 + per-cell live pattern binding (metadata carries a lottery position `sample`)
- * - version 5: pattern metadata's `sample` becomes `variant` (#69, the pattern is now derived from world coordinates)
+ * - version 5: pattern metadata's `sample` becomes `variant` (the pattern is now derived from world coordinates)
  */
 export interface ProjectFileV1 {
   app: 'blocksmith';
@@ -66,11 +66,11 @@ export type ProjectFile = ProjectFileV5;
 const AUTOSAVE_KEY = 'blocksmith.project.autosave.v1'; // key name kept as-is (contents distinguished by version, so existing users' autosaves aren't orphaned)
 
 /**
- * The id used to represent a void cell (#113) in the saved format.
+ * The id used to represent a void cell in the saved format.
  *
  * Cells are saved as a blockId string, but void has no id since it's not in the catalog.
  * **Don't use a Mojang-style name like `minecraft:air`** — the policy is to not let anything
- * not actually from Mojang claim the `minecraft:` prefix (same rule as catalog ID matching, #97).
+ * not actually from Mojang claim the `minecraft:` prefix (same rule as catalog ID matching).
  * Using the `blocksmith:` namespace makes "this is a blocksmith concept" readable from the id itself.
  */
 export const VOID_BLOCK_ID = 'blocksmith:void';
@@ -83,9 +83,9 @@ export const VOID_BLOCK_ID = 'blocksmith:void';
  * gets filled with a default).
  */
 export interface ProjectExtras {
-  /** Components used by this work (#69). Only ones with an instance are included */
+  /** Components used by this work. Only ones with an instance are included */
   components?: readonly ComponentTemplate[];
-  /** Export count (#133). Not written to the save when 0 */
+  /** Export count. Not written to the save when 0 */
   exportRevision?: number;
 }
 
@@ -240,7 +240,7 @@ export function validateProject(
  * a later Ctrl+G.
  */
 /**
- * Reads the export count from the saved data (#133).
+ * Reads the export count from the saved data.
  *
  * **Treats a corrupted value as 0 instead of failing the whole load** — the count isn't part of
  * the work itself, so it's worse for it to block the work from opening. Recounting from 0 leaves
@@ -263,7 +263,7 @@ export function loadProject(
   const { scene, name, recipes, components, loaded, skipped } = loadProjectV3(data, indexOf);
 
   // Recipes and components both belong to the user, not the work. Loading adds to the existing
-  // ones without clearing them (#126 / #69).
+  // ones without clearing them.
   // The merge plan is built first, and reference ids are remapped **before importing into the
   // Document** — if the lists were rewritten first, a later throw from doc.replaceAll would
   // leave a state where only the inventory grew but the work never got imported
@@ -296,7 +296,7 @@ export function loadProject(
  * the caller move on assuming "it saved" — for a value like the export count, where **the
  * correctness of the next operation depends on the save succeeding**, that would leave it
  * reusing the old revision and stuck unable to update
- * (#140 review feedback).
+ *.
  *
  * @returns true if the write succeeded
  */
@@ -318,7 +318,7 @@ export function loadAutosave(): ProjectFile | null {
   }
 }
 
-// ---- version 3: owner-local cells + group transform (#37) ----
+// ---- version 3: owner-local cells + group transform ----
 //
 // v3 is the persisted form of the editing model (EditorScene). Cell coordinates are in the
 // owner (group)'s local coordinates, which round-trips overlaps where multiple owners project
@@ -342,7 +342,7 @@ export interface ProjectFileV3 {
     parent: number;
     hidden?: boolean;
     locked?: boolean;
-    /** If this is a component instance, its id (#69). **Optional = a plain group** */
+    /** If this is a component instance, its id. **Optional = a plain group** */
     templateId?: string;
     transform?: { angleSteps: AngleSteps; translate: [number, number, number]; pivot2: [number, number] };
   }[];
@@ -352,7 +352,7 @@ export interface ProjectFileV3 {
 }
 
 /**
- * **Read-only** (writers from #69 onward emit v5). Older format where pattern metadata carries a lottery position `sample`.
+ * **Read-only** (current writers emit v5). Older format where pattern metadata carries a lottery position `sample`.
  */
 export interface ProjectFileV4 extends Omit<ProjectFileV3, 'version' | 'cells'> {
   version: 4;
@@ -375,18 +375,18 @@ export interface ProjectFileV4 extends Omit<ProjectFileV3, 'version' | 'cells'> 
 }
 
 /**
- * v4 + pattern metadata's `sample` -> `variant` replacement (#69).
+ * v4 + pattern metadata's `sample` -> `variant` replacement.
  *
  * Patterns are now derived from world coordinates, so the lottery position is no longer
  * persisted. **This is an incompatible replacement of a required field, so the version bumps** —
  * if it kept claiming version 4 under a different schema, an old reader would accept the new
- * file as v4 and then fail on the missing `sample` (PR #76 review). The new reader reads both
+ * file as v4 and then fail on the missing `sample`. The new reader reads both
  * v4 (sample) and v5 (variant), so existing works aren't lost.
  */
 export interface ProjectFileV5 extends Omit<ProjectFileV4, 'version' | 'cells'> {
   version: 5;
   /**
-   * Components used by this work (#69). **Optional**.
+   * Components used by this work. **Optional**.
    *
    * The version isn't bumped for this, because both `components` and `groups[].templateId`
    * are **backward-compatible additions**. An old reader can still open a new file — the
@@ -395,7 +395,7 @@ export interface ProjectFileV5 extends Omit<ProjectFileV4, 'version' | 'cells'> 
    */
   components?: SerializedComponentTemplate[];
   /**
-   * Export count (#133).
+   * Export count.
    *
    * **The work file remembers this.** Bedrock ignores imports with "same pack identity + same
    * or lower revision", so re-exporting to trigger an update needs a monotonically increasing
@@ -420,7 +420,7 @@ export interface ProjectFileV5 extends Omit<ProjectFileV4, 'version' | 'cells'> 
 }
 
 /**
- * A component as saved (#69 / #142 review P1).
+ * A component as saved.
  *
  * **Cells are stored as block id + orientation, not catalog order.** The raw value held by
  * `ComponentTemplate` includes a position within the catalog, so if blocks are added or the
@@ -508,7 +508,7 @@ export interface ValidatedProjectV3 {
     parent: number;
     hidden: boolean;
     locked: boolean;
-    /** If this is a component instance, its id (#69) */
+    /** If this is a component instance, its id */
     templateId?: string;
     transform?: GroupTransform;
   }[];
@@ -516,7 +516,7 @@ export interface ValidatedProjectV3 {
   cells: [number, number, number, number, number][];
   patterns: [number, number, number, number, PatternPaint][];
   recipes: MixRecipe[];
-  /** Components used by the work (#69). Always empty for files older than v4 */
+  /** Components used by the work. Always empty for files older than v4 */
   components: ComponentTemplate[];
   skipped: number;
 }
@@ -538,7 +538,7 @@ export function migrateV2ToV3(v: ValidatedProject): ValidatedProjectV3 {
 }
 
 /**
- * Reads the placement number from a cell's pattern metadata (#69). **The required field differs per version**:
+ * Reads the placement number from a cell's pattern metadata. **The required field differs per version**:
  *
  * - v5: `variant` (integer >= 0 and < `PATTERN_VARIANTS`)
  * - v4: `sample` (lottery position 0..1). **Discards it and returns 0** — since patterns are
@@ -579,7 +579,7 @@ export function validateProjectV3(
     return migrateV2ToV3(validateProject(data, indexOf));
   }
   if (d.version === 4 || d.version === 5) {
-    // v4 and v5 have the same cells shape; only the required field of the pattern metadata differs (#69)
+    // v4 and v5 have the same cells shape; only the required field of the pattern metadata differs
     const patternVersion = d.version;
     if (!Array.isArray(d.cells)) throw new Error('cells is not an array');
     const v4Cells = d.cells as unknown[];
@@ -686,7 +686,7 @@ export function validateProjectV3(
     if (!isValidOrientationCode(orientationCode)) {
       throw new Error(`cells[${i}].orientationCode is invalid (${JSON.stringify(orientationCode)})`);
     }
-    // A void cell (#113) doesn't exist in the catalog, so it can't be looked up via indexOf.
+    // A void cell doesn't exist in the catalog, so it can't be looked up via indexOf.
     // **Distinguish it with a dedicated id** — without this branch it would fall through to
     // skipped, and a save/load round-trip would silently fill in the hole
     const index = blockId === VOID_BLOCK_ID ? VOID_CATALOG_INDEX : indexOf(blockId);
@@ -731,7 +731,7 @@ export function validateProjectV3(
  * Validates a saved group transform.
  *
  * **Kept in one place.** The same shape (`GroupTransform`) appears both on a work's groups and
- * on a component's nodes, so copying the validation would leave one side more lenient (#142
+ * on a component's nodes, so copying the validation would leave one side more lenient (raised in
  * review P1: the node side was let through unchecked). `where` receives the path of the field
  * being validated (e.g. `groups[0].transform`), which is what the diagnostics are keyed on.
  *
@@ -766,7 +766,7 @@ function validateTransform(raw: unknown, where: string): GroupTransform | undefi
 }
 
 /**
- * Validates and reads back components bundled with the file (#69).
+ * Validates and reads back components bundled with the file.
  *
  * **Optional**. Absent from files older than v4, or from works that don't use components.
  * Throws if the shape is broken — silently dropping it would leave an instance (`templateId`)
@@ -828,7 +828,7 @@ export function validateComponents(
 
     const cells: ComponentCell[] = [];
     c.cells.forEach((entry, j) => {
-      // 4 elements: `[nodeIndex, key, block id, orientation]` (#142 review P1, migrated away from raw values)
+      // 4 elements: `[nodeIndex, key, block id, orientation]` (raised in review, migrated away from raw values)
       if (!Array.isArray(entry) || entry.length !== 4) {
         throw new Error(`components[${i}].cells[${j}] is invalid (element count)`);
       }
@@ -1005,7 +1005,7 @@ export function serializeProjectV5(
   // Recipes belong to the account, so what's passed in includes ones unrelated to this work.
   // **Only bundle the recipes actually referenced by a written paint** — including all of them
   // would turn the work file into "an export of the recipe library", leaking unused recipes into
-  // the account of whoever opens it (#126 review)
+  // the account of whoever opens it
   const usedRecipeIds = new Set<string>();
   const cells: ProjectFileV5['cells'] = [];
 
@@ -1014,7 +1014,7 @@ export function serializeProjectV5(
     if (index === undefined) throw new Error(`serializeProjectV5: could not resolve owner index ("${owner}")`);
     for (const [key, raw] of scene.cells.entriesOf(owner)) {
       const [vx, vy, vz] = key.split(',').map(Number) as [number, number, number];
-      // A void cell (#113) is not in the catalog so it falls through to `!def`. **Write it out
+      // A void cell is not in the catalog so it falls through to `!def`. **Write it out
       // with a dedicated id** — dropping it would silently fill the hole on a save/load
       // round-trip (data loss). Void never has a pattern
       if (isVoidCell(raw)) {
@@ -1052,7 +1052,7 @@ export function serializeProjectV5(
 
   // Components are treated the same as recipes — **only bundle ones that actually have an
   // instance**. Including all of them would turn the work file into "an export of the
-  // component inventory", leaking unused ones into the inventory of whoever opens it (same shape as #126)
+  // component inventory", leaking unused ones into the inventory of whoever opens it (the same shape as the recipe side)
   const usedTemplateIds = new Set(groups.map((group) => group.templateId).filter((id): id is string => !!id));
   const usedComponents = components
     .filter((component) => usedTemplateIds.has(component.id))

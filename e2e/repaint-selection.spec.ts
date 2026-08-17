@@ -1,7 +1,7 @@
 import { expect, test, type Page } from '@playwright/test';
 
 /**
- * The real wiring of repainting a selection (#64 PR-C).
+ * The real wiring of repainting a selection.
  *
  * The semantics of replacement (narrowing by block type / carrying the orientation over / rebinding) belong to
  * `tests/replace-selection.test.ts`. What is verified here is
@@ -32,7 +32,7 @@ async function selectCells(page: Page, cells: [number, number, number][]): Promi
   }, cells);
 }
 
-/** Reads the catalogIndex (interpreting the packed representation is left to the __bs side, #96) */
+/** Reads the catalogIndex (interpreting the packed representation is left to the __bs side) */
 async function blockAt(page: Page, x: number, y: number, z: number): Promise<number | null> {
   return page.evaluate(
     (c: [number, number, number]) => window.__bs.catalogIndexAt(c[0], c[1], c[2]),
@@ -123,7 +123,7 @@ test('for a mixed selection, the block types actually present can be narrowed do
 });
 
 /**
- * #64 PR-C review: the inspector only subscribed to doc / selection / language, so
+ * Caught in review: the inspector only subscribed to doc / selection / language, so
  * **switching the palette block while keeping a multi-selection did not re-render it**.
  * The label stayed on the old block name while a click applied the current activeBlock, which is inconsistent.
  */

@@ -8,7 +8,7 @@ import {
 } from '../scripts/flipbook.mjs';
 
 /**
- * The frame-count contract for animated textures (#93).
+ * The frame-count contract for animated textures.
  *
  * What is pinned down here is **structural consistency only**. PNGs are gitignored and absent in
  * CI, so "the real image really has 5 frames" cannot be verified here (that happens at fetch time).
@@ -123,7 +123,7 @@ describe('verifyFrameStructure — structural consistency is as far as CI can gu
     expect(p[0]).toContain('out of range');
   });
 
-  it('detects a referenced flipbook target with no recorded frame count (#100 review: newly added targets were missed)', () => {
+  it('detects a referenced flipbook target with no recorded frame count (newly added targets were missed)', () => {
     // A snapshot update made crimson a flipbook target, but no record exists yet.
     // Letting it through silently makes the app collapse it to 1 frame and draw it at full size
     const p = verifyFrameStructure({

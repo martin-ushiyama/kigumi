@@ -11,7 +11,7 @@ function makeDoc(): DocumentFixture {
 }
 
 /**
- * Build a standalone EditorScene to pass to `Document.replaceAll` (#37 B1b).
+ * Build a standalone EditorScene to pass to `Document.replaceAll`.
  * Same shape as what v3 load returns — the load unit is now a pair of
  * "owner-local cells + tree", not a "world-coordinate cell array + tree".
  */
@@ -23,7 +23,7 @@ function sceneOf(cells: Array<[OwnerId, string, number]>, nodes: GroupNode[] = [
   return { tree, cells: store };
 }
 
-describe('Document — EditSession / applyEdits owner-local resolution rules (#37 B1b)', () => {
+describe('Document — EditSession / applyEdits owner-local resolution rules', () => {
   it('erase removes the visible winner ref (same even for cells with an owner)', () => {
     const doc = makeDoc();
     doc.insertGroup({ id: 'g0', name: 'G', parentId: null, childIds: [] }, 0);
@@ -221,7 +221,7 @@ describe('Document — replaceAll / clearAll', () => {
   });
 });
 
-describe('Document — atomicity of replaceAll/clearAll (PR #22 review finding, discovered while investigating similar root-cause paths)', () => {
+describe('Document — atomicity of replaceAll/clearAll (a review finding, discovered while investigating similar root-cause paths)', () => {
   it('replaceAll: if tree.replaceAll fails on a pre-order violation, world/tree/history stay exactly as they were before the load', () => {
     const doc = makeDoc();
     doc.insertGroup({ id: 'old', name: 'OLD', parentId: null, childIds: [] }, 0);
@@ -250,7 +250,7 @@ describe('Document — atomicity of replaceAll/clearAll (PR #22 review finding, 
     expect(doc.undoDepth).toBe(undoLenBefore);
   });
 
-  it('clearAll: even if world.onChange throws, clearAll itself still succeeds and world/tree are cleared (observer failure is independent of operation success, design unified in PR #22\'s 3rd review round)', () => {
+  it('clearAll: even if world.onChange throws, clearAll itself still succeeds and world/tree are cleared (observer failure is independent of operation success, design unified in review)', () => {
     const doc = makeDoc();
     doc.insertGroup({ id: 'g0', name: 'G', parentId: null, childIds: [] }, 0);
     doc.setCells([[0, 0, 0, 1]]);
@@ -367,7 +367,7 @@ describe('Document — no-op on empty edits', () => {
   });
 });
 
-describe('Document — the undo stack does not hold aliases to caller-owned objects (regression test, prevents #19 recurrence)', () => {
+describe('Document — the undo stack does not hold aliases to caller-owned objects (regression test)', () => {
   it('an external mutation to the node passed into applyTransaction is not reflected after undo→redo', () => {
     const doc = makeDoc();
     const node: GroupNode = { id: 'g0', name: 'before', parentId: null, childIds: [] };
@@ -413,7 +413,7 @@ describe('Document — the undo stack does not hold aliases to caller-owned obje
     expect(doc.tree.getNode('g0')?.name).toBe('before');
   });
 
-  it('a primitives-only op (renameGroup) also does not hold an alias to the op object itself (#19 recurrence: a missing default branch in cloneOp)', () => {
+  it('a primitives-only op (renameGroup) also does not hold an alias to the op object itself (a recurrence: a missing default branch in cloneOp)', () => {
     const doc = makeDoc();
     doc.insertGroup({ id: 'g0', name: 'A', parentId: null, childIds: [] }, 0);
     const op = { kind: 'renameGroup' as const, id: 'g0', before: 'A', after: 'B' };
@@ -428,7 +428,7 @@ describe('Document — the undo stack does not hold aliases to caller-owned obje
   });
 });
 
-describe('Document — atomicity of applyTransaction/commitStaged (#11)', () => {
+describe('Document — atomicity of applyTransaction/commitStaged', () => {
   it('applyTransaction: a transaction containing an invalid op (reparentGroup on a nonexistent group) leaves no partial application', () => {
     const doc = makeDoc();
     expect(() =>
@@ -445,7 +445,7 @@ describe('Document — atomicity of applyTransaction/commitStaged (#11)', () => 
     expect(doc.undoDepth).toBe(0);
   });
 
-  it('applyTransaction: does not trust a stale before claimed by an op, and rolls back to the actual pre-transaction state (reproduces a PR #21 review finding)', () => {
+  it('applyTransaction: does not trust a stale before claimed by an op, and rolls back to the actual pre-transaction state (reproduces a review finding)', () => {
     const doc = makeDoc();
     doc.setCells([[0, 0, 0, 5]]); // the actual pre-transaction value is 5
 
@@ -493,7 +493,7 @@ describe('Document — atomicity of applyTransaction/commitStaged (#11)', () => 
     expect(doc.undoDepth).toBe(0);
   });
 
-  it('applyTransaction: an onChange throw after a voxel write does not affect whether the transaction succeeds (design unified in PR #22\'s 3rd review round)', () => {
+  it('applyTransaction: an onChange throw after a voxel write does not affect whether the transaction succeeds (design unified in review)', () => {
     // Up through the 2nd review round, "onChange throw = subject to rollback" was the rule, but the
     // 3rd review round pointed out that "treating a notification failure to an observer as an
     // operation failure will make state and history diverge unless every path — undo/redo,
@@ -581,7 +581,7 @@ describe('Document — atomicity of applyTransaction/commitStaged (#11)', () => 
   });
 });
 
-describe('Document.beginSession() — EditSession (#11)', () => {
+describe('Document.beginSession() — EditSession', () => {
   it('stagePreview reflects into world immediately but does not push undo history', () => {
     const doc = makeDoc();
     const session = doc.beginSession();
@@ -669,7 +669,7 @@ describe('Document.beginSession() — EditSession (#11)', () => {
     expect(doc.world.get(0, 0, 0)).toBe(1);
   });
 
-  it('even if commit fails due to an invalid extraOps entry (renaming a nonexistent group), it restores to baseline (reproduces a PR #21 review finding)', () => {
+  it('even if commit fails due to an invalid extraOps entry (renaming a nonexistent group), it restores to baseline (reproduces a review finding)', () => {
     const doc = makeDoc();
     const session = doc.beginSession();
     session.stagePreview([place(0, 0, 0, 1)]);
@@ -686,7 +686,7 @@ describe('Document.beginSession() — EditSession (#11)', () => {
     expect(doc.world.get(0, 0, 0)).toBeNull();
   });
 
-  it('commit: rejects at runtime even if a voxel op sneaks into extraOps by bypassing the type system (reproduces a PR #22 review finding)', () => {
+  it('commit: rejects at runtime even if a voxel op sneaks into extraOps by bypassing the type system (reproduces a review finding)', () => {
     const doc = makeDoc();
     const session = doc.beginSession();
     session.stagePreview([place(0, 0, 0, 1)]);
@@ -702,7 +702,7 @@ describe('Document.beginSession() — EditSession (#11)', () => {
   });
 });
 
-describe('Document — notify exceptions and state/history consistency (reproduces a PR #22 3rd-round review finding, root cause A)', () => {
+describe('Document — notify exceptions and state/history consistency (reproduces a review finding, root cause A)', () => {
   it('undo: a throw in world.onChange used to skip the push onto redoStack, making redo impossible', () => {
     const doc = makeDoc();
     doc.applyTransaction({ ops: [{ kind: 'voxel', owner: null, key: '0,0,0', before: null, after: 1 }] });
@@ -753,7 +753,7 @@ describe('Document — notify exceptions and state/history consistency (reproduc
   });
 });
 
-describe('Document/SceneTree — core-side invariant validation (reproduces a PR #22 3rd-round review finding, root cause B)', () => {
+describe('Document/SceneTree — core-side invariant validation (reproduces a review finding, root cause B)', () => {
   it('applyTransaction: a createGroup with a duplicate id is rejected, and rollback does not destroy the existing group', () => {
     const doc = makeDoc();
     doc.insertGroup({ id: 'g0', name: 'original', parentId: null, childIds: [] }, 0);
@@ -806,7 +806,7 @@ describe('Document/SceneTree — core-side invariant validation (reproduces a PR
   });
 });
 
-describe('Document/SceneTree — invariant validation from a different entry point (reproduces a PR #22 4th-round review finding, a path independent of insertNode/setMembership)', () => {
+describe('Document/SceneTree — invariant validation from a different entry point (reproduces a review finding, a path independent of insertNode/setMembership)', () => {
   it('applyTransaction: passing non-empty childIds (self-cycle) to createGroup is rejected', () => {
     const doc = makeDoc();
 
@@ -845,7 +845,7 @@ describe('Document/SceneTree — invariant validation from a different entry poi
   });
 });
 
-describe('Document — subscribe/notify (#13)', () => {
+describe('Document — subscribe/notify', () => {
   it('subscribe returns an unsubscribe function, and calling it stops further notifications', () => {
     const doc = makeDoc();
     const fn = vi.fn();
@@ -871,7 +871,7 @@ describe('Document — subscribe/notify (#13)', () => {
   });
 });
 
-describe('Document — setGroupTransform op (#37 B1b)', () => {
+describe('Document — setGroupTransform op', () => {
   const T1: GroupTransform = { angleSteps: 1, translate: [2, 0, -3], pivot2: [1, 1] };
   const T2: GroupTransform = { angleSteps: 2, translate: [0, 5, 0], pivot2: [3, 3] };
 
@@ -970,7 +970,7 @@ describe('Document — setGroupTransform op (#37 B1b)', () => {
 });
 
 /**
- * Atomicity of EditSession preview (#37 B1b, code review P1).
+ * Atomicity of EditSession preview (raised in code review).
  *
  * Root cause: `stageLocal` went "range validation → write into scene first → update index," and
  * **had no rollback for when the index update throws**. Only scene would advance incorrectly,

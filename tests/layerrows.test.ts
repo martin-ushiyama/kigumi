@@ -52,7 +52,7 @@ describe('visibleLayerRows', () => {
 });
 
 /**
- * The relationship between display order and paint order (#110). **Pinned in a form that
+ * The relationship between display order and paint order. **Pinned in a form that
  * fails if it's ever flipped back.**
  *
  * Paint order (`ownerPaintOrder` in `core/sceneprojection.ts`) treats `childrenOf`'s
@@ -63,7 +63,7 @@ describe('visibleLayerRows', () => {
  * own children, so only **the sibling ordering** gets reversed. These are the two points
  * pinned here.
  */
-describe('relationship between display order and paint order (#110)', () => {
+describe('relationship between display order and paint order', () => {
   /** An owner's paint rank (smaller = further back). null = unclassified cells are furthest back */
   const rankOf = (children: Record<string, readonly string[]>): Map<OwnerId, number> => {
     const order = ownerPaintOrder({ childrenOf: (parentId) => children[parentId ?? '@root'] ?? [] });
@@ -114,12 +114,12 @@ describe('relationship between display order and paint order (#110)', () => {
   });
 });
 
-describe('stepLayerCursor — skips rows of a different kind (#43 provisional spec under that constraint)', () => {
+describe('stepLayerCursor — skips rows of a different kind (a provisional spec under that constraint)', () => {
   const rows = visibleLayerRows(
     reader({ '@root': ['a', 'b'], a: [] }, { a: ['0,0,0'], '@root': ['9,0,0'] }),
     new Set(['a']),
   );
-  // ['g:b', 'g:a', 'c:1|a|0,0,0', 'c:-|9,0,0'] (display puts the front-most on top, so b comes first, #110)
+  // ['g:b', 'g:a', 'c:1|a|0,0,0', 'c:-|9,0,0'] (display puts the front-most on top, so b comes first)
 
   it('when stepping through group, skips cell rows in between', () => {
     expect(stepLayerCursor(rows, 0, 1, 'group')).toBe(1);
@@ -161,12 +161,12 @@ describe('layerRowsInRange', () => {
 });
 
 
-describe("don't select a parent and child group at the same time (#49 review P1)", () => {
+describe("don't select a parent and child group at the same time", () => {
   // parent p (expanded) > child c, followed by sibling s. normalizeSelection keeps only the
   // outermost, so putting p and c into the range at the same time drops c = it must not be a
   // valid cursor destination
   const rows = visibleLayerRows(reader({ '@root': ['p', 's'], p: ['c'] }), new Set(['p']));
-  // ['g:s', 'g:p', 'g:c'] — sibling s is in front of p, so it comes out on top (#110)
+  // ['g:s', 'g:p', 'g:c'] — sibling s is in front of p, so it comes out on top
   const isAncestor = (a: string, b: string): boolean => a === 'p' && b === 'c';
 
   it('premise: order is sibling → parent → child', () => {
@@ -204,7 +204,7 @@ describe("don't select a parent and child group at the same time (#49 review P1)
 });
 
 
-describe('visibleLayerRows — filtering (#45)', () => {
+describe('visibleLayerRows — filtering', () => {
   // root > a (> a1 > cell) / b, plus 1 unclassified cell
   const r = reader({ '@root': ['a', 'b'], a: ['a1'] }, { a1: ['0,0,0'], '@root': ['9,0,0'] });
   const only = (...wanted: string[]): ((row: LayerRow) => boolean) => (row) =>

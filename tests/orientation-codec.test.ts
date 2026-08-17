@@ -83,7 +83,7 @@ describe('orientation numbering corresponds to Orientation', () => {
   /**
    * The "never silently ignore an unknown state" guarantee is upheld at generation time
    * (`poseStatesOf`), and this confirms it is not broken at the runtime entry point either
-   * (#138 review finding). **Drops both shortfalls and extras.**
+   *. **Drops both shortfalls and extras.**
    */
   it('drops it if an unknown state key is mixed in', () => {
     expect(() => encodeStates('full', { pillar_axis: 'y', open_bit: true })).toThrow('extra: open_bit');
@@ -95,7 +95,7 @@ describe('orientation numbering corresponds to Orientation', () => {
 
   /**
    * Since `in` also looks up the prototype chain, a name coming from Object.prototype like
-   * `toString` would slip through as a "known state" (#138 review finding)
+   * `toString` would slip through as a "known state"
    */
   it('drops names coming from Object.prototype as unknown states too', () => {
     expect(() => encodeStates('full', { pillar_axis: 'y', toString: 'x' })).toThrow('extra: toString');

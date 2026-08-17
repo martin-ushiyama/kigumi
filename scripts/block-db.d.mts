@@ -1,4 +1,4 @@
-/** Assembling the unified DB (#97 stage 2). Implemented in block-db.mjs */
+/** Assembling the unified DB. Implemented in block-db.mjs */
 import type { SnapshotSource } from './bedrock-snapshot.d.mts';
 import type { TextureVariant } from './bedrock-parse.d.mts';
 

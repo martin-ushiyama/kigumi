@@ -1,7 +1,7 @@
 import { assertCanonicalLocalCellKey, makeCellKey, parseCellKey, type Cell, type CellKey } from './cell';
 
 /**
- * The cell identifier `CellRef` and its normalized key (#37 PR B1a).
+ * The cell identifier `CellRef` and its normalized key.
  *
  * World coordinates aren't a cell's identity — multiple owners can project onto the
  * same world coordinate, and the winner can swap due to hide / reordering / transform.
@@ -9,7 +9,7 @@ import { assertCanonicalLocalCellKey, makeCellKey, parseCellKey, type Cell, type
  *
  * Placed as a low-level module depending only on `cell.ts`. This is so that when `Hit`
  * (types.ts) or Selection come to hold a `CellRef`, it doesn't create a circular
- * import between types and sceneprojection (#37 design rev.3 P2).
+ * import between types and sceneprojection.
  */
 
 /** A cell's owner. Group id, or `null` = directly under root (unassigned cell) */
@@ -25,7 +25,7 @@ export interface CellRef {
  *
  * The format is `"<owner length>|<owner>|x,y,z"`, and `"-|x,y,z"` for root (owner=null).
  * The length prefix exists to **make encoding injective over `OwnerId`'s entire value
- * range (`string | null`)** (PR #39 review finding). A naive delimiter join would
+ * range (`string | null`)**. A naive delimiter join would
  * collapse `owner === ''` onto the same key as root, and an id containing `|` would
  * silently desync parsing. Since `SceneTree` currently rejects neither empty-string ids
  * nor ids containing `|`, rejecting them as "invalid ids" at key-generation time would
@@ -47,7 +47,7 @@ function encodeOwner(owner: OwnerId): string {
  * The sole entry point for key generation. **No generation API accepts a string
  * `CellKey`** — if a non-canonical representation ("01,2,3" / "0,0,0,extra") went
  * straight into a key, the same logical cell would end up with multiple key
- * representations, desyncing the stack and its reverse-lookup index (PR #39 review
+ * representations, desyncing the stack and its reverse-lookup index (raised in
  * finding). It's routed through `makeCellKey` from a numeric `localCell`, so the same
  * logical cell always produces the same representation (validating that coordinates
  * are within range is each caller's own responsibility, via `assertCanonicalLocalCellKey`).
@@ -83,7 +83,7 @@ function parseLocalCell(key: CellRefKey, localKey: CellKey): Cell {
 }
 
 /**
- * A mapping of refs to apply to selection state as the result of a mutation (#37 design rev.5).
+ * A mapping of refs to apply to selection state as the result of a mutation.
  * `CellRef` is stable across winner changes and owner transforms, but changes its
  * localCell / ownerId when the cell itself physically moves (nudge / drag / move
  * between owners / group / ungroup). Simply "dropping vanished refs from selection"

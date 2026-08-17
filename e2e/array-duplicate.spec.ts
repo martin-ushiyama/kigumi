@@ -1,7 +1,7 @@
 import { expect, test, type Page } from '@playwright/test';
 
 /**
- * Pins down the inspector UI wiring of array duplication (#63).
+ * Pins down the inspector UI wiring of array duplication.
  *
  * The delta / count logic of `buildDuplicate` is covered by the unit tests, but
  * **assembling the delta from the direction select and the count / gap inputs** is the inspector's responsibility
@@ -125,7 +125,7 @@ test('array duplication can be undone in one Ctrl+Z (a single transaction)', asy
   expect(await page.evaluate(() => window.__bs.doc.tree.childrenOf(null).length)).toBe(1);
 });
 
-test('array duplication also works from a single-block selection (#67 review P1)', async ({ page }) => {
+test('array duplication also works from a single-block selection', async ({ page }) => {
   // Place just one unclassified block, without putting it in a group
   const blockId = await page.evaluate(() => window.__bs.CATALOG[0]!.id);
   await page.evaluate(

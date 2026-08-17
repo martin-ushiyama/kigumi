@@ -81,7 +81,7 @@ describe('createEmitter', () => {
     expect(calledOrder.sort()).toEqual(['a', 'b']);
   });
 
-  it('self-unsubscribing then re-subscribing during notify does not cause double delivery within the same notify (#27 review regression)', () => {
+  it('self-unsubscribing then re-subscribing during notify does not cause double delivery within the same notify (a review regression)', () => {
     const emitter = createEmitter<{ kind: 'x' }>();
     const fn = vi.fn();
     let hasResubscribed = false;
@@ -102,7 +102,7 @@ describe('createEmitter', () => {
     expect(fn).toHaveBeenCalledTimes(1); // only once within this notify; the resubscription takes effect starting from the next notify
   });
 
-  it('unsubscribing another listener during notify still calls that listener within this notify, regardless of registration order (#27 review regression)', () => {
+  it('unsubscribing another listener during notify still calls that listener within this notify, regardless of registration order (a review regression)', () => {
     const emitterAB = createEmitter<{ kind: 'x' }>();
     const bAB = vi.fn();
     const boxAB: { unsubB: () => void } = { unsubB: () => {} };

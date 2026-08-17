@@ -1,9 +1,9 @@
 /**
  * **Assembly of the unified DB** that binds the four upstream sources into one record
- * (#97 stage 2). Pure functions only.
+ *. Pure functions only.
  *
  * Facts about the same block being scattered by hand across several places was the common
- * cause of the incidents hit in #92 and #94. Binding upstream into a single thing that can be
+ * cause of the earlier incidents. Binding upstream into a single thing that can be
  * looked up removes both the room to guess and the room for copies to appear.
  *
  * ## Contract
@@ -21,7 +21,7 @@
  *
  * - `textureFrames` (the frame count of an animation). The physical frame count needs the PNG
  *   dimensions and deciding whether something is animated needs flipbook_textures.json.
- *   It cannot be derived from the four sources, so the source of truth stays in #93 (never
+ *   It cannot be derived from the four sources, so the source of truth stays with the frame record (never
  *   generate it in two places)
  * - Japanese names, categories, representative colours, inclusion. Those are **our decisions**
  *   rather than something from Mojang, and stage 4's `curation.json` holds them
@@ -74,7 +74,7 @@ function statesOf(dataItem, propertyIndex, diagnostics) {
  *
  * `terrain_texture.json` is a dictionary keyed by **texture name**, so a block ID cannot reach
  * a real file without `resource_pack/blocks.json` as the bridge (the cause of the 10 blocks
- * left "unidentifiable" in #92).
+ * left "unidentifiable" by the earlier incident).
  */
 function texturesOf({ id, refs, terrainTextureData, diagnostics }) {
   const resolved = {};
@@ -150,7 +150,7 @@ export function buildBlockDb({ mojangBlocks, resourcePackBlocks, terrainTexture,
     if (nameEn === null) {
       // Older blocks are stored in a parent.variant form such as `tile.stone.granite.name` and
       // cannot be looked up from a block ID. **Do not guess** — guessing at the naming
-      // convention is exactly the #92 incident
+      // convention is exactly that incident
       diagnostics.push({
         kind: 'missingNameEn',
         id: item.name,
@@ -175,7 +175,7 @@ export function buildBlockDb({ mojangBlocks, resourcePackBlocks, terrainTexture,
    * **They are held with their contents, in the same shape as a block.** They used to be
    * pushed onto diagnostics as an ID plus a boilerplate sentence, but that lost the original
    * entry's `textures` and its resolution result, which did not meet the goal of "keeping
-   * them" (#97 stage 2 review). The `stone_slab` family's textures may only be reachable
+   * them". The `stone_slab` family's textures may only be reachable
    * through these names, so they are useless unless stage 3 can look them up the same way.
    *
    * They are held as data rather than as diagnostics because they are **an upstream fact**,
@@ -211,7 +211,7 @@ export const formatBlockDb = (db) => JSON.stringify(db, null, 2) + String.fromCh
  *
  * The check used to be "reached if `resolved` has at least one key", but that passes "only
  * some faces resolve" and "there are candidates but not one path can be taken out of them
- * (only `{overlay_color}`, etc.)" as reached (#97 stage 2 review).
+ * (only `{overlay_color}`, etc.)" as reached.
  *
  * This predicate is the premise on which stage 3 (switching texture generation over to the DB)
  * stands, so the decision lives in this one place and callers are not given their own way of

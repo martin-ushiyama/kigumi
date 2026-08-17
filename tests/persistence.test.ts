@@ -58,7 +58,7 @@ describe('Atomic load', () => {
     ['recipe has no entries', (d) => ({ ...d, recipes: [{ id: 'r', name: 'x' }] })],
     ['entry weight is negative', (d) => ({ ...d, recipes: [{ id: 'r', name: 'x', entries: [{ blockId: 'minecraft:stone', weight: -1 }] }] })],
     ['entry weight is Infinity', (d) => ({ ...d, recipes: [{ id: 'r', name: 'x', entries: [{ blockId: 'minecraft:stone', weight: Infinity }] }] })],
-    // take the upper bound from orientation's own contract (so the test doesn't keep a stale assumption if the width changes, #96)
+    // take the upper bound from orientation's own contract (so the test doesn't keep a stale assumption if the width changes)
     ['orientation code is out of range', (d) => ({ ...d, blocks: [[5, 0, 5, 'minecraft:stone_bricks', MAX_ORIENTATION_CODE + 1]] })],
     ['orientation code is not an integer', (d) => ({ ...d, blocks: [[5, 0, 5, 'minecraft:stone_bricks', 1.5]] })],
     ['orientation code is a string', (d) => ({ ...d, blocks: [[5, 0, 5, 'minecraft:stone_bricks', '1']] })],
@@ -88,7 +88,7 @@ describe('Atomic load', () => {
     const result = loadProject(project, doc2, indexOf, store2);
     expect(result.loaded).toBe(2);
     expect(doc2.world.size).toBe(2);
-    // a recipe not referenced by any painted cell in the project isn't bundled in, so it doesn't get added on the loading side (#126)
+    // a recipe not referenced by any painted cell in the project isn't bundled in, so it doesn't get added on the loading side
     expect(store2.recipes).toHaveLength(0);
 
     const loadedGroupId = doc2.ownerAt(0, 0, 0);
@@ -203,7 +203,7 @@ describe('version 2 (group tree)', () => {
     const loadedIds = [...doc.tree.allNodesPreOrder()].map((n) => n.id);
     expect(loadedIds).toHaveLength(3); // the 2 existing groups disappear on load, leaving only the 3 groups from the file
 
-    // #37 B1b: load now works by "importing an entire scene that was numbered in a separate
+    // Load now works by "importing an entire scene that was numbered in a separate
     // tree", so the imported id strings can coincidentally match the strings of the vanished
     // existing groups (they're different entities). The invariant we actually want to protect
     // is "nextId() after import doesn't collide with an imported id" —

@@ -72,7 +72,7 @@ export default tseslint.config(
       // The real guard for DOM independence is tsconfig.editor.json, which drops DOM from `lib`
       // and runs under `npm run typecheck`. Because it removes the whole DOM lib from type
       // resolution rather than listing identifiers, it also covers DOM *types* such as
-      // HTMLElement (a review of #18 pointed out the limits of a fixed five-identifier
+      // HTMLElement (review pointed out the limits of a fixed five-identifier
       // no-restricted-globals list). The rule below only gives immediate in-editor feedback for
       // the main global *values*; it cannot catch identifiers used as types, so it is a helper.
       'no-restricted-globals': [
@@ -107,7 +107,7 @@ export default tseslint.config(
     // A type-contract test file that deliberately breaks type resolution with @ts-expect-error.
     // Typed lint (no-unsafe-*) sometimes reads a broken type as the equivalent of `any` (seen in
     // CI; locally it is non-deterministic because it depends on the environment — noted in a
-    // review of #19). Disable no-unsafe-* for this one file to keep the blast radius small; type
+    // review). Disable no-unsafe-* for this one file to keep the blast radius small; type
     // safety for ordinary code is still checked everywhere else.
     files: ['tests/scenetree-readonly-contract.test.ts'],
     rules: {

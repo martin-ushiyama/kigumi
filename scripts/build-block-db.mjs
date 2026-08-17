@@ -1,5 +1,5 @@
 /**
- * Builds the unified DB (`data/block-db.json`) from the upstream snapshot (#97 stage 2).
+ * Builds the unified DB (`data/block-db.json`) from the upstream snapshot.
  *
  * No network is needed. It reads only the snapshot already fetched into `data/bedrock/`, and
  * `SOURCE.json` holds which commit it assumes.
@@ -64,7 +64,7 @@ for (const entry of catalog) {
   }
   // textureReachability owns the decision. Writing a way of counting here would let through
   // cases where only some faces are missing, or candidates from which no path can be taken
-  // (#97 stage 2 review)
+  //
   const reach = textureReachability(record);
   if (!reach.ok) unreachable.push(`${entry.id}: ${reach.problems.join(' / ')}`);
 }

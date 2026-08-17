@@ -3,7 +3,7 @@ import { DisplayableError } from '../src/core/i18n';
 import { errorText, setLang } from '../src/state';
 
 /**
- * The display boundary contract (#70 review, round 3).
+ * The display boundary contract (raised in review).
  *
  * Through round 2 the design assumed "a throw never reaches the screen, so it needs no
  * translation", but the Japanese throw in `persistence.ts` travelled from the `ProjectService`

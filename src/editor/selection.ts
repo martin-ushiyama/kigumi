@@ -6,11 +6,11 @@ import type { Cell } from '../core/types';
 import { makeCellKey } from '../core/types';
 import type { SceneBatchChange, WorldIndexReader } from '../core/worldindex';
 
-/** Change notification event kind for SelectionStore (#13). Only one kind since the only change path is set(). */
+/** Change notification event kind for SelectionStore. Only one kind since the only change path is set(). */
 export type SelectionChange = { kind: 'change' };
 
 /**
- * A single selected cell (#37 B1b).
+ * A single selected cell.
  *
  * **Identity is `ref` (owner + owner-local cell); `worldCell` is a derived value.** The
  * world coordinate is only unique for that instant's display — after a winner swap
@@ -37,7 +37,7 @@ export type Selection =
 declare const NORMALIZED: unique symbol;
 
 /**
- * A **normalized** Selection (#37 B1b, from a second review pass).
+ * A **normalized** Selection (from a second review pass).
  *
  * - `groups`: exists in the tree / no duplicates / not a descendant of another selected
  *   id (outermost only) / not hidden or locked
@@ -128,7 +128,7 @@ export function cellSelectionFromRefs(index: WorldIndexReader, refs: Iterable<Ce
  * undo/redo/load is a selection-specific concern, and mixing it with other UI
  * notifications would add noise).
  *
- * The subscription source is **`SceneBatchChange`, not Document events** (#37 design
+ * The subscription source is **`SceneBatchChange`, not Document events** (from the design
  * rev.5 blocker 3) — drag preview doesn't emit Document events, so subscribing to
  * Document wouldn't be able to follow preview updates.
  */
@@ -244,7 +244,7 @@ export class SelectionStore {
     return found ? { min: [minX, minY, minZ], max: [maxX, maxY, maxZ] } : null;
   }
 
-  /** #13: supports multiple subscribers, returns an unsubscribe function */
+  /** Supports multiple subscribers, returns an unsubscribe function */
   subscribe(fn: (event: SelectionChange) => void): Unsubscribe {
     return this.emitter.subscribe(fn);
   }
@@ -254,7 +254,7 @@ export class SelectionStore {
   }
 
   /**
-   * Behavior for WorldIndex lifecycle notifications (per-phase rules from #37 design
+   * Behavior for WorldIndex lifecycle notifications (per-phase rules from the design
    * rev.6).
    *
    * - `preview`: **don't validate/remove old refs**. During drag preview, the old ref

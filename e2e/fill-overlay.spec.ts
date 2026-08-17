@@ -1,10 +1,10 @@
 import { expect, test, type Page } from '@playwright/test';
 
 /**
- * Pins down the overlay behavior of the box tool (key 3) (#46).
+ * Pins down the overlay behavior of the box tool (key 3).
  *
  * A box **never overwrites existing blocks; it always stacks onto a new group**.
- * That behavior only holds on top of the "multiple refs can live at the same world coordinate" model (#37 B1b),
+ * That behavior only holds on top of the "multiple refs can live at the same world coordinate" model,
  * so it is verified through the real input path rather than in a unit test.
  */
 
@@ -68,7 +68,7 @@ async function fillDrag(page: Page, x1: number, x2: number): Promise<void> {
   await dispatchPointer(page, 'pointerdown', from.x, from.y);
   await dispatchPointer(page, 'pointermove', to.x, to.y);
   await dispatchPointer(page, 'pointerup', to.x, to.y);
-  // Extrusion (#78): releasing moves on to specifying the height. Click without moving to commit it flat
+  // Extrusion: releasing moves on to specifying the height. Click without moving to commit it flat
   await dispatchPointer(page, 'pointerdown', to.x, to.y);
 }
 
@@ -77,7 +77,7 @@ test.beforeEach(async ({ page }) => {
   await expect(page.locator('#viewport')).toBeVisible();
 });
 
-test('a box drag creates exactly one new group and puts every cell inside it (#46)', async ({ page }) => {
+test('a box drag creates exactly one new group and puts every cell inside it', async ({ page }) => {
   expect(await rootGroups(page)).toEqual([]);
 
   await fillDrag(page, 0, 2);
@@ -89,7 +89,7 @@ test('a box drag creates exactly one new group and puts every cell inside it (#4
   expect(await cellCount(page, null)).toBe(0); // nothing falls into unclassified
 });
 
-test('stacking over an existing block does not erase it; both survive under separate owners (#46)', async ({ page }) => {
+test('stacking over an existing block does not erase it; both survive under separate owners', async ({ page }) => {
   // First place one block in unclassified
   await page.keyboard.press('1');
   const pos = await groundScreenPos(page, 1, 0);
@@ -109,7 +109,7 @@ test('stacking over an existing block does not erase it; both survive under sepa
   await expect.poll(() => worldSize(page)).toBe(3);
 });
 
-test('a box disappears together with its group in a single undo (#46)', async ({ page }) => {
+test('a box disappears together with its group in a single undo', async ({ page }) => {
   await fillDrag(page, 0, 2);
   expect(await rootGroups(page)).toHaveLength(1);
 
@@ -118,7 +118,7 @@ test('a box disappears together with its group in a single undo (#46)', async ({
   await expect.poll(() => worldSize(page)).toBe(0);
 });
 
-test('at an overlapping coordinate the newer box becomes the winner, and undo reveals the one underneath again (#46)', async ({ page }) => {
+test('at an overlapping coordinate the newer box becomes the winner, and undo reveals the one underneath again', async ({ page }) => {
   // Place one block of material A
   await setActiveBlock(page, 0);
   await page.keyboard.press('1');

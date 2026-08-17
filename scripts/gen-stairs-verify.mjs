@@ -1,11 +1,11 @@
 /**
- * #114: a pack for **checking the answer** — whether stair orientation matches the real game.
+ * A pack for **checking the answer** — whether stair orientation matches the real game.
  *
  *   npx vite-node scripts/gen-stairs-verify.mjs [name] [--upside]
  *
  * `--upside` lays out **vertically flipped stairs** (upside_down_bit). It exists to confirm
  * whether flipping also appears to move the step horizontally — the flipped side can be off
- * even when the normal orientation is right (an unconfirmed item in #114).
+ * even when the normal orientation is right (still unconfirmed).
  *
  * Where `gen-stairs-probe.mjs` measures "which compass direction weirdo_direction actually
  * is" by assembling the NBT by hand, this one goes through **the same export path as the app**
@@ -14,7 +14,7 @@
  *
  * **Do not assemble the NBT by hand.** Doing so slips past the inside of `buildMcstructure`
  * (the catalogue cross-check, the merging of states, building the palette) and hides "the
- * verification passes but the actual export is off". That was raised in the #114 review.
+ * verification passes but the actual export is off". That was raised in review.
  *
  * Direction markers are placed around each stair:
  *

@@ -1,5 +1,5 @@
 /**
- * Lists the blocks that are not yet included (#97 stage 5). **Read only; it rewrites nothing.**
+ * Lists the blocks that are not yet included. **Read only; it rewrites nothing.**
  *
  * A tool for deciding what could be added next. It takes every block of the unified DB
  * (stage 2), subtracts the ones already decided in curation (stage 4), and lays the difference

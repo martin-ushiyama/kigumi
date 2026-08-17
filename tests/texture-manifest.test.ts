@@ -5,7 +5,7 @@ import type { BlockRecord } from '../scripts/block-db.d.mts';
 type Projectable = Pick<BlockRecord, 'id' | 'textures'>;
 
 /**
- * The **projection rules** from the unified DB to the texture manifest (#97 stage 3).
+ * The **projection rules** from the unified DB to the texture manifest.
  *
  * Neither `data/bedrock/` nor `data/block-db.json` exist in CI (both gitignored), so
  * the rules themselves are verified with fixtures (same reason as bedrock-parse / block-db).
@@ -67,7 +67,7 @@ describe('projecting a single DB record', () => {
      * If candidates whose path can't be extracted (e.g. just `{overlay_color}`) are filtered
      * out before numbering, then ① the number drifts from upstream and the ledger points at a
      * different candidate, ② if filtering leaves only 1 candidate, it slips past the "multiple
-     * candidates" check and passes through undecided (#97 stage 3 review).
+     * candidates" check and passes through undecided.
      */
     describe('counts by the upstream index even when path-less candidates are mixed in', () => {
       const withHole = () => record('multi', { multi: [{ overlay_color: '#fff' }, ...p('b')] });

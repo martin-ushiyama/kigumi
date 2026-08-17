@@ -1,4 +1,4 @@
-/** Builds the pose space from the upstream data (#131 PR 1). Implemented in pose-space.mjs */
+/** Builds the pose space from the upstream data. Implemented in pose-space.mjs */
 
 export type PoseValue = string | number | boolean;
 

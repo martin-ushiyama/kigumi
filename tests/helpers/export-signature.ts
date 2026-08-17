@@ -1,14 +1,14 @@
 import { readNbt, type ParsedNbt } from '../nbt-reader';
 
 /**
- * **Reads orientation back from the exported byte stream** (#131 PR 3).
+ * **Reads orientation back from the exported byte stream**.
  *
  * ## Shares nothing with the renderer-side observation
  *
  * Shares neither types nor functions with `render-signature.ts` (PR 2). The moment they're
- * shared, both sides would just be looking at the same table, and **the very thing #131 is
+ * shared, both sides would just be looking at the same table, and **the very thing this is
  * about — a mismatch between the screen and the export — would become undetectable**
- * (the same failure mode as #114's "if both sides share the same table, the round trip
+ * (the same failure mode as the stair-orientation one: "if both sides share the same table, the round trip
  * always passes").
  *
  * The only anchor for cross-checking is **the ledger**. The expected values for the screen
@@ -44,7 +44,7 @@ const asRecord = (value: ParsedNbt): Record<string, ParsedNbt> => value as Recor
  * export.** Writing each orientation to a separate file would make it **impossible to
  * detect a regression where the palette collapses within the same build** (e.g. `pillar_axis:
  * x` and `z` folding into the same entry — unnoticeable one cell at a time,
- * #141 review finding).
+ * a review finding).
  *
  * @param bytes the byte stream returned by `buildMcstructure`
  * @param cell position relative to the minimum corner of the export range (defaults to the minimum corner itself)

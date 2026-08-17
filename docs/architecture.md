@@ -29,7 +29,7 @@ main (composition root)
 - Arrows mean "the upper layer does not know the lower layer". `core` must not depend on any other directory
 - `input` / `ui` / `render` / `project` / `export` sit on the same tier. Dependencies within this tier (e.g. `input` → `render`) are allowed (UI actions call the renderer directly by design). What is forbidden is **a lower layer depending on an upper layer** (`core` → `input`, etc.)
 - `state.ts` is the global store holding the app-wide mutable state. `input` / `ui` / `render` / `project` / `export` reading and writing it **as values and functions** is a legitimate use (same structure as components reading a Redux store). The only forbidden direction is "borrowing types from `state.ts`" — no layer (other than `main.ts`, the composition root) may type-import from it. Cross-cutting domain types live in `core`; types that describe the store itself (`AppState` / `AppStateChange` / `Theme` / `ThemePreference`) do live in `state.ts` (see "Where shared contracts live" below)
-- `services/` holds aggregated services created and injected by `main.ts` (#14: `ProjectService` etc. — the home for "domain logic other than initialization" extracted from `main.ts`). It may depend on the 5-tier layers / `state`, but the 5-tier layers / `state` never depend on `services/` — only `main.ts` depends on it (prevents cycles). Direct dependencies on DOM/Three.js are kept minimal; when needed, they are injected as functions from the caller (`main.ts`), e.g. `toast`
+- `services/` holds aggregated services created and injected by `main.ts` (`ProjectService` etc. — the home for "domain logic other than initialization" extracted from `main.ts`). It may depend on the 5-tier layers / `state`, but the 5-tier layers / `state` never depend on `services/` — only `main.ts` depends on it (prevents cycles). Direct dependencies on DOM/Three.js are kept minimal; when needed, they are injected as functions from the caller (`main.ts`), e.g. `toast`
 - `main.ts` is the composition root. It wires and boots all layers and is **imported by no one** (there is no path by which a lower layer depends on `main.ts`)
 - `data/` (static catalogs: `blocks.json` etc.) is plain data referenced from `core`, so it is outside the dependency rules
 
@@ -64,11 +64,11 @@ the store itself** (`AppState`, `AppStateChange`, `Theme`, `ThemePreference`), b
 layer may import types from it — cross-cutting domain types must not accrete there.
 
 - ❌ Defining `Hit` in `input/picking.ts` and having `core/` modules import it from there
-  → makes core depend on input (found and fixed in 2026-07 #9)
+  → makes core depend on input (found and fixed in 2026-07)
 - ❌ Defining `DisplayMode` / `Tool` in `state.ts` and having `render/voxelmesh.ts` or `ui/toolbar.ts`
   borrow them via `import type { ... } from '../state'` → value dependencies (the `state` object etc.)
   are allowed, but borrowing domain types from `state.ts` erodes the "shared types live in `core`" rule and
-  turns `state.ts` into a de facto second domain layer (found and fixed in the 2026-07 #17 review)
+  turns `state.ts` into a de facto second domain layer (found and fixed in review, 2026-07)
 - ✅ Define the type in the responsible `core` module and have each layer import it from there
   directly. `state.ts` may `export type { ... }` as a re-export (it currently re-exports
   `Axis` / `DisplayMode` / `Lang` / `ShapeKind` / `Tool`), but only `main.ts` — the composition
@@ -80,7 +80,7 @@ Because it parses the AST via the TypeScript Compiler API, it consistently catch
 not only `import type {...}` / `type X` inside mixed imports, but also
 `import type * as X from '../state'` (namespace imports), `import('../state').Tool` (ImportTypeNode),
 and extension variations like `from '../state.js'` (the earlier regex-based implementation depended on
-the ` {} ` form and exact extension matches, leaving loopholes; found and fixed in the 2026-07 #18 review).
+the ` {} ` form and exact extension matches, leaving loopholes; found and fixed in review, 2026-07).
 
 ## Where to put a new feature
 
@@ -104,6 +104,6 @@ Three lines of defense.
 2. **`scripts/architecture-lint.mjs`** (run by vitest from `tests/architecture.test.ts`; part of `npm test`, so required in CI): parses each file's AST via the TypeScript Compiler API, resolves import statements to absolute file paths, then judges the layer. It works consistently across static imports / dynamic imports / re-exports / ImportTypeNode / namespace imports / extension variations. It checks:
    - `checkLayerDependencies`: violations across the whole layer dependency graph (`core`/`editor`/5-tier layers/`state`/`main`)
    - `checkStateTypeImports`: the ban on type-only imports from `state.ts` (detects every import syntax; `main.ts` and `state.ts` itself are exempt)
-3. **`tsconfig.editor.json`** (wired into `npm run typecheck`, required in CI): type-checks only `src/editor/**` with a dedicated tsconfig whose `lib` excludes `DOM` / `DOM.Iterable`. Using DOM globals or DOM types like `document` or `HTMLElement` under editor then fails to compile structurally, banning the entire DOM lib without maintaining a fixed identifier list (the `no-restricted-globals` approach limited to 5 main identifiers could not detect type references like `HTMLElement`; found and fixed in the 2026-07 #18 review)
+3. **`tsconfig.editor.json`** (wired into `npm run typecheck`, required in CI): type-checks only `src/editor/**` with a dedicated tsconfig whose `lib` excludes `DOM` / `DOM.Iterable`. Using DOM globals or DOM types like `document` or `HTMLElement` under editor then fails to compile structurally, banning the entire DOM lib without maintaining a fixed identifier list (the `no-restricted-globals` approach limited to 5 main identifiers could not detect type references like `HTMLElement`; found and fixed in review, 2026-07)
 
 `tests/architecture.test.ts` also contains regression tests confirming that "removing a guard is actually detected" (including the 4 patterns surfaced in review: dynamic import / namespace type import / extension variation / DOM types). Loosening a rule makes this test fail.

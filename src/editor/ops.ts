@@ -48,12 +48,12 @@ import { cellSelectionFromRefs, type NormalizedSelection, type Selection, type S
  *   runs it through `cellSelectionFromRefs` after `applyTransaction`
  *
  * Neither is needed when an existing ref merely moved — `SelectionStore` auto-follows via
- * `Transaction.remap` on the commit notification (#37 design rev.5).
+ * `Transaction.remap` on the commit notification.
  */
 export type OpResult =
   | { tx: Transaction; newSelection?: Selection; newSelectionRefs?: readonly CellRef[] }
   /**
-   * Failure is returned as a **key** (#70). The editor layer can't depend on state, so it
+   * Failure is returned as a **key**. The editor layer can't depend on state, so it
    * can't assemble display text. The display side (`commitOpResult`'s translate) resolves
    * it in the current language.
    */
@@ -69,7 +69,7 @@ export function commitOpResult(
   selection: SelectionStore,
   result: OpResult,
   toast: (msg: string) => void,
-  /** Error key -> display text. Resolved in the current language by the composition root (#70) */
+  /** Error key -> display text. Resolved in the current language by the composition root */
   translate: (key: OpErrorKey, vars?: Record<string, string | number>) => string,
 ): boolean {
   if ('error' in result) {
@@ -146,7 +146,7 @@ function placeOp(doc: Document, ref: CellRef, localRaw: number): DocOp {
 
 /**
  * Detects a collision folding into the same owner-local in the **transaction's final
- * state** (#37 design rev.3 blocker (4) / rev.4 P2).
+ * state** (a blocker raised in the design review).
  *
  * Two refs can hold the same world coordinate while their owners differ, but when
  * ungroup moves a group's direct cells up to the parent, or when overlapping refs are
@@ -174,7 +174,7 @@ function detectOwnerLocalCollision(
     if (op.after !== null && before) {
       // When owner is root (unassigned), swap out the message text itself.
       // Injecting "(unassigned)" as a variable into the English string would mix in
-      // Japanese (#70 review)
+      // Japanese
       return op.owner === null
         ? { key: 'overlapAtDestinationRoot' as const, vars: {} }
         : { key: 'overlapAtDestination' as const, vars: { owner: op.owner } };
@@ -186,7 +186,7 @@ function detectOwnerLocalCollision(
 
 /**
  * Only pushes a `setGroupTransform` op when the parent chain's effective transform
- * changes (#37 B1b review P1).
+ * changes.
  *
  * **`transform === undefined` means "identity relative to the old parent", not world
  * identity.** If the parent changes and the effective transform changes, an unset group
@@ -214,7 +214,7 @@ function rebaseOpIfParentChainChanged(doc: Document, id: string, newParentId: st
 /**
  * Creates a new group from an ad-hoc cell selection or a groups selection (Ctrl+G).
  *
- * `name` is **passed by the caller (composition root side)** (#70). The default name
+ * `name` is **passed by the caller (composition root side)**. The default name
  * varies by display language, and the editor layer can't depend on state (layering
  * convention in docs/architecture.md). The default name is also **data** saved into the
  * work file, so it must be finalized at creation time.
@@ -457,7 +457,7 @@ function movedRef(doc: Document, ref: CellRef, worldDelta: Cell): CellRef {
 export function buildMove(doc: Document, refs: readonly CellRef[], delta: [number, number, number]): OpResult {
   if (refs.length === 0) return { error: 'noSelection' };
   // Some call sites (e.g. the inspector) don't pre-check the limit, so we always guard
-  // here before building a large Map (shared limit, #8 review finding)
+  // here before building a large Map (shared limit review finding)
   if (refs.length > OP_MAX_CELLS) {
     return { error: 'tooLargeToMove', errorVars: { count: refs.length.toLocaleString(), max: OP_MAX_CELLS.toLocaleString() } };
   }
@@ -494,7 +494,7 @@ export function buildMove(doc: Document, refs: readonly CellRef[], delta: [numbe
 }
 
 /**
- * Translates a group by a world delta (#37 design rev.3: buildTranslateGroup is B1b's
+ * Translates a group by a world delta (buildTranslateGroup is B1b's
  * responsibility).
  *
  * `GroupTransform.translate` is a value in the **parent's coordinate system**, so the
@@ -531,7 +531,7 @@ export function buildTranslateGroup(doc: Document, id: string, worldDelta: [numb
 
 /**
  * Checks every projected world coordinate of the subtree after swapping in a new
- * `transform` (#37 B2).
+ * `transform`.
  *
  * We want to project with a transform not yet written to the tree, so `transformChain(id)`
  * can't be used. The "relative chain from id downward" = `chain(id)^-1 * chain(descendant)`
@@ -552,7 +552,7 @@ function anyProjectedCellOutOfRange(doc: Document, id: string, parentId: string 
 }
 
 /**
- * Rotates a group by 90-degree steps around the Y axis, about its pivot (#37 B2).
+ * Rotates a group by 90-degree steps around the Y axis, about its pivot.
  *
  * Just adds to `angleSteps` — **pivot2 and translate are untouched**. Pivot follows the
  * contract "only decided at first creation or explicit reset" (rev.2 blocker (5)), so a
@@ -587,7 +587,7 @@ export function buildRotateGroup90(doc: Document, id: string, quarterTurns: 1 | 
 }
 
 /**
- * Mirrors a selection across a world axis (#63).
+ * Mirrors a selection across a world axis.
  *
  * **Unlike rotation, this does not touch `GroupTransform`.** Mirroring is a
  * determinant -1 transform, which `GroupTransform` (Y-axis 90-degree rotation +
@@ -595,7 +595,7 @@ export function buildRotateGroup90(doc: Document, id: string, quarterTurns: 1 | 
  * physically re-places cells. Making it non-destructive would require a new persistent
  * format (v3) and reworking `composeTransform`'s composition rules (mirroring and
  * rotation don't commute) — not worth it against the operational judgment that "mirroring
- * is decided in one shot, so there's little demand to undo it later" (decided in #63).
+ * is decided in one shot, so there's little demand to undo it later".
  *
  * The mirror plane is the **center of the selection's projected world bbox**. Since
  * this is a mapping within the bbox, the result always stays within the bbox and never
@@ -635,7 +635,7 @@ export function buildMirror(doc: Document, sel: NormalizedSelection, axis: Mirro
   // Detects the case where "mirroring doesn't change the final state" (a single full
   // block / a symmetric arrangement of the same raw). If we push an op, Document pushes
   // it to history, and Ctrl+Z would fire once for nothing even though nothing visibly
-  // changed (#65 review P2)
+  // changed
   let changesAnything = false;
   for (const ref of refs) {
     const localRaw = doc.scene.cells.get(ref.ownerId, localKeyOf(ref));
@@ -717,7 +717,7 @@ export function buildMirror(doc: Document, sel: NormalizedSelection, axis: Mirro
   }
   // In a symmetric arrangement, individual refs do move (mapped 0<->2), but **the source
   // and dest ref sets are identical**, so the selection set is unchanged. So the
-  // selection isn't broken even without returning a remap (#65 review finding)
+  // selection isn't broken even without returning a remap
   if (!changesAnything) return { tx: { ops: [] } };
 
   for (const { dest } of moving.values()) {
@@ -744,7 +744,7 @@ export function buildMirror(doc: Document, sel: NormalizedSelection, axis: Mirro
   // two-phase process — clear all sources first, then re-push at the destinations — so
   // that even a swap doesn't overwrite an in-flight binding. Document excludes an
   // explicit setPattern's source from auto-remap, so the old paint never overwrites the
-  // transformed paint either (#66).
+  // transformed paint either.
   for (const { ref, paint } of moving.values()) {
     if (!paint) continue;
     const key = localKeyOf(ref);
@@ -772,7 +772,7 @@ function findAdjacentOffset(bbox: { min: Cell; max: Cell }): [number, number, nu
   return null;
 }
 
-/** Options for array duplication (#63). If omitted, falls back to the previous behavior: "one copy, adjacent" */
+/** Options for array duplication. If omitted, falls back to the previous behavior: "one copy, adjacent" */
 export interface DuplicateOptions {
   /**
    * World offset for one copy. The i-th copy is placed at `delta * i`.
@@ -788,7 +788,7 @@ export interface DuplicateOptions {
  * Duplicates a selection (cells or groups). Defaults to "try candidate offsets from
  * +X-adjacent, in order, and place 1 copy".
  *
- * Passing `opts` produces an **evenly-spaced array duplication** (#63) — for lining up N
+ * Passing `opts` produces an **evenly-spaced array duplication** — for lining up N
  * copies of the same shape in a fixed direction, like repeating columns or windows. The
  * i-th copy is placed at `delta * i`. Overlap with existing blocks is handled the same
  * way as the default single duplicate — an **overwrite** (`placeOp`) — not rejected up
@@ -796,8 +796,7 @@ export interface DuplicateOptions {
  *
  * For a groups selection, the subtree is deep-copied under new ids and inserted as a
  * sibling right after the original. **Cell local coordinates are duplicated as-is, and
- * the offset is loaded onto the translate of the duplicated topmost group** (#37 design:
- * the duplicate offset goes onto the top group's translate, converting world delta ->
+ * the offset is loaded onto the translate of the duplicated topmost group** (* the duplicate offset goes onto the top group's translate, converting world delta ->
  * parent-local). This way a duplicate of a rotated group doesn't lose its shape.
  */
 export function buildDuplicate(doc: Document, sel: NormalizedSelection, opts: DuplicateOptions = {}): OpResult {
@@ -806,7 +805,7 @@ export function buildDuplicate(doc: Document, sel: NormalizedSelection, opts: Du
   if (!Number.isInteger(count) || count < 1) return { error: 'duplicateCountInvalid' };
   const allRefs = resolveSelectionRefs(doc, sel);
   if (allRefs.length === 0) return { error: 'noSelection' };
-  // Always guard here before building a large ops array (shared limit, #8 review
+  // Always guard here before building a large ops array (shared limit review
   // finding). For array duplication we check **the total multiplied by copy count** —
   // checking just one copy's worth and letting it through would mean building N times
   // the limit's worth of DocOps before rejecting when count is large
@@ -864,7 +863,7 @@ export function buildDuplicate(doc: Document, sel: NormalizedSelection, opts: Du
   // The insert index is based on **the sibling array at op-building time**, so selecting
   // multiple groups with the same parent shifts the reference for later ones by however
   // much was already inserted earlier, producing crossed-over results like
-  // [A, A1, B1, B2, A2, B] (#67 review P1). **Processing in descending sibling-index
+  // [A, A1, B1, B2, A2, B]. **Processing in descending sibling-index
   // order** means inserting from the back, so earlier indices don't move. Ids with
   // different parents don't affect each other's sibling arrays, so one combined sort is
   // enough.
@@ -950,8 +949,8 @@ export function buildDuplicate(doc: Document, sel: NormalizedSelection, opts: Du
  * one when it sits before the insert position.
  */
 /**
- * The drag target in the layers panel (#44). Since `Selection` is an exclusive union of
- * groups / cells, the drag target doesn't mix either (mixed selection itself is #43's
+ * The drag target in the layers panel. Since `Selection` is an exclusive union of
+ * groups / cells, the drag target doesn't mix either (mixed selection is a separate
  * concern).
  */
 export type DragPayload =
@@ -959,7 +958,7 @@ export type DragPayload =
   | { kind: 'cells'; refs: readonly CellRef[] };
 
 /**
- * Decides the actual drag target from the grabbed row (#44).
+ * Decides the actual drag target from the grabbed row.
  *
  * **If the grabbed row is part of the current selection, the whole selection; if not,
  * just that one row** — the Figma / file-explorer / Finder convention.
@@ -967,7 +966,7 @@ export type DragPayload =
  * When a row outside the selection is grabbed, **the UI side (mousedown in layers.ts)
  * also moves the selection to that row**, so "what was moved" and "the target of the
  * next Delete / Ctrl+D" always match. This function itself is pure and doesn't change
- * the selection, but note that using it standalone can make the two diverge (#44 review
+ * the selection, but note that using it standalone can make the two diverge (raised in
  * P1).
  *
  * Since `sel` is expected to be a `NormalizedSelection`, the returned payload is
@@ -994,7 +993,7 @@ export function computeDropIndex(
 }
 
 /**
- * The multi-target version (#44). The returned value has the same meaning as
+ * The multi-target version. The returned value has the same meaning as
  * `buildReparentGroups`'s `startIndex` — **the insert position into the sibling array
  * with all move targets removed**.
  *
@@ -1030,7 +1029,7 @@ export function buildReparentGroup(doc: Document, groupId: string, newParentId: 
 }
 
 /**
- * Reparents multiple groups together (multi-drag in the layers panel, #44). The
+ * Reparents multiple groups together (multi-drag in the layers panel). The
  * single-target version is just a one-item call to this.
  *
  * **`startIndex` is the insert position into "the sibling array with all move targets
@@ -1127,7 +1126,7 @@ export function buildMoveCellToGroup(doc: Document, ref: CellRef, newGroupId: st
 }
 
 /**
- * Moves multiple cells to another group together (multi-drag in the layers panel, #44).
+ * Moves multiple cells to another group together (multi-drag in the layers panel).
  * The single-target version is just a one-item call to this.
  *
  * **Pushes all erases before any place** (same reason as `buildGroup`'s cells branch) —
@@ -1167,7 +1166,7 @@ export function buildMoveCellsToGroup(doc: Document, refs: readonly CellRef[], n
 }
 
 /**
- * Bulk-replaces used blocks / paints a pattern (#48).
+ * Bulk-replaces used blocks / paints a pattern.
  *
  * Replaces "cells whose catalogIndex is `from`" within `ownersInScope` with the block
  * `pick()` returns. For a bulk replace, `pick` returns a constant; for pattern painting,
@@ -1199,7 +1198,7 @@ export function buildReplaceUsage(
   let skippedLocked = 0;
 
   for (const owner of new Set(ownersInScope)) {
-    // The inside of an instance is not editable (#69). Excluded the same way as locked —
+    // The inside of an instance is not editable. Excluded the same way as locked —
     // even if fixed here, it would be overwritten once the component is edited
     if (doc.tree.isLockedEffective(owner) || doc.instanceRootOf(owner) !== null) {
       for (const [, raw] of doc.scene.cells.entriesOf(owner)) {
@@ -1215,7 +1214,7 @@ export function buildReplaceUsage(
       // predicate, cells whose recipe includes the original block would get swept up
       // into a plain bulk change, and the binding would be lost too.
       if (doc.scene.patterns && activePatternAt(doc.scene.patterns, doc.scene.cells, owner, localKey)) continue;
-      // **Bail out the moment the limit is exceeded** (#48 review P2). Building
+      // **Bail out the moment the limit is exceeded**. Building
       // everything and then discarding it would mean, for a work with 100k+ cells,
       // constructing the whole DocOp array before rejecting it. Also avoids spinning the
       // draw (pick) for nothing.
@@ -1260,7 +1259,7 @@ export function buildApplyPatternUsage(
   let skippedLocked = 0;
 
   for (const owner of new Set(ownersInScope)) {
-    // The inside of an instance is not editable (#69). Excluded the same way as locked —
+    // The inside of an instance is not editable. Excluded the same way as locked —
     // even if fixed here, it would be overwritten once the component is edited
     if (doc.tree.isLockedEffective(owner) || doc.instanceRootOf(owner) !== null) {
       for (const [, raw] of doc.scene.cells.entriesOf(owner)) {
@@ -1274,7 +1273,7 @@ export function buildApplyPatternUsage(
       if (++targets > OP_MAX_CELLS) {
         return { error: 'tooManyTargets', errorVars: { max: OP_MAX_CELLS.toLocaleString() } };
       }
-      // The pattern is decided by world coordinates (#69). Even with the same recipe, a different entry is drawn depending on where it's placed
+      // The pattern is decided by world coordinates. Even with the same recipe, a different entry is drawn depending on where it's placed
       const worldCell = ownerToWorldCell(doc.tree, owner, parseCellKey(localKey));
       const next = samplePatternAt(recipe, worldCell, indexOf);
       if (next === null) continue;
@@ -1317,7 +1316,7 @@ export function buildReplacePatternUsage(
   let targets = 0;
 
   for (const owner of new Set(ownersInScope)) {
-    if (doc.tree.isLockedEffective(owner) || doc.instanceRootOf(owner) !== null) continue; // Excluded inside an instance (#69)
+    if (doc.tree.isLockedEffective(owner) || doc.instanceRootOf(owner) !== null) continue; // Excluded inside an instance
     for (const [localKey, raw] of doc.scene.cells.entriesOf(owner)) {
       const paint = doc.scene.patterns.get(owner, localKey);
       if (!paint || paint.recipeId !== recipeId || paint.appliedRaw !== raw) continue;
@@ -1382,7 +1381,7 @@ export function buildReplacePatternUsage(
 }
 
 /**
- * Repaints a selection range (#64 PR-C).
+ * Repaints a selection range.
  *
  * The existing `buildReplaceUsage` can only scope to **"per group" x "cells whose block
  * type matches from"**. It can't drag-select part of a wall and change just that part's
@@ -1399,7 +1398,7 @@ export function buildReplacePatternUsage(
  *    binding the same way as `buildApplyPatternUsage`
  *
  * Rewiring the binding **is pushed into the same transaction** (consistent with the live
- * pattern behavior since #60). If the binding isn't stripped when repainting to a single
+ * pattern behavior). If the binding isn't stripped when repainting to a single
  * block, a live recipe would later repaint over it and "the block you just changed
  * reverts back".
  *
@@ -1436,18 +1435,18 @@ export function buildReplaceSelection(
     if (stored === undefined) continue;
     // **For a cell with a live pattern, cells' raw is a save-time fallback** and isn't
     // rewritten when the recipe ratio is edited. Type detection, shape, and orientation
-    // carry-over are all taken from "the raw currently in use for display" (#64 PR-C
+    // carry-over are all taken from "the raw currently in use for display" (raised in
     // review). Writes still go to owner-local, so the coordinate system stays consistent
     const raw = doc.currentLocalRaw(ref) ?? stored;
     const { catalogIndex, code } = unpackCell(raw);
     if (from !== null && catalogIndex !== from) continue;
-    // The inside of an instance is not editable (#69). Excluded the same way as locked —
+    // The inside of an instance is not editable. Excluded the same way as locked —
     // even if fixed here, it would be overwritten once the component is edited
     if (doc.tree.isLockedEffective(owner) || doc.instanceRootOf(owner) !== null) {
       skippedLocked++;
       continue;
     }
-    // Bail out the moment the limit is exceeded (don't build everything and discard, same reason as #48)
+    // Bail out the moment the limit is exceeded (don't build everything and discard)
     if (++targets > OP_MAX_CELLS) {
       return { error: 'tooManyTargets', errorVars: { max: OP_MAX_CELLS.toLocaleString() } };
     }
@@ -1456,7 +1455,7 @@ export function buildReplaceSelection(
     const beforePaint = doc.scene.patterns?.get(owner, localKey) ?? null;
 
     if (replacement.kind === 'pattern') {
-      // The pattern is decided by world coordinates (#69)
+      // The pattern is decided by world coordinates
       const worldCell = ownerToWorldCell(doc.tree, owner, ref.localCell);
       const next = samplePatternAt(replacement.recipe, worldCell, indexOf);
       if (next === null) continue;

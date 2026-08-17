@@ -1,7 +1,7 @@
 import { expect, test, type Page } from '@playwright/test';
 
 /**
- * The stacked swatches in the toolbar (#87). They play the same role as Photoshop's foreground / background colors:
+ * The stacked swatches in the toolbar. They play the same role as Photoshop's foreground / background colors:
  * front = the block being placed now / back = the spare, swapped with `X`.
  *
  * The unit tests only check the state swap, but **"pressing it actually opens the picker, and only the side you

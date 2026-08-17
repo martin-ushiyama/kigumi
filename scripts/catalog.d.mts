@@ -1,4 +1,4 @@
-/** Assembling the catalogue (#97 stage 4). Implemented in catalog.mjs */
+/** Assembling the catalogue. Implemented in catalog.mjs */
 import type { CurationCategory, CuratedBlock } from './curation.d.mts';
 
 /** How the parent of a derived block is classified when it is not in the included catalogue */
@@ -15,7 +15,7 @@ export declare function classifyVariantBase(
   scope: { includedIds: Set<string>; excludedIds: Set<string> },
 ): VariantBaseKind;
 
-/** **It holds no representative colour** (colour is a property of the texture, so texture-colors.json is the source of truth, #137 review) */
+/** **It holds no representative colour** (colour is a property of the texture, so texture-colors.json is the source of truth review) */
 export interface CatalogEntry {
   id: string;
   nameJa: string;

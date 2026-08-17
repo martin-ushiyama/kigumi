@@ -16,7 +16,7 @@ import { bboxOfCorners } from '../core/shapes';
 import { faceOf, type FaceRef } from '../core/axis';
 import type { Hit } from '../core/types';
 
-/** Default group name per shape (fixed and saved at creation time in the current language, per the defaultName contract in #70) */
+/** Default group name per shape (fixed and saved at creation time in the current language, per the defaultName contract) */
 const SHAPE_NAME_KEY: Record<ShapeKind, DefaultNameKey> = {
   box: 'cuboid',
   sphere: 'sphere',
@@ -38,7 +38,7 @@ function dominantAxis(spanX: number, spanY: number, spanZ: number): 'x' | 'y' | 
 }
 
 /**
- * Clamp the extrusion endpoint to **outside the face only** (#101).
+ * Clamp the extrusion endpoint to **outside the face only**.
  *
  * The touched face is the boundary, so the extrusion direction is fixed to the single
  * normal direction. Pulling back toward the origin stops at a thickness of 1 (the face
@@ -50,7 +50,7 @@ function extrudeOutward(anchorAt: number, projectedAt: number, sign: 1 | -1): nu
 
 export interface EditorControlsOpts {
   scene: THREE.Scene;
-  /** Derived read-model (#37 B1b). `WorldReader`-compatible, so `has`/`get` usage is unchanged */
+  /** Derived read-model. `WorldReader`-compatible, so `has`/`get` usage is unchanged */
   world: WorldIndexReader;
   doc: Document;
   getCatalog: () => BlockDef[];
@@ -69,7 +69,7 @@ export interface EditorControlsOpts {
   getPaintLabel: () => string;
   onHover: (cell: [number, number, number] | null) => void;
   /**
-   * Dimensions during a range operation (#83). Values only flow while dragging/extruding,
+   * Dimensions during a range operation. Values only flow while dragging/extruding,
    * and become null on commit / cancel.
    *
    * "How many blocks" isn't visible from the preview solid alone, so it's surfaced to be
@@ -82,7 +82,7 @@ export interface EditorControlsOpts {
   /** Resolves the placement-face cell (defaults to hit.cell + hit.normal if omitted). selecttool.ts etc. may inject their own */
   resolvePlaceCell?: (hit: Hit) => [number, number, number];
   /**
-   * Cells of the component about to be placed (#69 Step 3b). `null` = not in placement mode.
+   * Cells of the component about to be placed. `null` = not in placement mode.
    *
    * **Receives only the cell list, not a `ComponentTemplate`.** If controls knew the
    * component's type, the input layer would depend on the component layer just for the
@@ -95,12 +95,12 @@ export interface EditorControlsOpts {
   getPlacementGroup: () => string | null;
   /**
    * During the shape-fill plane phase, resolves the target cell by projecting onto **the
-   * plane containing the touched face** (#101). The plane holds even if dragged past the
+   * plane containing the touched face**. The plane holds even if dragged past the
    * face's edge.
    *
    * **Required.** If injection is missing, the plane phase silently freezes (appears as
    * "not moving"), so this is enforced by the type instead of being swallowed by an
-   * existence check (#120: replaces the old canProjectRange capability branch).
+   * existence check (replaces the old canProjectRange capability branch).
    */
   resolveRangeFaceCell: (
     e: PointerEvent,
@@ -109,7 +109,7 @@ export interface EditorControlsOpts {
   ) => [number, number, number] | null;
   /**
    * During the shape-fill extrude phase, determines how many cells to extend **along the
-   * face's axis** (#78 / #101). Resolves even over empty air. Required for the same reason
+   * face's axis**. Resolves even over empty air. Required for the same reason
    * as `resolveRangeFaceCell`.
    */
   resolveRangeExtrudeCell: (
@@ -125,9 +125,9 @@ export interface EditorControlsOpts {
 export interface EditorControlsHandle {
   /** Whether an edit gesture is in progress with the button held (a continuous stroke or a Fill tool drag) */
   isDragging: () => boolean;
-  /** Discards the in-progress stroke/range operation (called from an Escape broadcast / mode switch via InputRouter (#12)) */
+  /** Discards the in-progress stroke/range operation (called from an Escape broadcast / mode switch via InputRouter) */
   cancelActive: () => void;
-  /** Route handler registered with InputRouter's (#12 PR2) pointerRoutes */
+  /** Route handler registered with InputRouter's pointerRoutes */
   route: PointerRouteHandler;
 }
 
@@ -148,14 +148,14 @@ export function initEditorControls(opts: EditorControlsOpts): EditorControlsHand
   let ghostGeometryKey = '';
 
   /**
-   * Component placement preview (#69 Step 3b).
+   * Component placement preview.
    *
    * Rather than a single ghost, **shows every cell that would be filled** — since a
    * component is a shape, committing without seeing what it occupies means noticing only
    * after placing and having to undo.
    */
   /**
-   * Component placement preview (#69 Step 3b).
+   * Component placement preview.
    *
    * **Don't line up boxes cell by cell.** Adjacent cells share a face on the same plane,
    * so drawing them semi-transparently turns that into a depth-fighting mess, producing
@@ -232,7 +232,7 @@ export function initEditorControls(opts: EditorControlsOpts): EditorControlsHand
 
   /**
    * Keeping the baseline during a stroke and restoring it on cancel is the responsibility of
-   * EditSession (Document.beginSession) (#11). Since #37 B1b, we no longer keep a "world
+   * EditSession (Document.beginSession). We no longer keep a "world
    * coordinate Edit array" — membership derivation is no longer needed, and the diff on
    * commit is computed by EditSession from the baseline, so the only state that needs to
    * live here is "whether a session is open" and "which world cells this stroke has already
@@ -240,7 +240,7 @@ export function initEditorControls(opts: EditorControlsOpts): EditorControlsHand
    */
   let strokeSession: EditSession | null = null;
   /**
-   * The tool at the start of the stroke (#57, from review). **Don't check state.tool while a
+   * The tool at the start of the stroke (from review). **Don't check state.tool while a
    * session is open.**
    *
    * Tool-switch keys still work during a gesture, so pressing `2` mid-placement-stroke would
@@ -251,10 +251,10 @@ export function initEditorControls(opts: EditorControlsOpts): EditorControlsHand
    */
   let strokeTool: Tool | null = null;
   const strokeTouched = new Set<string>();
-  /** Origin of the range operation (shape-fill drag). The Shift+click two-point mode was removed in #103 */
+  /** Origin of the range operation (shape-fill drag). The Shift+click two-point mode was removed */
   let fillAnchor: [number, number, number] | null = null;
   /**
-   * Parent to place a void group into (#113). **Resolved once, at the start of the
+   * Parent to place a void group into. **Resolved once, at the start of the
    * operation, and held.**
    *
    * Void placement scope is determined by **the group it's placed in**, so creating it
@@ -266,7 +266,7 @@ export function initEditorControls(opts: EditorControlsOpts): EditorControlsHand
    * ("drag and release on the plane → click again to set the height"), and there's no active
    * claim in between, so a different group could be selected in the layer panel meanwhile. If
    * this were re-read on commit, the void would end up in the group selected afterward
-   * instead of the wall touched at the start (#119, second review pass). Same contract as
+   * instead of the wall touched at the start (a second review pass). Same contract as
    * pinning the stroke's placement owner to "one owner per session".
    */
   let fillVoidParent: string | null = null;
@@ -274,13 +274,13 @@ export function initEditorControls(opts: EditorControlsOpts): EditorControlsHand
   /**
    * Whether a range operation (i.e. shape-fill) is in progress. There used to also be
    * 'place' | 'erase' (Shift+click range placement/erasure), but that overlapped in role with
-   * the shape tools, so it was removed in #103. Kept as a named value rather than a boolean
+   * the shape tools, so it was removed. Kept as a named value rather than a boolean
    * so the commit path (commitRange), which was built assuming "a type of range operation"
    * exists, retains a traceable history.
    */
   let rangeMode: 'overlay' | null = null;
   /**
-   * Input phase of shape-fill (overlay) (#78).
+   * Input phase of shape-fill (overlay).
    *
    * `plane` = taking a planar-direction range via drag / `height` = after releasing the
    * button, setting the height via mouse up/down. **Split into two phases because aiming at
@@ -293,20 +293,20 @@ export function initEditorControls(opts: EditorControlsOpts): EditorControlsHand
    */
   let overlayPhase: 'plane' | 'height' | null = null;
   /**
-   * The **face axis** that anchors the range operation (#101). Determined by the touched
+   * The **face axis** that anchors the range operation. Determined by the touched
    * face's normal, and fixed for the duration of the operation.
    *
    * The plane phase projects onto the plane perpendicular to this axis, and the extrude
    * phase moves along this axis. For a top/bottom face this is the familiar XZ plane + Y
    * extrusion; for a side face, the plane and extrusion axis are based on that face instead.
    * **Fixed at the start of the operation** — allowing it to change mid-operation would break
-   * the "touched face is the anchor" guarantee (agreed in #101).
+   * the "touched face is the anchor" guarantee (agreed beforehand).
    */
   let fillFace: FaceRef = { axis: 1, sign: 1 };
   /**
    * True only while the pointer is actually held down (claim active). fillAnchor also gets
    * set while "waiting for the first point" of the Shift+click two-point mode (button
-   * already released), so it can't be used to determine isDragging — noted in review (#25),
+   * already released), so it can't be used to determine isDragging — noted in review,
    * this restores the same meaning as the old implementation's activePointerId !== null
    */
   let isPointerHeld = false;
@@ -394,7 +394,7 @@ export function initEditorControls(opts: EditorControlsOpts): EditorControlsHand
     );
     fillPreview.visible = true;
     // Determining whether the limit is exceeded requires the shape — a hollow shape has fewer
-    // actual cells than its bbox volume, so the bbox alone can't tell you it will be rejected (review, #83)
+    // actual cells than its bbox volume, so the bbox alone can't tell you it will be rejected (review)
     onRangeSize?.(
       rangeSizeOf(fillAnchor, lastTargetCell, { kind: state.shape, hollow: isShapeHollow() }),
     );
@@ -403,12 +403,12 @@ export function initEditorControls(opts: EditorControlsOpts): EditorControlsHand
   /**
    * Commits a range operation (shape-fill). **Never modifies existing cells** — places the
    * generated cells into a new group. This also places on top of existing cells, producing
-   * overlap (multiple owners at the same world coordinate, #37 B1b). Placing only into empty
+   * overlap (multiple owners at the same world coordinate B1b). Placing only into empty
    * space would leave holes wherever the shape overlaps existing geometry, so it wouldn't
-   * form "a single cuboid"; overwrite protection must not be reinstated here (#46).
+   * form "a single cuboid"; overwrite protection must not be reinstated here.
    *
    * Shift+click range placement/erasure (place / erase) used to go through here too, but that
-   * overlapped in role with the shape tools, so it was removed in #103.
+   * overlapped in role with the shape tools, so it was removed.
    */
   function commitRange(): void {
     if (!fillAnchor || !lastTargetCell || !rangeMode) return;
@@ -419,7 +419,7 @@ export function initEditorControls(opts: EditorControlsOpts): EditorControlsHand
     // buildShape enforces the limit at its entry point — two stages: rejecting up front on
     // bbox volume before scanning, and rejecting on the actual generated cell count. Checking
     // bbox volume first here would reject cases like hollow shapes, whose actual cell count
-    // is much smaller (#64)
+    // is much smaller
     const shaped = resolveRangeCells({
       // **Pass the two unnormalized points as-is.** Replacing them with a bbox would lose
       // which point was dragged from, making it impossible to determine the slope's
@@ -458,11 +458,11 @@ export function initEditorControls(opts: EditorControlsOpts): EditorControlsHand
     // Grouped into a new group since it should be treated as a single unit, like a pillar,
     // wall, or cuboid. The generated object's name is determined by "what was placed" — if
     // the layer name were always "cuboid" even after adding a shape, it would be
-    // indistinguishable in the layer tree (review, #64)
+    // indistinguishable in the layer tree (review)
     // Appends the material name. **Fixed once, from the material at creation time**, and not
     // tracked afterward (swapping the material later doesn't change the name, same treatment
-    // as the defaultName contract in #70)
-    // Only voids are created **inside the group of the thing being dug into** (#113). The
+    // as the defaultName contract)
+    // Only voids are created **inside the group of the thing being dug into**. The
     // parent is already fixed at the start of the operation, so it's not re-read here (see
     // the fillVoidParent declaration)
     const parentId = state.paintVoid ? fillVoidParent : null;
@@ -490,15 +490,15 @@ export function initEditorControls(opts: EditorControlsOpts): EditorControlsHand
       onHover(hit && hit.kind === 'voxel' ? hit.cell : null);
       return;
     }
-    // The extrude phase **doesn't use hit** (#78). The extrusion amount is determined even
+    // The extrude phase **doesn't use hit**. The extrusion amount is determined even
     // when the cursor is over empty air, so bailing out on a missing hit would commit
     // without ever showing the intended thickness. The two in-plane axes were already fixed
-    // during the plane phase, so only **the face's axis** is taken from the projection (#101)
+    // during the plane phase, so only **the face's axis** is taken from the projection
     if (fillAnchor && overlayPhase === 'height' && lastTargetCell) {
       const projected = e ? resolveRangeExtrudeCell(e, fillAnchor, fillFace) : null;
       if (projected) {
         const next: [number, number, number] = [...lastTargetCell];
-        // **Only extend toward the normal's direction** (#101). The outside of the touched
+        // **Only extend toward the normal's direction**. The outside of the touched
         // face is the extrusion direction; it must not go into the inside (the original
         // block's side). Without checking the sign, the +face and -face would give the same
         // result, and near the boundary a 1px movement would bite into the original block
@@ -511,7 +511,7 @@ export function initEditorControls(opts: EditorControlsOpts): EditorControlsHand
       }
       return;
     }
-    // The plane phase also **doesn't use hit** (#101). It projects onto the plane containing
+    // The plane phase also **doesn't use hit**. It projects onto the plane containing
     // the face, so the target cell is determined even over empty air where the ray hits
     // neither ground nor a voxel. This must come before the `!hit` check — otherwise updates
     // would stop the moment the drag goes past the face's edge, defeating the point of
@@ -519,7 +519,7 @@ export function initEditorControls(opts: EditorControlsOpts): EditorControlsHand
     if (fillAnchor && rangeMode) {
       // Looks at **the projection only**. Keeps the previous target if it's briefly null —
       // falling back to the hit path would cause the range to jump to a different surface,
-      // like the ground (review, #101)
+      // like the ground (review)
       const projected = e ? resolveRangeFaceCell(e, fillAnchor, fillFace) : null;
       if (projected && inRange(projected)) {
         lastTargetCell = projected;
@@ -568,12 +568,12 @@ export function initEditorControls(opts: EditorControlsOpts): EditorControlsHand
 
   /**
    * Common teardown for an in-progress operation. pointerup / pointercancel /
-   * lostpointercapture / window blur / Escape all converge here (#11).
+   * lostpointercapture / window blur / Escape all converge here.
    * - Stroke: if commit=true (a normal pointerup), finalize via EditSession.commit();
    *   otherwise (a cancel path), restore to baseline via EditSession.cancel() and discard,
    *   leaving world/tree matching the pre-operation state.
    *   Routing both commit and cancel through the same EditSession means restoration on a
-   *   failed commit is also unified on the EditSession side (addressed in #21 review)
+   *   failed commit is also unified on the EditSession side (addressed in review)
    * - Fill: only finalized when commit=true (a normal pointerup); discarded on cancel
    */
   function finishActiveOperation(commit: boolean): void {
@@ -588,7 +588,7 @@ export function initEditorControls(opts: EditorControlsOpts): EditorControlsHand
     }
     if (strokeSession) {
       // Membership-derivation ops have been removed — the placement owner is held by the
-      // session itself, so there are no extraOps left to pass to commit (#37 B1b)
+      // session itself, so there are no extraOps left to pass to commit
       if (commit) strokeSession.commit();
       else strokeSession.cancel();
       strokeSession = null;
@@ -598,7 +598,7 @@ export function initEditorControls(opts: EditorControlsOpts): EditorControlsHand
   }
 
   // The old window keydown handling (undo/redo, tool hotkeys, Escape) has been moved to
-  // InputRouter's (#12 PR1) SHORTCUTS / Escape broadcast. Here we only expose canceling the
+  // InputRouter's SHORTCUTS / Escape broadcast. Here we only expose canceling the
   // in-progress operation as cancelActive (no-op if neither fillAnchor nor stroke is active;
   // safe to call unconditionally).
   function cancelActive(): void {
@@ -606,7 +606,7 @@ export function initEditorControls(opts: EditorControlsOpts): EditorControlsHand
   }
 
   /**
-   * Discard the shape-fill height setting when the tool changes (review, #79).
+   * Discard the shape-fill height setting when the tool changes (review).
    *
    * The height phase **holds no claim** (it proceeds with the button released), so there's
    * no path for the gesture layer to detect its end. Trying to catch this in `onPointerDown`'s
@@ -628,10 +628,10 @@ export function initEditorControls(opts: EditorControlsOpts): EditorControlsHand
      * The height phase holds no claim, so shape hotkeys still go through, and finalizing
      * (`commitRange`) reads `state` at that moment. If only the dimensions stayed fixed to
      * the shape at the start of the operation, an operation that would actually succeed
-     * could be finalized while still showing a "rejected" indicator (review, #83).
+     * could be finalized while still showing a "rejected" indicator (review).
      *
      * We don't take the approach of fixing to the shape at the start (having commit use a
-     * snapshot too). Commit reading the current state is existing behavior from #64 / #78;
+     * snapshot too). Commit reading the current state is existing behavior;
      * changing that would be a separate design decision from the dimension display.
      */
     if (event.kind === 'shape' && fillAnchor) updateFillPreview();
@@ -643,8 +643,8 @@ export function initEditorControls(opts: EditorControlsOpts): EditorControlsHand
     return {
       onMove: (e) => {
         if (!strokeSession) return;
-        // **Placement is one click = one block** (#57). Dragging-to-place existed via the
-        // cuboid tool (#46) and Shift+click two-point selection, which overlapped in role and
+        // **Placement is one click = one block**. Dragging-to-place existed via the
+        // cuboid tool and Shift+click two-point selection, which overlapped in role and
         // was a major cause of unintended placements. Erasing keeps continuous-stroke
         // behavior since "drag to erase" feels natural
         if ((strokeTool ?? state.tool) === 'place') return;
@@ -653,7 +653,7 @@ export function initEditorControls(opts: EditorControlsOpts): EditorControlsHand
       onUp: (e) => {
         if (e.button !== 0) return 'ignore'; // releasing a button other than left doesn't end the operation (carried over from the old implementation's button check)
         isPointerHeld = false;
-        // Shape-fill is **not finalized here** (#78). Releasing the button advances to the
+        // Shape-fill is **not finalized here**. Releasing the button advances to the
         // height phase, and the next click finalizes it. **Not judged by whether the
         // projection succeeds at that instant** — the ray can be parallel to the plane and
         // return null, which would make the phase transition flip unpredictably
@@ -672,7 +672,7 @@ export function initEditorControls(opts: EditorControlsOpts): EditorControlsHand
   }
 
   /**
-   * pointerdown route handler for InputRouter (#12 PR2). Branching is identical to the old
+   * pointerdown route handler for InputRouter. Branching is identical to the old
    * implementation's canvas pointerdown listener; only the return value is translated into
    * "create a claim (continue dragging) / handled (completes immediately) / null (yield)".
    */
@@ -680,7 +680,7 @@ export function initEditorControls(opts: EditorControlsOpts): EditorControlsHand
     if (e.button !== 0) return null;
     if (isSpacePanActive?.()) return null; // yields to Space+left-drag panning (handled by OrbitControls)
 
-    // **Component placement is checked before the tool branch** (#69 Step 3b). Placing it
+    // **Component placement is checked before the tool branch**. Placing it
     // later would let selecttool.ts consume the click while the select tool is active,
     // and the click meant to choose the placement position would never arrive
     if (getPendingComponentCells?.()) {
@@ -694,10 +694,10 @@ export function initEditorControls(opts: EditorControlsOpts): EditorControlsHand
     if (state.tool === 'select') return null; // fully delegates to selecttool.ts's own listener (coexists until PR3)
     const hit = pickFromEvent(e);
 
-    // Shift+click two-point range placement/erasure was removed in #103. Building a range as
+    // Shift+click two-point range placement/erasure was removed. Building a range as
     // a batch is now unified into shape-fill (plane → extrude)
 
-    // Shape-fill's height-setting phase (#78): finalized by clicking.
+    // Shape-fill's height-setting phase: finalized by clicking.
     // If the tool has changed, the change notification already canceled it first, so this
     // path is only reached while fill is active
     if (fillAnchor && rangeMode === 'overlay' && overlayPhase === 'height') {
@@ -732,11 +732,11 @@ export function initEditorControls(opts: EditorControlsOpts): EditorControlsHand
           fillAnchor = cell;
           rangeMode = 'overlay';
           overlayPhase = 'plane';
-          // Fix the void's parent here (#113 / #119). Prefer an explicit selection; otherwise
+          // Fix the void's parent here. Prefer an explicit selection; otherwise
           // fall back to the owner of the thing being dug into (the touched block). Doesn't
           // change for the rest of this operation
           fillVoidParent = getPlacementGroup() ?? world.winnerRefAt(hit.cell)?.ref.ownerId ?? null;
-          // Fix the touched face here (#101). Doesn't change for the rest of this operation
+          // Fix the touched face here. Doesn't change for the rest of this operation
           fillFace = faceOf(hit.normal);
           lastTargetCell = cell;
           updateFillPreview();
@@ -745,7 +745,7 @@ export function initEditorControls(opts: EditorControlsOpts): EditorControlsHand
       }
       return 'handled'; // nothing happens on no hit / out of range (the old implementation would
       // grab capture and no-op, but this was intentionally changed since not creating a claim
-      // matches the meaning of isDragging better, #12 PR2)
+      // matches the meaning of isDragging better PR2)
     }
     // placement owner is held by the session (one owner per session, even if the active group changes mid-stroke)
     strokeSession = doc.beginSession(getPlacementGroup());

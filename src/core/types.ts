@@ -5,7 +5,7 @@ export interface BlockDef {
   /** Bedrock block ID (e.g. "minecraft:polished_andesite") */
   id: string;
   nameJa: string;
-  /** English display name sourced from the official en_US.lang (#70). Default display for OSS release */
+  /** English display name sourced from the official en_US.lang. Default display for OSS release */
   nameEn: string;
   category: 'stone' | 'wood' | 'soil' | 'misc';
   /** Flat color for editor display (#rrggbb) */
@@ -29,7 +29,7 @@ export interface BlockDef {
 /**
  * cell.ts (the lowest core layer) is the source of truth for coordinate primitives.
  * Re-exported here to keep the existing `from './types'` import path working
- * (#37 PR B1a, split out to avoid a circular import).
+ * (split out to avoid a circular import).
  */
 export type { Cell, CellKey } from './cell';
 export { makeCellKey, parseCellKey } from './cell';
@@ -43,7 +43,7 @@ export function isPillarBlock(def: BlockDef): boolean {
  * Raycast hit result. Placed in core because both picking (input layer) and the services
  * layer produce/consume this shared contract (keeps the dependency direction input → core).
  *
- * A voxel hit **always carries `ref` (owner + owner-local cell)** (#37 B1b). If only the
+ * A voxel hit **always carries `ref` (owner + owner-local cell)**. If only the
  * world coordinate were carried around, "which cell was hit" couldn't be recovered after
  * seeing through a locked group to pick the ref beneath it, or after the winner changes.
  * A ground hit has no cell that was actually hit, so this is a discriminated union that

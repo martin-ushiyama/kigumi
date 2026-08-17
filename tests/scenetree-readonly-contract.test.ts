@@ -3,7 +3,7 @@ import { SceneTree, type GroupNode } from '../src/core/scenetree';
 
 /**
  * A dedicated file that only verifies the ReadonlyGroupNode type contract (@ts-expect-error)
- * (#19 re-flagged). Lines that intentionally break type resolution with `@ts-expect-error`
+ *. Lines that intentionally break type resolution with `@ts-expect-error`
  * can cause typed-lint (no-unsafe-*) to misdetect the broken type as equivalent to "any"
  * (occurs in the CI environment; non-deterministic locally due to environment differences).
  * To minimize the blast radius, only this dedicated file disables that rule

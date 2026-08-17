@@ -220,7 +220,7 @@ describe('buildDeleteSelection — groups', () => {
     expect(doc.tree.getNode('e')).toEqual(empty);
   });
 
-  it('selecting parent and child at the same time does not throw from double-processing; both are deleted together in one pass (review #5 finding)', () => {
+  it('selecting parent and child at the same time does not throw from double-processing; both are deleted together in one pass', () => {
     const doc = makeDoc();
     const parent: GroupNode = { id: 'p', name: 'parent', parentId: null, childIds: [] };
     const child: GroupNode = { id: 'c', name: 'child', parentId: 'p', childIds: [] };
@@ -375,7 +375,7 @@ describe('buildMove', () => {
     doc.applyTransaction(result.tx);
     expect(doc.world.has(0, 0, 0)).toBe(false);
     expect(doc.world.get(1, 0, 0)).toBe(1);
-    // #37 B1b: selection tracking goes through Transaction.remap, not newSelection
+    // Selection tracking goes through Transaction.remap, not newSelection
     // (SelectionStore applies old ref → new ref on the commit notification)
     expect([...(result.tx.remap ?? new Map())]).toEqual([[
       '-|0,0,0',
@@ -387,7 +387,7 @@ describe('buildMove', () => {
     expect(doc.world.has(1, 0, 0)).toBe(false);
   });
 
-  it('a move that overlaps a cell of a different owner coexists without destroying the other side (the winner is decided by paint order, #37 B1b)', () => {
+  it('a move that overlaps a cell of a different owner coexists without destroying the other side (the winner is decided by paint order B1b)', () => {
     const doc = makeDoc();
     doc.insertGroup({ id: 'gv', name: 'victim-group', parentId: null, childIds: [] }, 0);
     doc.setCells([
@@ -429,7 +429,7 @@ describe('buildMove', () => {
     if ('error' in result) throw new Error('unexpected error');
     const ops = result.tx.ops;
 
-    // #37 B1b: membership is held by the owner-local store so there is no membership op.
+    // Membership is held by the owner-local store so there is no membership op.
     // Within the same owner, a move becomes "place at the landing spot → erase only the
     // original position that nobody lands on"
     const isVoxel = (op: (typeof ops)[number]): op is Extract<(typeof ops)[number], { kind: 'voxel' }> => op.kind === 'voxel';
@@ -475,7 +475,7 @@ describe('buildMove', () => {
     expect('error' in result).toBe(true);
   });
 
-  it('returns an error for a selection exceeding OP_MAX_CELLS (guards the path where the caller does not pre-check, review #8 finding)', () => {
+  it('returns an error for a selection exceeding OP_MAX_CELLS (guards the path where the caller does not pre-check, a review finding)', () => {
     const doc = makeDoc();
     const refs = Array.from({ length: OP_MAX_CELLS + 1 }, (_, i) => doc.cellAt(i, 0, 0).ref);
     const result = buildMove(doc, refs, [0, 1, 0]);
@@ -550,7 +550,7 @@ describe('buildDuplicate — cells', () => {
     expect('error' in result).toBe(true);
   });
 
-  it('returns an error for a selection exceeding OP_MAX_CELLS (review #8 finding)', () => {
+  it('returns an error for a selection exceeding OP_MAX_CELLS', () => {
     const doc = makeDoc();
     const cells: Array<[number, number, number]> = Array.from({ length: OP_MAX_CELLS + 1 }, (_, i) => [i, 0, 0]);
     const result = buildDuplicate(doc, doc.cellSelection(...cells));
@@ -609,7 +609,7 @@ describe('buildDuplicate — groups', () => {
     expect(doc.world.get(0, 0, 0)).toBe(1);
   });
 
-  it('selecting parent and child at the same time does not duplicate the child twice (review #5 finding)', () => {
+  it('selecting parent and child at the same time does not duplicate the child twice', () => {
     const doc = makeDoc();
     const parent: GroupNode = { id: 'p', name: 'parent', parentId: null, childIds: [] };
     const child: GroupNode = { id: 'c', name: 'child', parentId: 'p', childIds: [] };
@@ -750,7 +750,7 @@ describe('buildMoveCellToGroup', () => {
 
     const result = buildMoveCellToGroup(doc, doc.cellAt(0, 0, 0).ref, 'g');
     if ('error' in result) throw new Error('unexpected error');
-    // a membership change is expressed as a pair "erase from the old owner + place into the new owner" (#37 B1b)
+    // a membership change is expressed as a pair "erase from the old owner + place into the new owner"
     expect(result.tx.ops).toEqual([
       { kind: 'voxel', owner: null, key: '0,0,0', before: 1, after: null },
       { kind: 'voxel', owner: 'g', key: '0,0,0', before: null, after: 1 },
@@ -804,7 +804,7 @@ describe('buildMoveCellToGroup', () => {
 });
 
 /**
- * Rebasing a group with no transform set (#37 B1b review P1).
+ * Rebasing a group with no transform set.
  *
  * Root cause: `transform === undefined` was interpreted as **world identity**.
  * In reality it is "identity **relative to the old parent**", so in operations that change
@@ -884,7 +884,7 @@ describe('buildGroup — merges transform-unset groups under different parents (
 });
 
 /**
- * 90-degree rotation of a group (#37 B2).
+ * 90-degree rotation of a group.
  *
  * The main focus is whether the pivot rule (rev.2 blocker 5) is upheld:
  * an unset transform builds a pivot from the subtree bounds on the first rotation, and
@@ -1043,7 +1043,7 @@ describe('buildRotateGroup90', () => {
     rotate(doc, 'g', 1);
     const world = doc.index.worldOf({ ownerId: 'g', localCell: [0, 0, 0] })!;
     const raw = doc.index.winnerRefAt(world)!.raw;
-    // rotating 0=east by +Y 90 degrees gives north = 3 (measured on-device table, #114)
+    // rotating 0=east by +Y 90 degrees gives north = 3 (measured on-device table)
     expect(decodeOrientation('stairs', unpackCell(raw).code)).toEqual({
       shape: 'stairs',
       weirdoDirection: 3,
@@ -1052,7 +1052,7 @@ describe('buildRotateGroup90', () => {
   });
 });
 
-describe('computeDropIndexFor — multiple targets (#44)', () => {
+describe('computeDropIndexFor — multiple targets', () => {
   it('returns the position in the array with all move targets removed (the single-item version is a special case of 1)', () => {
     // grabbing b and d from ['a','b','c','d'] and dropping before c: after removal it is ['a','c'], so index 1
     expect(computeDropIndexFor(['a', 'b', 'c', 'd'], ['b', 'd'], 'c', 'before')).toBe(1);
@@ -1069,7 +1069,7 @@ describe('computeDropIndexFor — multiple targets (#44)', () => {
   });
 });
 
-describe('buildReparentGroups — multiple groups (#44)', () => {
+describe('buildReparentGroups — multiple groups', () => {
   function fourRootGroups(): DocumentFixture {
     const doc = makeDoc();
     for (const [i, id] of ['a', 'b', 'c', 'd'].entries()) {
@@ -1135,7 +1135,7 @@ describe('buildReparentGroups — multiple groups (#44)', () => {
   });
 });
 
-describe('buildMoveCellsToGroup — multiple cells (#44)', () => {
+describe('buildMoveCellsToGroup — multiple cells', () => {
   it('moves multiple cells together in 1 transaction (1 undo reverts everything)', () => {
     const doc = makeDoc();
     doc.insertGroup({ id: 'g', name: 'G', parentId: null, childIds: [] }, 0);
@@ -1172,7 +1172,7 @@ describe('buildMoveCellsToGroup — multiple cells (#44)', () => {
   });
 });
 
-describe('dragPayloadFor — relationship between the grabbed row and the selection (#44)', () => {
+describe('dragPayloadFor — relationship between the grabbed row and the selection', () => {
   it('returns the whole selection if the grabbed group is included in it', () => {
     const doc = makeDoc();
     doc.insertGroup({ id: 'a', name: 'A', parentId: null, childIds: [] }, 0);
@@ -1189,7 +1189,7 @@ describe('dragPayloadFor — relationship between the grabbed row and the select
     expect(payload).toEqual({ kind: 'groups', ids: ['b'] });
   });
 
-  it('if kind spans different types, only the 1 grabbed item (mixed selection is #43)', () => {
+  it('if kind spans different types, only the 1 grabbed item (mixed selection is a separate concern)', () => {
     const doc = makeDoc();
     doc.insertGroup({ id: 'a', name: 'A', parentId: null, childIds: [] }, 0);
     doc.setCells([[0, 0, 0, 1]]);
@@ -1215,7 +1215,7 @@ describe('dragPayloadFor — relationship between the grabbed row and the select
   });
 });
 
-describe('buildMirror (#63)', () => {
+describe('buildMirror', () => {
   /** A catalog with a stairs shape (0=full, 1=slab, 2=stairs) */
   function stairsDoc(): DocumentFixture {
     const shapes: Array<'full' | 'slab' | 'stairs'> = ['full', 'slab', 'stairs'];
@@ -1267,7 +1267,7 @@ describe('buildMirror (#63)', () => {
 
   it('the stairs orientation is also mirrored (does not just move coordinates and leave raw alone)', () => {
     const doc = stairsDoc();
-    // weirdoDirection 1 = the step faces west (-X). Mirroring on X should give east (+X) facing = 0 (measured on-device table, #114)
+    // weirdoDirection 1 = the step faces west (-X). Mirroring on X should give east (+X) facing = 0 (measured on-device table)
     const raw = packCell(2, encodeOrientation({ shape: 'stairs', weirdoDirection: 1, upsideDown: false }));
     doc.setCells([
       [0, 0, 0, raw],
@@ -1348,7 +1348,7 @@ describe('buildMirror (#63)', () => {
   });
 });
 
-describe('buildMirror — an effective no-op does not pollute history (#65 review P2)', () => {
+describe('buildMirror — an effective no-op does not pollute history', () => {
   function mirrorResult(doc: DocumentFixture, sel: NormalizedSelection, axis: 'x' | 'y' | 'z') {
     return buildMirror(doc, sel, axis);
   }
@@ -1413,7 +1413,7 @@ describe('buildMirror — an effective no-op does not pollute history (#65 revie
   });
 });
 
-describe('buildDuplicate — array duplication (#63)', () => {
+describe('buildDuplicate — array duplication', () => {
   function worldCells(doc: DocumentFixture, owner: string | null): string[] {
     return [...doc.rawCells.entriesOf(owner)]
       .map(([key]) => doc.index.worldOf({ ownerId: owner, localCell: parseCellKey(key) })!.join(','))
@@ -1536,7 +1536,7 @@ describe('buildDuplicate — array duplication (#63)', () => {
   });
 });
 
-describe('buildDuplicate — array-duplicating multiple groups with the same parent (#67 review P1)', () => {
+describe('buildDuplicate — array-duplicating multiple groups with the same parent', () => {
   /** Lines up g1..gN directly under parent null, placing 1 cell in each group */
   function siblingsDoc(names: string[]): DocumentFixture {
     const doc = makeDoc();

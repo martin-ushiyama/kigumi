@@ -5,7 +5,7 @@
  *   npx vite-node scripts/check-block-states.mjs
  *
  * It mechanically checks **whether we emit a state the destination does not accept**. The
- * stair orientation (#114) was a
+ * stair orientation was a
  * case of "the state was right but the meaning of the value was misread"; a wrong state *name*,
  * on the other hand, is simply ignored in silence and cannot be noticed until it is placed in
  * the real game.
@@ -21,7 +21,7 @@
  *
  * That is how the pillar_axis cross-check could cover zero blocks for as long as it did: the
  * one thing that would have caught it was never invoked. If this check is worth keeping, it
- * belongs in `regen-from-upstream` — see #177.
+ * belongs in `regen-from-upstream`.
  *
  * The meaning of the values (whether 0 of weirdo_direction is east or north) cannot be known
  * here. The measured table in `docs/bedrock-format.md` holds that.

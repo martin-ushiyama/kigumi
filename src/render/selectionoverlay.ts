@@ -21,7 +21,7 @@ export class SelectionOverlay {
   private instancedMesh: THREE.InstancedMesh | null = null;
   private readonly bboxWire: THREE.LineSegments;
   /**
-   * Parent node responsible only for translating the ghost (#37 B1b). Children (InstancedMesh /
+   * Parent node responsible only for translating the ghost. Children (InstancedMesh /
    * bbox wire) are built once at the baseline position, and dragging just moves this `position`.
    *
    * Previously, `setDragOffset()` set `dirty` and `update()` would dispose/recreate the

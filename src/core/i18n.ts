@@ -1,5 +1,5 @@
 /**
- * UI language switching (#70).
+ * UI language switching.
  *
  * Strings are handled in **3 categories**. Mixing them causes distinct classes of bugs
  * all at once — e.g. "switching language changed the name of a group I made earlier",
@@ -58,7 +58,7 @@ const UI = {
   'palette.stairs': ['Stairs', '階段'],
   'palette.selected': ['Selected: {name}', '選択中: {name}'],
 
-  // --- Stacked swatch (#87) ---
+  // --- Stacked swatch ---
   'swatch.active': ['Current block', '手前のブロック'],
   'swatch.spare': ['Spare block', '控えのブロック'],
   'swatch.activeNamed': ['Current block: {name}', '手前のブロック: {name}'],
@@ -164,7 +164,7 @@ const UI = {
   'insp.ungroup': ['Ungroup', 'グループ解除'],
   'insp.delete': ['Delete', '削除'],
   'insp.replaceWithActive': ['Replace with palette block ({name})', 'パレットの選択ブロックに変更 ({name})'],
-  // Repainting the selection (#64 PR-C)
+  // Repainting the selection
   'insp.repaint': ['Repaint selection', '選択範囲を塗り替え'],
   'insp.repaintScope': ['Target', '対象'],
   'insp.repaintAll': ['Everything selected', '選択したすべて'],
@@ -233,7 +233,7 @@ const UI = {
 
   // --- Status bar / toast ---
   'status.line': ['Blocks: {blocks} ｜ Cursor: {hover}{sel}{guide}', 'ブロック: {blocks} ｜ カーソル: {hover}{sel}{guide}'],
-  /** Guidance shown only while idle. Yields its spot to the dimensions display during a range operation (#83) */
+  /** Guidance shown only while idle. Yields its spot to the dimensions display during a range operation */
   'status.guide': [
     ' ｜ WASD: move / right drag: orbit / H: keyboard guide',
     ' ｜ WASD: 移動 / 右ドラッグ: 回転 / H: 操作ガイド',
@@ -319,7 +319,7 @@ const UI = {
   ],
   'load.restored': ['Restored your last session ({count} blocks)', '前回の続きを復元した ({count}ブロック)'],
 
-  // --- Shape generator (#64) ---
+  // --- Shape generator ---
   // box isn't an "other shape" — it's a peer entry, so it's listed under shape.* like the rest
   'shape.box': ['Box', '直方体'],
   'shape.sphere': ['Sphere', '球'],
@@ -352,7 +352,7 @@ const UI = {
     '範囲が広すぎて計算できない ({count} > {max} セル)。もう少し狭く指定して',
   ],
 
-  // --- Generic fallback at the display boundary (#70 review, 3rd round) ---
+  // --- Generic fallback at the display boundary ---
   // Exceptions that aren't a DisplayableError fall through here instead of showing the raw message.
   // Developer-facing detail stays in the console
   'err.loadFailed': [
@@ -387,10 +387,10 @@ export type UiKey = keyof typeof UI;
 const DEFAULT_NAMES = {
   group: ['Group', 'グループ'],
   cuboid: ['Cuboid', '直方体'],
-  /** Material name used when filled with void (#113). Becomes e.g. `Cuboid: Void` */
+  /** Material name used when filled with void. Becomes e.g. `Cuboid: Void` */
   void: ['Void', '空白'],
   /**
-   * Default name combining shape + material (derived from the #113 discussion). Appends the
+   * Default name combining shape + material. Appends the
    * material like `Cuboid: Cobblestone`, so multiple "Cuboid" entries can be told apart in the layer tree.
    *
    * **Fixed once, using the material at creation time.** Swapping the material later doesn't
@@ -399,7 +399,7 @@ const DEFAULT_NAMES = {
    * separator can vary per language.
    */
   shapeWithMaterial: ['{shape}: {material}', '{shape}：{material}'],
-  // Default name per shape (#64). Lets the layer tree distinguish what was placed
+  // Default name per shape. Lets the layer tree distinguish what was placed
   sphere: ['Sphere', '球'],
   cylinder: ['Cylinder', '円柱'],
   dome: ['Dome', 'ドーム'],
@@ -438,7 +438,7 @@ export function defaultName(key: DefaultNameKey, lang: Lang, vars?: Record<strin
 
 
 /**
- * Dictionary of errors returned by the editor layer (ops.ts) (#70).
+ * Dictionary of errors returned by the editor layer (ops.ts).
  *
  * **The editor layer can't depend on state** (the layering rule in docs/architecture.md,
  * enforced by ESLint). So ops returns a **key**, not a string, and the composition root
@@ -497,7 +497,7 @@ const OP_ERRORS = {
   noBlocksToReplace: ['No blocks to replace', '置き換えるブロックがない'],
   rangeTooLarge: ['Range is too large ({count} > {max} blocks)', '範囲が大きすぎる ({count} > {max} ブロック)'],
   nothingInRange: ['Nothing in range', '対象がなかった'],
-  // Components (#69)
+  // Components
   componentNeedsOneGroup: [
     'Select exactly one group to make a component',
     'コンポーネントにするグループを 1 つだけ選んで',
@@ -531,7 +531,7 @@ export function translateOpError(key: OpErrorKey, lang: Lang, vars?: Record<stri
 export const FALLBACK_PROJECT_NAME = 'Untitled';
 
 /**
- * A displayable error (#70 review).
+ * A displayable error.
  *
  * A throw from the export layer is caught by ProjectService and **shown in a toast**, so
  * "not shown on screen, hence out of scope for translation" doesn't hold here. But the

@@ -10,7 +10,7 @@ export default defineConfig({
   use: {
     baseURL: 'http://localhost:4319',
     /**
-     * **E2E runs against the Japanese UI** (#70).
+     * **E2E runs against the Japanese UI**.
      *
      * The default language is English, but the existing specs write their locators
      * with Japanese labels, and that wording is also an asset that tells the reader

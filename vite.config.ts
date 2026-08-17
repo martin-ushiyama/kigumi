@@ -113,7 +113,7 @@ export default defineConfig({
       include: ['src/**/*.ts'],
       exclude: ['src/**/*.d.ts', 'src/data/**'],
       // Pinned slightly below the figures measured on 2026-07-20, after the layer drag-and-drop
-      // work in PR #7 landed (stmts 31.26% / branch 31.13% / funcs 33.7% / lines 30.46%).
+      // work landed (stmts 31.26% / branch 31.13% / funcs 33.7% / lines 30.46%).
       // Dropping below this fails CI. Raising these numbers is welcome; a PR that lowers them
       // should say why.
       thresholds: {

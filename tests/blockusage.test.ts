@@ -220,7 +220,7 @@ describe('buildReplaceUsage', () => {
   });
 });
 
-describe('isDrawableRecipe — "selected" and "drawable" are different things (#48 review P1)', () => {
+describe('isDrawableRecipe — "selected" and "drawable" are different things', () => {
   const catalog = [
     { id: 'a', nameJa: 'A', category: 'stone', color: '#000', shape: 'full' },
     { id: 'b', nameJa: 'B', category: 'stone', color: '#111', shape: 'full' },
@@ -249,7 +249,7 @@ describe('isDrawableRecipe — "selected" and "drawable" are different things (#
   });
 });
 
-describe('buildReplaceUsage — cuts off at the limit (#48 review P2)', () => {
+describe('buildReplaceUsage — cuts off at the limit', () => {
   it('returns an error without assembling everything once OP_MAX_CELLS is exceeded', () => {
     const doc = new DocumentFixture();
     const cells: [number, number, number, number][] = [];
@@ -272,7 +272,7 @@ describe('buildReplaceUsage — cuts off at the limit (#48 review P2)', () => {
   });
 });
 
-describe('isDrawableRecipe and sampleRecipe operate under the same conditions (#48 review round 2)', () => {
+describe('isDrawableRecipe and sampleRecipe operate under the same conditions', () => {
   const catalog = [
     { id: 'a', nameJa: 'A', category: 'stone', color: '#000', shape: 'full' },
     { id: 'b', nameJa: 'B', category: 'stone', color: '#111', shape: 'full' },

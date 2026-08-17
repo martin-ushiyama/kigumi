@@ -10,7 +10,7 @@ import { readNbt, type ParsedNbt } from './nbt-reader';
 import { DisplayableError } from '../src/core/i18n';
 
 /**
- * Assert on the **error key**, not the wording (#70). Display strings change with the
+ * Assert on the **error key**, not the wording. Display strings change with the
  * language, so expecting a particular phrase here would break the tests on every i18n change.
  */
 function expectDisplayableError(fn: () => unknown, keys: readonly string[]): void {
@@ -183,9 +183,9 @@ describe('.mcpack package', () => {
   /**
    * A Japanese name loses every usable character and comes out empty. Falling back to a fixed
    * string would make **separate creations export under the same name**, leaving it undetermined
-   * which one `/structure load` picks up (#127).
+   * which one `/structure load` picks up.
    */
-  describe('names with no usable characters left (#127)', () => {
+  describe('names with no usable characters left', () => {
     it('gives each creation a different name', () => {
       const a = sanitizeStructureName('テストの道');
       const b = sanitizeStructureName('駅前の橋');
@@ -214,7 +214,7 @@ describe('.mcpack package', () => {
 
     /**
      * Looking only at "did it become empty" lets through names where **something remains but the
-     * originals can no longer be told apart** (#130 review finding). The test has to be
+     * originals can no longer be told apart**. The test has to be
      * "was information lost".
      */
     it('does not collide for names that keep a few alphanumerics (駅前A / 港前A)', () => {
@@ -227,7 +227,7 @@ describe('.mcpack package', () => {
 
     /**
      * A substitution that turns one character into a single `_` **cannot be detected by comparing
-     * the results** (both `road/a` and `road?a` become `road_a`; #130 review, round 4).
+     * the results** (both `road/a` and `road?a` become `road_a`; raised in review).
      * The comparison has to be made on the original name, not the substituted one.
      */
     it('does not collide for names with only one substituted character (road/a / road?a)', () => {
@@ -242,9 +242,9 @@ describe('.mcpack package', () => {
   /**
    * Structure names cannot contain uppercase letters or spaces. These three collapses are
    * demanded by the namespace itself, and we state deliberately that **this is the only place
-   * where two different creations may end up with the same name** (#130 review, round 4).
+   * where two different creations may end up with the same name** (raised in review).
    */
-  describe('equivalence rules (the range we collapse on purpose, #130)', () => {
+  describe('equivalence rules (the range we collapse on purpose)', () => {
     it('is case-insensitive', () => {
       expect(sanitizeStructureName('My Road')).toBe(sanitizeStructureName('my road'));
     });
@@ -268,7 +268,7 @@ describe('.mcpack package', () => {
     /**
      * The identifier goes through the equivalence rules as well. Deriving it from the original
      * name would make **names declared equivalent differ in their identifier alone**
-     * (#130 review, round 5).
+     * (raised in review).
      */
     it('applies the equivalence rules to names carrying an identifier too (case)', () => {
       expect(sanitizeStructureName('Road/A')).toBe(sanitizeStructureName('road/a'));
@@ -293,9 +293,9 @@ describe('.mcpack package', () => {
 
   /**
    * Minecraft identifies packs by UUID. Reissuing one every time would make each export of the
-   * same creation pile up as a separate pack (#130 review finding).
+   * same creation pile up as a separate pack.
    */
-  describe('pack UUID (#130)', () => {
+  describe('pack UUID', () => {
     const manifestOf = (projectName: string) => {
       const world = new VoxelWorld();
       world.replaceAll([[0, 0, 0, packCell(0, 0)]]);
@@ -331,7 +331,7 @@ describe('.mcpack package', () => {
     });
   });
 
-  it('includes the in-game typed name alongside the pack display name (#127)', () => {
+  it('includes the in-game typed name alongside the pack display name', () => {
     const world = new VoxelWorld();
     world.replaceAll([[0, 0, 0, packCell(0, 0)]]);
     const { bytes } = buildMcstructure(world, CATALOG);
@@ -346,10 +346,10 @@ describe('.mcpack package', () => {
 });
 
 /**
- * For Minecraft to pick up a re-exported pack, the **version must increase monotonically** (#133).
+ * For Minecraft to pick up a re-exported pack, the **version must increase monotonically**.
  * Bedrock ignores an import with "the same pack identity and the same or a lower version".
  */
-describe('pack version (#133)', () => {
+describe('pack version', () => {
   const versionOf = (name: string, revision?: number) => {
     const world = new VoxelWorld();
     world.replaceAll([[0, 0, 0, packCell(idx('minecraft:stone'), 0)]]);

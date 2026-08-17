@@ -13,7 +13,7 @@ declare global {
       catalogIndexAt(x: number, y: number, z: number): number | null;
       doc: {
         undoStack: unknown[];
-        /** For assembling a work from E2E (#146). The shape of an op is DocOp in core/document.ts */
+        /** For assembling a work from E2E. The shape of an op is DocOp in core/document.ts */
         applyTransaction(tx: { ops: readonly unknown[] }): void;
         scene: { cells: { entriesOf(owner: string | null): IterableIterator<[string, number]> } };
         tree: {
@@ -34,7 +34,7 @@ declare global {
         activeBlock: number;
         tool: string;
         activeRecipeId: string | null;
-        /** The shape of a range fill (#64) */
+        /** The shape of a range fill */
         shape: string;
         /** An explicit hollow setting. null means the per-shape default */
         shapeHollow: boolean | null;
@@ -63,12 +63,12 @@ declare global {
       ctx: {
         camera: { position: { x: number; y: number; z: number } };
         /**
-         * The scene actually used for rendering. Texture settings on the 3D side (repeat/offset from #93) are
+         * The scene actually used for rendering. Texture settings on the 3D side (repeat/offset) are
          * read from the **material actually handed to the renderer**, not from the internal BlockTypeMesh.
          */
         scene: {
           traverse(fn: (obj: { material?: unknown }) => void): void;
-          /** The background color (#144 theme verification). Exposes the three.js Color as-is */
+          /** The background color, for verifying the theme. Exposes the three.js Color as-is */
           background: { getHexString(): string };
         };
       };

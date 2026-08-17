@@ -37,7 +37,7 @@ function instancePosition(mesh: THREE.InstancedMesh, index: number): THREE.Vecto
   return pos;
 }
 
-describe('VoxelMesh differential update (#15)', () => {
+describe('VoxelMesh differential update', () => {
   it('adding 1 cell via stage() reflects only that cell as an instance', () => {
     const scene = new THREE.Scene();
     const world = new VoxelWorld();
@@ -253,9 +253,9 @@ describe('VoxelMesh differential update (#15)', () => {
   });
 });
 
-describe('VoxelMesh × Document integration (#15 review follow-up / #37 B1b unified invalidate into one path)', () => {
+describe('VoxelMesh × Document integration (invalidate is unified into one path)', () => {
   /**
-   * Reproduces the actual wiring from main.ts (composition root). As of #37 B1b, the sole
+   * Reproduces the actual wiring from main.ts (composition root). The sole
    * source of mesh updates is `WorldIndexChange` — markDirty from the Document event side was
    * removed. A commit with voxel ops only makes the index notify 'cells' and becomes a
    * differential update; a commit that includes structural ops makes the index fully rebuild →

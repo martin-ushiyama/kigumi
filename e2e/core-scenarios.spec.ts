@@ -2,7 +2,7 @@ import { readFile } from 'node:fs/promises';
 import { expect, test, type Page } from '@playwright/test';
 
 /**
- * The five scenarios of Issue #8 "the E2E tests to protect first".
+ * The five scenarios of "the E2E tests to protect first".
  * To aim click coordinates at an arbitrary cell without depending on the camera's default position,
  * window.__bs.groundScreenPos/cellScreenPos (the E2E-only helpers in main.ts) are used.
  * - groundScreenPos(x,z): when clicking still-empty ground (y=0) to place something new
@@ -87,7 +87,7 @@ test.beforeEach(async ({ page }) => {
   await expect(page.locator('#viewport')).toBeVisible();
 });
 
-test('a click is a normal placement even while Shift is held (#103 removed the Shift+click range)', async ({ page }) => {
+test('a click is a normal placement even while Shift is held (the Shift+click range was removed)', async ({ page }) => {
   const pos = await groundScreenPos(page, 6, 6);
 
   await page.keyboard.press('1'); // place tool

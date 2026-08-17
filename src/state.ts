@@ -17,7 +17,7 @@ import { createEmitter, type Unsubscribe } from './core/emitter';
 
 export type { Axis, DisplayMode, Lang, ShapeKind, Tool };
 
-/** Change-notification event kinds for the global AppState (#13) */
+/** Change-notification event kinds for the global AppState */
 export type AppStateChange =
   | { kind: 'tool' }
   | { kind: 'activeBlock' }
@@ -37,17 +37,17 @@ export interface AppState {
   /** Index into the blocks catalog */
   activeBlock: number;
   /**
-   * Id of the component about to be placed (#69 Step 3b). `null` = not in placement mode.
+   * Id of the component about to be placed. `null` = not in placement mode.
    *
    * **Only the id lives here.** The actual contents (`ComponentTemplate`) live in the
    * list and are looked up on every placement — if state held a copy of the shape,
    * editing a component would keep placing the stale shape.
    */
   pendingComponentId: string | null;
-  /** Whether the paint material is set to void (#113, shape tool only) */
+  /** Whether the paint material is set to void (shape tool only) */
   paintVoid: boolean;
   /**
-   * The spare block (catalog index, #87). Sits behind the stacked swatch in the
+   * The spare block (catalog index). Sits behind the stacked swatch in the
    * toolbar and swaps with activeBlock via the `X` key (same role as foreground /
    * background color in Photoshop).
    *
@@ -65,12 +65,12 @@ export interface AppState {
   recentBlocks: number[];
   /** Display mode (textured vs. flat-colored) */
   displayMode: DisplayMode;
-  /** Whether to show outlines on void blocks (#146). Shown by default — it's a visual cue while placing */
+  /** Whether to show outlines on void blocks. Shown by default — it's a visual cue while placing */
   showVoidEdges: boolean;
-  /** Display language for the UI and block names (#70) */
+  /** Display language for the UI and block names */
   lang: Lang;
   /**
-   * Theme preference (#144). **"Not yet decided" is itself a representable value.**
+   * Theme preference. **"Not yet decided" is itself a representable value.**
    *
    * `system` = no explicit choice made. Follows the OS setting and changes along
    * with it. `light` / `dark` = an explicit choice, which then stays fixed even if
@@ -82,7 +82,7 @@ export interface AppState {
    */
   themePreference: ThemePreference;
   /**
-   * Shape to fill with the range-fill tool (#64). The box is treated as just another
+   * Shape to fill with the range-fill tool. The box is treated as just another
    * shape option on equal footing. This keeps the tool count fixed and only switches
    * how the fill is shaped.
    */
@@ -96,7 +96,7 @@ export interface AppState {
 }
 
 export const state: AppState = {
-  // Don't start in edit mode on load (#57) — a click meant to orient the camera would place a block
+  // Don't start in edit mode on load — a click meant to orient the camera would place a block
   tool: 'select',
   activeBlock: 0,
   pendingComponentId: null,
@@ -119,7 +119,7 @@ export const state: AppState = {
 
 const emitter = createEmitter<AppStateChange>();
 
-/** #13: Supports multiple subscribers, returns an unsubscribe function */
+/** Supports multiple subscribers, returns an unsubscribe function */
 export function onStateChange(fn: (event: AppStateChange) => void): Unsubscribe {
   return emitter.subscribe(fn);
 }
@@ -127,7 +127,7 @@ export function onStateChange(fn: (event: AppStateChange) => void): Unsubscribe 
 export function setTool(tool: Tool): void {
   state.tool = tool;
   // Void is a paint material specific to the shape tool, so clear it when switching
-  // to any other tool (#113). Letting the placement tool place void would place it
+  // to any other tool. Letting the placement tool place void would place it
   // outside a group, accidentally creating a "void that affects everything" (the
   // effect's scope is determined by the group it's placed inside).
   if (tool !== 'fill') state.paintVoid = false;
@@ -135,7 +135,7 @@ export function setTool(tool: Tool): void {
 }
 
 /**
- * Toggle the paint material to void / back (#113). **Shape tool only.**
+ * Toggle the paint material to void / back. **Shape tool only.**
  *
  * Not mixed into `activeBlock` — that's a catalog index, and most call sites
  * assume it always refers to an entry that exists in the catalog. Feeding it a
@@ -153,7 +153,7 @@ export function setActiveBlock(index: number): void {
   const nextShape = nextDef?.shape;
   state.activeBlock = index;
   state.paintMode = 'block';
-  // Clear void mode once a block is selected — selecting a block but still poking a hole would be confusing (#113)
+  // Clear void mode once a block is selected — selecting a block but still poking a hole would be confusing
   state.paintVoid = false;
   // Reset orientation when the shape changes (so a stair's flip doesn't carry over
   // onto an unrelated slab). Even when switching between two `full` blocks (shape
@@ -169,7 +169,7 @@ export function setActiveBlock(index: number): void {
 }
 
 /**
- * Replace the spare block (#87). Clicking the swatch's back slot opens the picker.
+ * Replace the spare block. Clicking the swatch's back slot opens the picker.
  * Unlike the foreground (activeBlock), this doesn't touch orientation reset or
  * history — it's not something you're about to place.
  */
@@ -180,7 +180,7 @@ export function setSpareBlock(index: number): void {
 }
 
 /**
- * Swap the foreground and spare blocks (#87, `X` key / swatch swap button).
+ * Swap the foreground and spare blocks (`X` key / swatch swap button).
  *
  * The foreground goes through `setActiveBlock` — orientation needs resetting when
  * the shape changes, and it should also land in "recently used" history; a plain
@@ -196,7 +196,7 @@ export function swapActiveAndSpare(): void {
 export function setActiveRecipe(id: string | null): void {
   state.activeRecipeId = id;
   state.paintMode = id === null ? 'block' : 'mix';
-  // Clear void mode once a mix recipe is selected (#113). **Paint material selection
+  // Clear void mode once a mix recipe is selected. **Paint material selection
   // is always mutually exclusive** — choosing a block / recipe / void drops the
   // others. Leaving it set would mean "selected a recipe but still poking a hole,"
   // a mismatch between what was chosen and what happens.
@@ -205,11 +205,11 @@ export function setActiveRecipe(id: string | null): void {
 }
 
 /**
- * Set which component is about to be placed (#69 Step 3b). `null` exits placement mode.
+ * Set which component is about to be placed. `null` exits placement mode.
  *
  * Entering placement mode **switches back to the select tool** — staying on the
  * block placement tool while aiming for a spot would place a block on the click
- * that was meant to be an aim (same accident as #57).
+ * that was meant to be an aim (the same accident as the tool-at-stroke-start one).
  */
 export function setPendingComponent(id: string | null): void {
   state.pendingComponentId = id;
@@ -260,7 +260,7 @@ export function setDisplayMode(mode: DisplayMode): void {
   emitter.notify({ kind: 'displayMode' });
 }
 
-/** Switch the range-fill shape (#64). Resets the hollow setting back to the per-shape default */
+/** Switch the range-fill shape. Resets the hollow setting back to the per-shape default */
 export function setShape(shape: ShapeKind): void {
   if (state.shape === shape) return;
   state.shape = shape;
@@ -279,14 +279,14 @@ export function isShapeHollow(): boolean {
   return state.shapeHollow ?? defaultHollow(state.shape);
 }
 
-/** Switch the cylinder's axis (#64) */
+/** Switch the cylinder's axis */
 export function setShapeAxis(axis: Axis): void {
   if (state.shapeAxis === axis) return;
   state.shapeAxis = axis;
   emitter.notify({ kind: 'shape' });
 }
 
-/** Set the slope's step height. Values below 1 or non-integers are rounded to 1 (#64) */
+/** Set the slope's step height. Values below 1 or non-integers are rounded to 1 */
 export function setShapeStep(step: number): void {
   const next = Number.isFinite(step) ? Math.max(1, Math.floor(step)) : 1;
   if (state.shapeStep === next) return;
@@ -294,7 +294,7 @@ export function setShapeStep(step: number): void {
   emitter.notify({ kind: 'shape' });
 }
 
-/** Screen theme (#144) */
+/** Screen theme */
 export type Theme = 'light' | 'dark';
 
 /** Theme preference. `system` = no explicit choice made (follows the OS) */
@@ -342,7 +342,7 @@ export function setLang(lang: Lang): void {
 }
 
 /**
- * Resolve an error key returned by the editor layer in the current language (#70).
+ * Resolve an error key returned by the editor layer in the current language.
  * Shaped so it can be passed straight through as the translate argument of `commitOpResult`.
  */
 export function opError(key: OpErrorKey, vars?: Record<string, string | number>): string {
@@ -350,7 +350,7 @@ export function opError(key: OpErrorKey, vars?: Record<string, string | number>)
 }
 
 /**
- * The **single entry point** that turns an exception into display text (#70, review round 3).
+ * The **single entry point** that turns an exception into display text (raised in review).
  *
  * Through round 2, non-`DisplayableError` exceptions were shown using the raw
  * `e.message`. That missed a broken assumption: "throws are developer-facing so
@@ -378,7 +378,7 @@ export function t(key: UiKey, vars?: Record<string, string | number>): string {
 }
 
 /**
- * Resolve the default name for generated data (#70). **Call this once, at creation time.**
+ * Resolve the default name for generated data. **Call this once, at creation time.**
  * Calling it again when rendering an already-stored name would corrupt past data's
  * name on a language switch.
  */
@@ -388,7 +388,7 @@ export function defaultName(key: DefaultNameKey, vars?: Record<string, string | 
 
 /**
  * The single entry point that resolves a block's display name for the current
- * settings (#70). If each UI read `def.nameJa` directly, every new switch would
+ * settings. If each UI read `def.nameJa` directly, every new switch would
  * leak into more call sites to update.
  */
 export function blockName(def: { nameJa: string; nameEn: string }): string {
@@ -397,7 +397,7 @@ export function blockName(def: { nameJa: string; nameEn: string }): string {
 
 /**
  * A subscription hook that only fires when the display language **actually
- * changes** (#70).
+ * changes**.
  *
  * Most UI that shows names only subscribes to doc / selection changes; adding a
  * plain `onStateChange` subscription would re-render on every tool switch or
@@ -414,7 +414,7 @@ export function onLangChange(fn: () => void): Unsubscribe {
 }
 
 /**
- * Match logic for block search (#70). **Matches against both names regardless of
+ * Match logic for block search. **Matches against both names regardless of
  * the display language.** Being able to search in Japanese while displaying in
  * English is practical, and the same goes the other way (OSS users searching in English).
  */

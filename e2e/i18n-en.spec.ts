@@ -1,7 +1,7 @@
 import { expect, test, type Page } from '@playwright/test';
 
 /**
- * **A spec that walks the real wiring with the English default left in place** (#70 review).
+ * **A spec that walks the real wiring with the English default left in place**.
  *
  * The other specs are pinned to JA by the storageState in playwright.config.ts. That is because the existing
  * locators are written in Japanese, but **that pinning hides missing translations on the English side**.
@@ -57,7 +57,7 @@ test('no Japanese appears anywhere in the shell (rail / panels / toolbar / statu
  * The aria-label on the regions themselves (the container elements).
  *
  * The existing checks looked at **descendants**, as in `#toolbar *`, so an aria-label put on `#toolbar`
- * itself was out of scope (#70 review, second round).
+ * itself was out of scope.
  */
 test('no Japanese appears in region names (the aria-label on a container itself)', async ({ page }) => {
   for (const sel of ['#sidebar-rail', '#toolbar', '#world-controls', '#block-usage']) {
@@ -142,11 +142,11 @@ test('no Japanese appears in load failure notifications (a syntax error)', async
 });
 
 /**
- * #70 review, third round. A syntax error only surfaces the browser's own English `SyntaxError`, so this
+ * A syntax error only surfaces the browser's own English `SyntaxError`, so this
  * walks **the path that goes through the validation throws in `persistence.ts`** (JSON that parses but
  * fails validation) with the English default. This is the very wiring that was missed until the third round.
  *
- * Those throws were Japanese when this was written; #152 translated them. The guard stays because what it
+ * Those throws were Japanese when this was written and have since been translated. The guard stays because what it
  * pins down is the boundary — a raw `e.message` must never reach the toast — not the language the message
  * happens to be in today.
  */

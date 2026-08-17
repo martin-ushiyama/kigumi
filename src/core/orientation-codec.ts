@@ -1,11 +1,11 @@
 /**
  * **Serialization** of orientation codes — determines the orientation code ↔ block state
- * assignment mapping from upstream data (#131 PR 1).
+ * assignment mapping from upstream data.
  *
  * ## This is not the meaning model
  *
  * **The meaning model is `Orientation`, and only `Orientation`** (the completion condition
- * agreed for PR 1 in #131). The state assignment handled here exists purely as a
+ * agreed for the first step). The state assignment handled here exists purely as a
  * **save/export convenience** for packing `Orientation` into a single number — it is not a
  * second pose representation. That's why it isn't exported — only `orientation.ts` uses it,
  * and every other module only ever sees `Orientation`.
@@ -74,7 +74,7 @@ export function decodeStates(shape: string, code: number): StateAssignment {
  * **Checks at the entry point that the set of state keys matches what's expected** — both
  * missing and extra keys are rejected. Silently dropping extras would break the central
  * contract "never ignore an unknown state" right at the runtime entry point, even though it's
- * upheld during generation (`poseStatesOf`) (#138 review note). Values outside the value
+ * upheld during generation (`poseStatesOf`). Values outside the value
  * domain are rejected too (never let an unknown value through to export).
  */
 export function encodeStates(shape: string, states: StateAssignment): number {
@@ -83,7 +83,7 @@ export function encodeStates(shape: string, states: StateAssignment): number {
   const given = Object.keys(states);
   // **Never use `in`.** It walks the prototype chain, which would let names inherited from
   // Object.prototype (like `toString`) slip through as "a known state"
-  // (#138 review note)
+  //
   const extra = given.filter((name) => !Object.hasOwn(space, name));
   const missing = expected.filter((name) => !Object.hasOwn(states, name));
   if (extra.length > 0 || missing.length > 0) {

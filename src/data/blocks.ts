@@ -15,7 +15,7 @@ import textureManifest from './textures.json';
  * `npm run fetch-textures`) is the source of truth, joined in here via `textures.json`.
  * Baking color into the catalog would create a cycle — "can't fetch textures without the
  * catalog, can't build the catalog without colors" — blocking new blocks from being added
- * (review, #137).
+ * (review).
  */
 
 const COLORS = textureColors as Record<string, string>;

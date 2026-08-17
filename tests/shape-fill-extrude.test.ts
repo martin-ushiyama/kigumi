@@ -8,7 +8,7 @@ import { setShape, setTool, state, toggleShapeHollow } from '../src/state';
 import { DocumentFixture } from './helpers/document-fixture';
 
 /**
- * Shape fill extrusion (a 2-stage input: plane → height, #78).
+ * Shape fill extrusion (a 2-stage input: plane → height).
  *
  * Real 3D operation (camera + raycast) can't be built even in E2E, so this drives
  * `initEditorControls`'s route handlers directly, and the test supplies only the picking and
@@ -34,7 +34,7 @@ function installWindowStub(): void {
   g.window ??= { dispatchEvent: () => true };
 }
 
-describe('shape fill extrusion (#78)', () => {
+describe('shape fill extrusion', () => {
   let doc: DocumentFixture;
   let controls: EditorControlsHandle;
   /** The picking result the test supplies (used during the plane stage) */
@@ -64,7 +64,7 @@ describe('shape fill extrusion (#78)', () => {
       getPlacementGroup: () => null,
       // stand-in for the plane stage's projection. Directly targets the cell of the hit the test supplied
       resolveRangeFaceCell: () => (nextHit ? [nextHit.cell[0], nextHit.cell[1], nextHit.cell[2]] : null),
-      // stand-in for the extrude projection. Puts the value the test supplies into **the face's axis** and returns it (#101)
+      // stand-in for the extrude projection. Puts the value the test supplies into **the face's axis** and returns it
       resolveRangeExtrudeCell: (_e, anchor, face) => {
         if (verticalY === null) return null;
         const cell: [number, number, number] = [...anchor];
@@ -157,7 +157,7 @@ describe('shape fill extrusion (#78)', () => {
     expect(placedCells()).toBe(0);
   });
 
-  it('is also discarded when switching to the select tool — the first click after returning to Fill does not commit the stale extrusion (#79 review)', () => {
+  it('is also discarded when switching to the select tool — the first click after returning to Fill does not commit the stale extrusion', () => {
     dragPlane();
     moveHeight(4);
     // the select tool never reaches controls due to onPointerDown's early return, so the
@@ -174,7 +174,7 @@ describe('shape fill extrusion (#78)', () => {
     expect(placedCells()).toBe(0);
   });
 
-  it('a hollow spec also applies to extrusion (the path did not change with #78)', () => {
+  it('a hollow spec also applies to extrusion (the path did not change)', () => {
     // extrude a 3×3 base up to height 3 = 27 solid / hollow is just the shell at 26 (the 1 interior cell drops out)
     dragPlane();
     moveHeight(2);

@@ -1,5 +1,5 @@
 /**
- * Builds the pose space from the upstream data (#131 PR 1). Pure functions only.
+ * Builds the pose space from the upstream data. Pure functions only.
  *
  * The orientations a block can take are **declared by Bedrock as per-block block states**. We
  * fold those per shape and hold the result. This replaces writing "stairs have 4 directions ×

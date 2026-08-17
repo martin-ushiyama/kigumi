@@ -1,7 +1,7 @@
 import { expect, test, type Page } from '@playwright/test';
 
 /**
- * Toggling the outlines of void blocks on and off (#146).
+ * Toggling the outlines of void blocks on and off.
  *
  * **This looks at whether the lines actually disappear, not at the button state.** A void never becomes the winner
  * and is not drawn, so the outline is shown as a hint of where it is. The problem is those lines filling the screen,
@@ -71,14 +71,14 @@ test.beforeEach(async ({ page }) => {
   await seedVoid(page);
 });
 
-test('the void outlines are shown by default (#146)', async ({ page }) => {
+test('the void outlines are shown by default', async ({ page }) => {
   const state = await outlineDrawn(page);
   expect(state.visible, 'it is part of the rendering').toBe(true);
   expect(state.drawn, 'lines are being drawn').toBeGreaterThan(0);
   await expect(toggle(page)).toHaveAttribute('aria-pressed', 'true');
 });
 
-test('the toggle hides the outlines, and pressing it again brings them back (#146)', async ({ page }) => {
+test('the toggle hides the outlines, and pressing it again brings them back', async ({ page }) => {
   await toggle(page).click();
   await expect.poll(async () => (await outlineDrawn(page)).visible).toBe(false);
   await expect(toggle(page)).toHaveAttribute('aria-pressed', 'false');
@@ -89,7 +89,7 @@ test('the toggle hides the outlines, and pressing it again brings them back (#14
   expect((await outlineDrawn(page)).drawn).toBeGreaterThan(0);
 });
 
-test('the choice survives a reload (#146)', async ({ page }) => {
+test('the choice survives a reload', async ({ page }) => {
   await toggle(page).click();
   await expect.poll(async () => (await outlineDrawn(page)).visible).toBe(false);
 
@@ -100,7 +100,7 @@ test('the choice survives a reload (#146)', async ({ page }) => {
   await expect(toggle(page)).toHaveAttribute('aria-pressed', 'false');
 });
 
-test('voids added while hidden are reflected once the outlines are brought back (#146)', async ({ page }) => {
+test('voids added while hidden are reflected once the outlines are brought back', async ({ page }) => {
   const before = (await outlineDrawn(page)).drawn;
   await toggle(page).click();
   await expect.poll(async () => (await outlineDrawn(page)).visible).toBe(false);

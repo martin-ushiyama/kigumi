@@ -36,7 +36,7 @@ import type { CancelReason, GestureClaim, PointerRouteHandler } from './router';
  *   already a cells-selection of that same cell, no-op. Otherwise (an unrelated selection),
  *   behaves like a normal click (reset to outermost)
  *
- * #37 B1b: "which group a cell belongs to" is determined by **the owner of the hit ref**
+ * "Which group a cell belongs to" is determined by **the owner of the hit ref**
  * (not derived from world coordinates via a membership index) — even when a locked group is
  * seen through to select a ref underneath, the drill-down target follows that ref's owner
  * chain.
@@ -163,7 +163,7 @@ export function decideSelectAction(ctx: SelectPointerContext): SelectPointerActi
 }
 
 /**
- * Shift+click range selection: collects the **selectable** cells within a box (#37 B1b).
+ * Shift+click range selection: collects the **selectable** cells within a box.
  * Excluding hidden / locked cells is `selectableRefAt`'s job, so no downstream filtering is
  * needed on the caller's side (if there's an unlocked ref under a locked winner, that one
  * gets picked up instead).
@@ -203,7 +203,7 @@ export interface SelectToolOpts {
   /**
    * Injected function that determines the projection target for drag movement. Supplied via
    * raycasting against a horizontal plane (or a vertical plane while Shift is held)
-   * (services/picking.ts's PickingService.dragProject, #14 PR2)
+   * (services/picking.ts's PickingService.dragProject PR2)
    */
   dragProject: (
     e: PointerEvent,
@@ -220,7 +220,7 @@ export interface SelectToolOpts {
   /** While true, yields tool operations to Space+left-drag panning (handled by OrbitControls) */
   isSpacePanActive?: () => boolean;
   /**
-   * The current camera pose (#147). Used to map arrow-key movement onto the screen's
+   * The current camera pose. Used to map arrow-key movement onto the screen's
    * left/right and near/far directions.
    *
    * **Read on every keypress** (including each repeat while held down). If you rotate the
@@ -239,24 +239,24 @@ export interface SelectToolHandle {
   hasActiveDrag: () => boolean;
   /** On Esc broadcast / mode switch: handles exactly one step of the priority chain drag > marquee > rangeAnchor > deselect */
   cancelActive: () => void;
-  /** Ctrl+G: group (called from InputRouter's (#12) SHORTCUTS) */
+  /** Ctrl+G: group (called from InputRouter's SHORTCUTS) */
   handleGroup: () => void;
   /** Ctrl+Shift+G: ungroup */
   handleUngroup: () => void;
   /** Arrow keys/PageUp/PageDown: nudge the selection by one cell. No-op if not a handled key / no selection / mid-drag */
   handleNudge: (e: KeyboardEvent) => void;
   /**
-   * `[` / `]`: rotates a groups selection 90 degrees around the Y axis (#37 B2).
+   * `[` / `]`: rotates a groups selection 90 degrees around the Y axis.
    * Returns false when nothing was rotated (not a groups selection / mid-drag)
    * (the return value lets the SHORTCUTS side skip preventDefault).
    */
   handleRotate: (quarterTurns: 1 | 3) => boolean;
   /**
-   * `Shift+X` / `Shift+Y` / `Shift+Z`: mirrors the selection across a world axis (#63).
+   * `Shift+X` / `Shift+Y` / `Shift+Z`: mirrors the selection across a world axis.
    * Unlike rotation, this also works for a cells selection. Returns false mid-drag.
    *
    * **With no selection, the key itself doesn't match on the SHORTCUTS side** (so it falls
-   * through to camerakeys, #65 review P1). Rejecting "no selection" here is defense at the
+   * through to camerakeys review P1). Rejecting "no selection" here is defense at the
    * level of the public API.
    */
   handleMirror: (axis: MirrorAxis) => boolean;
@@ -268,7 +268,7 @@ export interface SelectToolHandle {
   handlePaste: () => void;
   /** Delete/Backspace: delete selection (preventDefault is only called internally when there's something to delete) */
   handleDelete: (e: KeyboardEvent) => void;
-  /** Route handler registered with InputRouter's (#12 PR3) pointerRoutes */
+  /** Route handler registered with InputRouter's pointerRoutes */
   route: PointerRouteHandler;
 }
 
@@ -276,9 +276,9 @@ export interface SelectToolHandle {
 export const NUDGE_KEYS = new Set(['ArrowUp', 'ArrowDown', 'ArrowLeft', 'ArrowRight', 'PageUp', 'PageDown']);
 
 /**
- * Drag-move session for a cells selection (#37 B1b). **Live-previews the actual entity** —
+ * Drag-move session for a cells selection. **Live-previews the actual entity** —
  * each ref is shifted by worldDelta within its own owner (`EditSession.stageMoveRefs`).
- * Baseline restoration is unified in EditSession (#11).
+ * Baseline restoration is unified in EditSession.
  */
 interface CellDragSession {
   kind: 'cells';
@@ -291,7 +291,7 @@ interface CellDragSession {
 }
 
 /**
- * Drag-move session for a groups selection = **ghost preview** (#37 design rev.8).
+ * Drag-move session for a groups selection = **ghost preview**.
  *
  * Never touches the source of truth (scene / WorldIndex / history) on any pointermove. Only
  * the position of the SelectionOverlay's parent node is moved, with zero notifications
@@ -342,7 +342,7 @@ const MARQUEE_DRAG_THRESHOLD_PX = 4;
 
 /**
  * The select tool's pointer state machine. Integrated into InputRouter's pointerRoutes in
- * #12 PR3. Both drag-move and marquee selection are delegated to the router as a
+ * Both drag-move and marquee selection are delegated to the router as a
  * GestureClaim — acquiring/releasing pointer capture, matching pointerId, and terminating on
  * pointercancel/blur (endActiveClaim) are unified in the router's shared handling (the
  * exclusivity of "this route only creates a claim while state.tool==='select'" is maintained
@@ -518,7 +518,7 @@ export function initSelectTool(opts: SelectToolOpts): SelectToolHandle {
    * can't be detected by cancelActive() from a null check on dragSession/marqueeSession alone
    * (they've already been nulled out by then). This flag makes "the router already handled
    * one step" explicit, so cancelActive() doesn't mistakenly chain into the next step
-   * (rangeAnchor/deselect) within the same broadcast (regression found in review, #12 PR3,
+   * (rangeAnchor/deselect) within the same broadcast (regression found in review PR3,
    * 2026-07-21).
    *
    * Only set when reason==='escape' (limited to the specific combination that's guaranteed to
@@ -536,7 +536,7 @@ export function initSelectTool(opts: SelectToolOpts): SelectToolHandle {
 
   /**
    * Esc / pointercancel / blur.
-   * - cells: restores to baseline via `EditSession.cancel()` and discards it (not kept in the undo history, #11)
+   * - cells: restores to baseline via `EditSession.cancel()` and discards it (not kept in the undo history)
    * - ghost: since the source of truth was never touched, simply resetting the overlay's
    *   offset is enough (no baseline restore, rollback, or restore notification needed, design rev.8)
    */
@@ -621,7 +621,7 @@ export function initSelectTool(opts: SelectToolOpts): SelectToolHandle {
   }
 
   /**
-   * pointerRoutes route handler for InputRouter (#12 PR3). The edit-tools route (controls.ts)
+   * pointerRoutes route handler for InputRouter. The edit-tools route (controls.ts)
    * returns null and yields while state.tool==='select', so this is only reached for left
    * clicks while the select tool is active. The branching decision is delegated to
    * decideSelectAction (a pure function); this function only performs side effects (session
@@ -629,7 +629,7 @@ export function initSelectTool(opts: SelectToolOpts): SelectToolHandle {
    *
    * Hit resolution goes through the selection probe (`selectableRefAt`), so excluding hidden
    * cells and seeing through locked ones is already handled on the WorldIndex side (a lock
-   * filter on the caller's side is no longer needed, #37 B1b).
+   * filter on the caller's side is no longer needed B1b).
    */
   function onPointerDown(e: PointerEvent): GestureClaim | 'handled' | null {
     if (state.tool !== 'select' || e.button !== 0) return null;
@@ -742,7 +742,7 @@ export function initSelectTool(opts: SelectToolOpts): SelectToolHandle {
    * transform path in B1b).
    */
   function handleNudge(e: KeyboardEvent): void {
-    // Maps onto the screen's left/right and near/far (#147). Pinning to world axes would mean
+    // Maps onto the screen's left/right and near/far. Pinning to world axes would mean
     // "which way does → move on screen" keeps changing every time the view is rotated
     const resolved = screenAlignedNudge(e.key, getCameraBasis());
     // The builder requires a mutable tuple, so copy it here
@@ -771,7 +771,7 @@ export function initSelectTool(opts: SelectToolOpts): SelectToolHandle {
   }
 
   /**
-   * Rotates a groups selection 90 degrees around the Y axis (#37 B2). **Each group rotates
+   * Rotates a groups selection 90 degrees around the Y axis. **Each group rotates
    * around its own pivot** — not the combined bbox center of a multi-selection (since the
    * pivot follows a "set on first use, kept afterward" contract, keeping the rotation center
    * unaffected by which combination is selected is more predictable).
@@ -783,7 +783,7 @@ export function initSelectTool(opts: SelectToolOpts): SelectToolHandle {
     // Also blocked on the router side (duringGesture: 'block'), but since handle is a public
     // API, it's made a no-op here too. Moving a transform mid-drag would shift the reference
     // frame the ghost preview relies on, silently discarding the drag move on pointerup's
-    // commit (review, #41 P1)
+    // commit (review P1)
     if (dragSession) return false;
     const sel = selection.get();
     if (sel.kind !== 'groups') {
@@ -807,7 +807,7 @@ export function initSelectTool(opts: SelectToolOpts): SelectToolHandle {
   }
 
   /**
-   * Mirrors the selection across a world axis (#63). Unlike rotation, **this also works for a
+   * Mirrors the selection across a world axis. Unlike rotation, **this also works for a
    * cells selection** — since it's an operation that physically re-places the cells, it
    * doesn't need a group-level transform.
    *
@@ -853,7 +853,7 @@ export function initSelectTool(opts: SelectToolOpts): SelectToolHandle {
   function cancelActive(): void {
     // If the router (broadcastCancel) already canceled one step of drag/marquee via
     // endActiveClaim(), the priority chain is already complete there. Don't chain further
-    // into rangeAnchor/deselect here (regression, #12 PR3).
+    // into rangeAnchor/deselect here (regression PR3).
     if (claimCancelledThisBroadcast) {
       claimCancelledThisBroadcast = false;
       return;

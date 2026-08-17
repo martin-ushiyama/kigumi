@@ -3,7 +3,7 @@ import type { WorldChange } from '../../src/core/voxels';
 import type { WorldIndexChange } from '../../src/core/worldindex';
 
 /**
- * Event mapping for renderer unit tests (#37 B1b).
+ * Event mapping for renderer unit tests.
  *
  * The renderer now receives a `WorldIndexChange` directly. But what renderer unit tests
  * care about is "does it do a diff update when a cells event arrives / a full rebuild for

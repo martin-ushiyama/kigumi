@@ -3,7 +3,7 @@
  * concatenated sprite).
  *
  * Minecraft ships animated textures as a single vertically concatenated PNG. Pasting one as a
- * still image squashes it vertically, so only the first frame is cut out and used (#93).
+ * still image squashes it vertically, so only the first frame is cut out and used.
  *
  * **The source of truth for the frame count is split in two.**
  *
@@ -30,7 +30,7 @@ export const parseJsonc = (text) => JSON.parse(text.replace(/^\s*\/\/.*$/gm, '')
  *
  * Being readable as JSON and being usable as a record are different things. Returning a
  * structurally invalid value such as `{}` makes the next stage stop with a TypeError the
- * moment it calls `commit.slice(...)` (reproduced on a real run in the #100 review). An
+ * moment it calls `commit.slice(...)` (reproduced on a real run during review). An
  * unusable record collapses to null = "generation unknown" and flows into the refetch path.
  *
  * @returns {{ commit: string } | null}
@@ -113,7 +113,7 @@ export function validateFrameIndices({ frames, frameCount }) {
  *   checks the **reverse direction** — detecting files that are flipbook members but have no
  *   recorded frame count. When an upstream snapshot update adds a new animated texture, a
  *   missing record makes the app squash it into a single frame (1:1) and draw it, so it is
- *   never let through silently (#100 review)
+ *   never let through silently
  * @returns the problem messages (empty when consistent)
  */
 export function verifyFrameStructure({ membership, frames, referenced }) {

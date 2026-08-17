@@ -13,7 +13,7 @@ import {
  * independent of three.js/DOM. Assumes mutating methods are called only by Document when applying
  * an op (a direct call bypassing Document is a responsibility violation).
  *
- * **Does not hold cell membership** (#37 B1b). The old implementation expressed "1 cell = 1 group"
+ * **Does not hold cell membership**. The old implementation expressed "1 cell = 1 group"
  * via a bidirectional index of `groupByCell` / `cellsByGroup`, but in the owner-local model,
  * membership *is* `OwnerVoxelStore` holding cells keyed by owner — keeping a copy on the tree side
  * would create a duplicate source of truth. Queries that need a cell set were moved to helpers in
@@ -29,12 +29,12 @@ export interface GroupNode {
   hidden?: boolean;
   /** Locked (excluded from selection / place / delete / fill editing). Defaults to false when omitted */
   locked?: boolean;
-  /** Transform relative to the parent group's coordinate system (#37). Defaults to identity when omitted. GroupTransform is deep readonly at the type level */
+  /** Transform relative to the parent group's coordinate system. Defaults to identity when omitted. GroupTransform is deep readonly at the type level */
   transform?: GroupTransform;
   /**
-   * Which component this group is an instance of (#69). Omitted = plain group.
+   * Which component this group is an instance of. Omitted = plain group.
    *
-   * **Instances also hold cells like a normal group** (#69 option B). Adding an owner with no
+   * **Instances also hold cells like a normal group**. Adding an owner with no
    * actual entity would force `refsOfSubtree` / `buildMirror` / `buildDuplicate` / `WorldIndex` to
    * all carry branching logic for it, so a reference-based approach was not adopted. Only the mark increases here.
    */
@@ -44,7 +44,7 @@ export interface GroupNode {
 /**
  * A read-only view of GroupNode. Making `childIds` a `readonly string[]` too also forbids
  * destructive array mutation like `node.childIds.push(...)` at compile time
- * (the `readonly` property modifier alone doesn't protect the array's contents, #19 review finding).
+ * (the `readonly` property modifier alone doesn't protect the array's contents review finding).
  */
 export type ReadonlyGroupNode = {
   readonly [K in keyof GroupNode]: GroupNode[K] extends string[] ? readonly string[] : GroupNode[K];
@@ -54,10 +54,10 @@ export type ReadonlyGroupNode = {
  * SceneTree's read-only contract. Pass this type to render/input/ui so that write methods
  * (insertNode/removeNode/rename/setHidden/setLocked/setTransform/reparent/clear/replaceAll)
  * cannot be called at the type level. Writes are restricted to going through Document
- * (src/core/document.ts) (#10). `getNode`/`allNodesPreOrder` return `ReadonlyGroupNode` — passing
+ * (src/core/document.ts). `getNode`/`allNodesPreOrder` return `ReadonlyGroupNode` — passing
  * the same object as the internal Map as a mutable `GroupNode` would let the caller rewrite the
  * real tree via property assignment or `childIds.push()` without going through Document
- * (#19 review finding). `nextId` has the side effect of issuing group ids (idCounter++), so it's
+ *. `nextId` has the side effect of issuing group ids (idCounter++), so it's
  * excluded from the Reader and consolidated behind Document.nextGroupId().
  */
 export interface SceneTreeReader {
@@ -123,7 +123,7 @@ export class SceneTree implements SceneTreeReader {
   }
 
   /**
-   * The id of the nearest component instance among self or ancestors (#69).
+   * The id of the nearest component instance among self or ancestors.
    *
    * **The contents of an instance are not editable.** Even if fixed internally, it gets overwritten
    * the moment the component is edited (the propagated version wins), so touching it produces an
@@ -134,7 +134,7 @@ export class SceneTree implements SceneTreeReader {
     while (current) {
       // **A mark is a weak reference.** Even if a mark for a component removed from the library
       // remains, it's treated as just a plain group (same handling as when a paint's referenced
-      // recipe is deleted, #142 review P1)
+      // recipe is deleted review P1)
       if (current.templateId != null && isLiveTemplate(current.templateId)) return current.id;
       current = current.parentId === null ? undefined : this.nodes.get(current.parentId);
     }
@@ -152,7 +152,7 @@ export class SceneTree implements SceneTreeReader {
   }
 
   /**
-   * Folds the transform of the entire ancestor chain into a single discrete affine (ResolvedTransform) (#37).
+   * Folds the transform of the entire ancestor chain into a single discrete affine (ResolvedTransform).
    * Same ancestor walk as isHiddenEffective. id === null (root) is identity.
    * A node with no transform set composes in as identity.
    */
@@ -213,21 +213,21 @@ export class SceneTree implements SceneTreeReader {
 
   /**
    * If the caller-passed node were held as-is, an alias left with the caller could rewrite
-   * internal state without going through Document (#19 review finding). To sever ownership,
+   * internal state without going through Document. To sever ownership,
    * a defensive copy (childIds cloned as a separate array too) is held instead.
    */
   insertNode(node: GroupNode, index: number): void {
     // Allowing a duplicate id would let Map.set silently overwrite the existing node, while also
     // inserting the same id twice into the parent's childIds. On rollback (deleteGroup's inverse =
     // removeNode), there's no way to tell "which g0" it was, causing an incident where existing
-    // group data is lost (#22 3rd-round review finding)
+    // group data is lost (a review finding)
     if (this.nodes.has(node.id)) throw new Error(`Tried to create a group id that already exists: ${node.id}`);
     // A new group is always created with empty childIds (invariant per DocOp.createGroup's type
     // comment). Without validating this, merely passing a node's own id inside its childIds would
     // create a self-cycle in the tree, sending traversal methods like allNodesPreOrder into an
-    // infinite loop (#22 4th-round review finding)
+    // infinite loop (a review finding)
     if (node.childIds.length > 0) throw new Error(`A new group's childIds must be empty: ${node.id}`);
-    // transform gets the same defensive copy + invariant validation as childIds (#37 — don't rely
+    // transform gets the same defensive copy + invariant validation as childIds (don't rely
     // solely on persistence validation, validate at the core boundary too: an invalid-parity pivot2
     // would knock a 90-degree rotation off the grid)
     if (node.transform !== undefined) assertValidGroupTransform(node.transform);
@@ -245,7 +245,7 @@ export class SceneTree implements SceneTreeReader {
   /**
    * Only a node with no child groups can be removed (throws if it has children).
    *
-   * **Rejecting deletion of a group that has cells is Document's responsibility** (#37 B1b). The
+   * **Rejecting deletion of a group that has cells is Document's responsibility**. The
    * old implementation also checked `cellsOf(id).size > 0` here, but with the membership index
    * removed this safeguard disappears too, so the "direct cell count 0 and child count 0" check was
    * moved to Document's transaction final state (`Document.assertGroupRemovable`). The tree alone
@@ -284,7 +284,7 @@ export class SceneTree implements SceneTreeReader {
   }
 
   /**
-   * Bulk-remaps component ids (#69, for merging during project load).
+   * Bulk-remaps component ids (for merging during project load).
    *
    * Aligns the id a loaded artwork's group points to with the id re-issued on the library side.
    * **Not put into Document's history** — used against an independent scene before import, not yet
@@ -299,7 +299,7 @@ export class SceneTree implements SceneTreeReader {
     }
   }
 
-  /** Attaches/detaches the mark that a group is a component instance (#69). `null` reverts it to a plain group */
+  /** Attaches/detaches the mark that a group is a component instance. `null` reverts it to a plain group */
   setTemplateId(id: string, templateId: string | null): void {
     const node = this.nodes.get(id);
     if (!node) throw new Error(`Tried to change the component mark of a group that doesn't exist: ${id}`);
@@ -308,13 +308,13 @@ export class SceneTree implements SceneTreeReader {
   }
 
   /**
-   * Sets a group's transform (#37). Runtime-validated at the core boundary (angleSteps 0-3 /
+   * Sets a group's transform. Runtime-validated at the core boundary (angleSteps 0-3 /
    * each component a safe integer / pivot2's x/z parity match). Doesn't hold the caller's `t`
-   * directly — deep-copies it (same alias-severing as insertNode's childIds, same pattern as #19).
+   * directly — deep-copies it (same alias-severing as insertNode's childIds).
    *
    * `undefined` restores to "transform not set" (property deletion). The v2 migration omits the
    * transform under the contract "initialize the pivot from the bounds center on first rotation"
-   * (#38 review), so undoing the first rotation needs a path back to the unset state — replacing
+   *, so undoing the first rotation needs a path back to the unset state — replacing
    * with identity would bake in pivot=[0,0], breaking the contract by making the next rotation pivot around the origin.
    */
   setTransform(id: string, t: GroupTransform | undefined): void {
@@ -333,7 +333,7 @@ export class SceneTree implements SceneTreeReader {
     if (!node) throw new Error(`Tried to reparent a group that doesn't exist: ${id}`);
     // Making self, or a descendant of self, the new parent would create a cycle in the parentId
     // chain, sending traversal methods like outermostAncestor/isAncestor into an infinite loop
-    // (#22 3rd-round review finding)
+    // (a review finding)
     if (parentId !== null && (parentId === id || this.isAncestor(id, parentId))) {
       throw new Error(`Reparent would create a circular reference: ${id} → ${parentId}`);
     }
@@ -359,7 +359,7 @@ export class SceneTree implements SceneTreeReader {
    *
    * Previously this wrote directly to the Map here independently of insertNode, so adding an
    * invariant check like duplicate-id rejection to insertNode's side wasn't reflected on this path
-   * (#22 4th-round review finding: trying to separately maintain the same invariant across multiple
+   * (a review finding: trying to separately maintain the same invariant across multiple
    * independent implementations means one gets fixed while the other is overlooked). Changed to
    * call insertNode instead, consolidating the validation logic into one place.
    */
@@ -378,7 +378,7 @@ export class SceneTree implements SceneTreeReader {
 
   /**
    * Reflects an externally-brought-in id (project load, rollback snapshot) into the id-issuance
-   * counter (#37 B1b). Without this, `nextId()` right after importing a `g0` issued by a different
+   * counter. Without this, `nextId()` right after importing a `g0` issued by a different
    * tree would return the same `g0`, causing the next group creation to collide with the existing
    * group (throws via insertNode's duplicate-id rejection; actually hit on the v3 load path).
    */

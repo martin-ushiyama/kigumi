@@ -1,11 +1,11 @@
 import { expect, test, type Page } from '@playwright/test';
 
 /**
- * Integration test for Issue #11 "making edit transactions atomic + introducing EditSession".
+ * Integration test for "making edit transactions atomic + introducing EditSession".
  * Confirms that pointercancel / window blur / Escape during a stroke all converge on the same termination
  * (EditSession.cancel()) and that the world and undo history match their state before the stroke began.
  *
- * **Strokes are exercised with the erase tool** (#57). The place tool became one click = one block, so it can no
+ * **Strokes are exercised with the erase tool**. The place tool became one click = one block, so it can no
  * longer walk the "touch several cells, then terminate" path. The point is to protect the EditSession contract
  * (one undo unit even across several cells / full restoration on cancel), so this moved to the erase side, where
  * continuous strokes remain. One click = one session on the place-tool side is covered by the dedicated test at the end.
@@ -77,7 +77,7 @@ async function seedRow(page: Page, x0: number, x1: number, z: number): Promise<v
   await dispatchPointer(page, 'pointerdown', from.x, from.y);
   await dispatchPointer(page, 'pointermove', to.x, to.y);
   await dispatchPointer(page, 'pointerup', to.x, to.y);
-  // A shape fill uses extrusion (#78), so nothing is committed on release.
+  // A shape fill uses extrusion, so nothing is committed on release.
   // Clicking without changing the height places it flat (height 1)
   await dispatchPointer(page, 'pointerdown', to.x, to.y);
   await expect.poll(() => worldSize(page)).toBeGreaterThan(1);
@@ -164,7 +164,7 @@ test('a normal pointerup commits as a single undo unit (symmetric with the cance
   await expect.poll(() => worldSize(page)).toBe(baselineSize); // a single undo brings all of it back
 });
 
-test('the default tool is select. A click right after opening places no block (#57)', async ({ page }) => {
+test('the default tool is select. A click right after opening places no block', async ({ page }) => {
   expect(await page.evaluate(() => window.__bs.state.tool)).toBe('select');
 
   const pos = await groundScreenPos(page, 7, 7);
@@ -172,7 +172,7 @@ test('the default tool is select. A click right after opening places no block (#
   await expect.poll(() => worldSize(page)).toBe(0);
 });
 
-test('the place tool stays one click = one block even when dragged (#57)', async ({ page }) => {
+test('the place tool stays one click = one block even when dragged', async ({ page }) => {
   await page.keyboard.press('1');
   const from = await groundScreenPos(page, 0, 6);
   const to = await groundScreenPos(page, 5, 6);
@@ -191,7 +191,7 @@ test('the place tool stays one click = one block even when dragged (#57)', async
   await expect.poll(() => worldSize(page)).toBe(0);
 });
 
-test('pressing a tool-switch key during a place stroke does not turn it into erase (#57 review)', async ({ page }) => {
+test('pressing a tool-switch key during a place stroke does not turn it into erase', async ({ page }) => {
   // Put erasable blocks **on the line the stroke passes over** (x=2..5, z=8). If the tool switched to erase,
   // these would be wiped as the stroke sweeps across — putting them on another line would not exercise the path
   await seedRow(page, 2, 5, 8);
@@ -212,7 +212,7 @@ test('pressing a tool-switch key during a place stroke does not turn it into era
   expect(await worldGet(page, 5, 0, 8)).not.toBeNull();
 });
 
-test('pressing a tool-switch key during an erase stroke does not stop it partway (#57 review)', async ({ page }) => {
+test('pressing a tool-switch key during an erase stroke does not stop it partway', async ({ page }) => {
   await seedRow(page, 0, 5, 3); // a row with the box tool → switch to erase
   const baseline = await worldSize(page);
 
@@ -230,7 +230,7 @@ test('pressing a tool-switch key during an erase stroke does not stop it partway
   expect(await worldGet(page, 5, 0, 3)).toBeNull();
 });
 
-test('once the gesture is over, tool-switch keys work normally again (#57 review)', async ({ page }) => {
+test('once the gesture is over, tool-switch keys work normally again', async ({ page }) => {
   await page.keyboard.press('1');
   const pos = await groundScreenPos(page, 9, 9);
   await dispatchPointer(page, 'pointerdown', pos.x, pos.y);

@@ -2,7 +2,7 @@ import { describe, expect, it } from 'vitest';
 import { findMissingVariants, formatMissingVariant, variantRoots, VARIANT_SUFFIXES } from '../scripts/variant-coverage.mjs';
 
 /**
- * Detecting missing catalog coverage (#82 review).
+ * Detecting missing catalog coverage.
  *
  * `gen-blocks.mjs` is a manual, network-required run, so writing the detection logic
  * directly into it means **breakage would go unnoticed by normal CI**. We split it out as a
@@ -98,7 +98,7 @@ describe('findMissingVariants — returns variants that exist officially but are
 });
 
 /**
- * Whether the current catalog itself is missing anything is **not** verified here (#82 review).
+ * Whether the current catalog itself is missing anything is **not** verified here.
  *
  * That check needs **the full set of official block IDs**. Since that can't be fetched
  * without a network, passing the catalog itself as `officialIds` would make it a tautology

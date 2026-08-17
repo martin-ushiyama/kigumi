@@ -46,7 +46,7 @@ const CONTENT: Record<IconName, string> = {
   'square-plus': '<rect x="3.5" y="3.5" width="13" height="13" rx="1.5"/><path d="M10 7v6M7 10h6"/>',
   eraser: '<path d="m4 13 7.5-8a2 2 0 0 1 3 0l1 1a2 2 0 0 1 0 3L9 16H6z"/><path d="m9 8 5 5M9 16h7"/>',
   box: '<path d="m10 2.8 7 3.7v7L10 17.2 3 13.5v-7z"/><path d="m3 6.5 7 3.7 7-3.7M10 10.2v7"/>',
-  // Shape generator (#64). Ranks alongside `box` as an equal option, so drawn with the same stroke width and padding
+  // Shape generator. Ranks alongside `box` as an equal option, so drawn with the same stroke width and padding
   'shape-sphere': '<circle cx="10" cy="10" r="7"/><path d="M3.2 8.6a12 12 0 0 0 13.6 0M3.2 11.4a12 12 0 0 1 13.6 0"/>',
   'shape-cylinder': '<ellipse cx="10" cy="5.5" rx="6" ry="2.5"/><path d="M4 5.5v9a6 2.5 0 0 0 12 0v-9"/>',
   'shape-dome': '<path d="M3 14.5a7 7 0 0 1 14 0"/><ellipse cx="10" cy="14.5" rx="7" ry="2.2"/>',
@@ -62,9 +62,9 @@ const CONTENT: Record<IconName, string> = {
   'chevron-down': '<path d="m5 7.5 5 5 5-5"/>',
   'chevron-up': '<path d="m5 12.5 5-5 5 5"/>',
   close: '<path d="m5 5 10 10M15 5 5 15"/>',
-  // Void outline (#146). A dashed box conveys "no content"
+  // Void outline. A dashed box conveys "no content"
   void: '<path d="M3.5 3.5h13v13h-13z" stroke-dasharray="2.5 2"/>',
-  // Replace (#146). **Distinct from swap.** Swap exchanges the two foreground /
+  // Replace. **Distinct from swap.** Swap exchanges the two foreground /
   // spare slots; this is "change the current content to something else." Drawn as
   // opposing left/right arrows to convey "to something else."
   replace: '<path d="M3.5 8h11l-3-3"/><path d="M16.5 12h-11l3 3"/>',
@@ -81,7 +81,7 @@ const CONTENT: Record<IconName, string> = {
   detach: '<path d="m6 2.7 3.3 3.3L6 9.3 2.7 6zM14 10.7l3.3 3.3-3.3 3.3-3.3-3.3z"/><path d="m11.2 4.3 4.5 4.5M15.7 4.3l-4.5 4.5"/>',
   group: '<rect x="2.7" y="4" width="6" height="8" rx="1"/><rect x="11.3" y="8" width="6" height="8" rx="1"/><path d="m8.7 9.5 2.6 1.5M8.7 12.5l2.6-1.5"/>',
   ungroup: '<rect x="2.7" y="4" width="6" height="8" rx="1"/><rect x="11.3" y="8" width="6" height="8" rx="1"/><path d="M8.7 7h2.6M8.7 13h2.6"/>',
-  // Swap between the foreground and spare slots (#87). An L-shaped round trip
+  // Swap between the foreground and spare slots. An L-shaped round trip
   // going up and back to the left. Unlike the other icons, this one carries a
   // rotation transform — rotating a base shape preserves it better than
   // re-deriving the L's orientation as a new path (the corner radii and arrowhead
@@ -93,7 +93,7 @@ const CONTENT: Record<IconName, string> = {
   grid: '<path d="M3.5 3.5h13v13h-13zM8 3.5v13M12 3.5v13M3.5 8h13M3.5 12h13"/>',
   texture: '<path d="M3.5 3.5h13v13h-13z"/><path d="m3.5 11 4-4 3 3 2-2 4 4M13.5 6h.01"/>',
   help: '<circle cx="10" cy="10" r="7"/><path d="M8.4 8a1.8 1.8 0 1 1 2.5 1.7c-.7.3-.9.8-.9 1.5M10 14.5h.01"/>',
-  // Stacked sheets = layers. Used for "Layers" in the left rail (#61)
+  // Stacked sheets = layers. Used for "Layers" in the left rail
   layers: '<path d="m10 2.6 7.2 3.9-7.2 3.9-7.2-3.9z"/><path d="m3.4 10.4 6.6 3.6 6.6-3.6M3.4 13.9 10 17.5l6.6-3.6"/>',
 };
 

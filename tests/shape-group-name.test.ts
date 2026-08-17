@@ -16,7 +16,7 @@ import { DocumentFixture } from './helpers/document-fixture';
  * The core rule: it's **fixed once from the material at creation time and never tracked
  * afterward**. The name is a record of that moment, not a derived value — following material
  * changes would overwrite a name the user manually re-typed (same treatment as the
- * defaultName contract from #70).
+ * defaultName contract).
  */
 
 function hitAt(cell: [number, number, number], normal: [number, number, number]): Hit {
@@ -128,14 +128,14 @@ describe('default names for shape groups include the material', () => {
     expect(groupNames()).toEqual(['Cuboid: Cobblestone']);
   });
 
-  it("switching the display language after creation doesn't corrupt the already-attached name (#70 contract)", () => {
+  it("switching the display language after creation doesn't corrupt the already-attached name (the defaultName contract)", () => {
     fillBox();
     setLang('en');
     expect(groupNames()).toEqual(['直方体：Cobblestone']);
   });
 });
 
-describe('filling in void with the shape tool (#113 stage 3)', () => {
+describe('filling in void with the shape tool', () => {
   let doc: DocumentFixture;
   let controls: EditorControlsHandle;
   let nextHit: Hit | null;
@@ -235,7 +235,7 @@ describe('filling in void with the shape tool (#113 stage 3)', () => {
   });
 });
 
-describe('placement and exclusivity of void groups (#113 stage 3 review)', () => {
+describe('placement and exclusivity of void groups', () => {
   let doc: DocumentFixture;
   let controls: EditorControlsHandle;
   let nextHit: Hit | null;
@@ -331,7 +331,7 @@ describe('placement and exclusivity of void groups (#113 stage 3 review)', () =>
    * Shape fill is a two-stage gesture — "drag the plane and release → click a second time
    * to set the height" — and **there's no active claim in between**, so a different group can
    * be selected in the layer panel. The parent reflects the intent at the start, so it isn't
-   * re-read at commit time (#119 review, round 2).
+   * re-read at commit time (raised in review).
    */
   it('even if the layer selection changes after the plane is committed, the void still goes into the group from when it started', () => {
     const wall = makeWall();

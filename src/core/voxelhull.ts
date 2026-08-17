@@ -1,5 +1,5 @@
 /**
- * Build **only the faces that are exposed** from a cluster of voxels (#69 Step 3b).
+ * Build **only the faces that are exposed** from a cluster of voxels.
  *
  * When boxes are placed cell by cell, adjacent cells share a face on the same plane.
  * Drawing that translucently turns it into a depth fight, producing **visible cracks

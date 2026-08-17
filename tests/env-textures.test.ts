@@ -4,7 +4,7 @@ import { uniqueFiles } from '../scripts/gen-textures.mjs';
 import ENV_TEXTURES from '../src/data/env-textures.json';
 
 /**
- * The fetch contract for environment textures (ground, etc.) the 3D scene references (#94).
+ * The fetch contract for environment textures (ground, etc.) the 3D scene references.
  *
  * The runtime's reference path and the fetch target were managed as separate strings, so
  * changing only one of them went unnoticed by everyone. The dev server returns index.html
@@ -15,7 +15,7 @@ import ENV_TEXTURES from '../src/data/env-textures.json';
  * **The drift itself can no longer happen structurally**, so what we're guarding here is
  * "don't regress to a form that bypasses the source of truth."
  */
-describe('environment texture fetch contract (#94)', () => {
+describe('environment texture fetch contract', () => {
   it('every entry in the source of truth is included in the fetch plan', () => {
     // Currently EXTRA_FILES is derived from the source of truth, so this trivially passes.
     // This is insurance for if the fetch plan ever reverts to a hand-written list etc.

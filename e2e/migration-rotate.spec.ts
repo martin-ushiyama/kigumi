@@ -2,14 +2,14 @@ import { expect, test, type Page } from '@playwright/test';
 
 /**
  * Actually loads a v2 project (a format that has groups but no transform) and pins down that a group
- * can be rotated as-is right after migration (#37 B2).
+ * can be rotated as-is right after migration.
  *
  * The unit tests (persistence-v3 / ops) separately check that "migration does not bake in a transform"
  * and that "the first rotation of an unset transform creates a pivot derived from the subtree bounds",
  * but only here can we guarantee that those two are **connected through the same execution path**. Every group in an
  * old file has an unset transform, so this is essentially the path the rotation UI actually touches.
  *
- * It also checks that pressing a rotation key during an in-flight drag does not fire a rotation (#41 review P1).
+ * It also checks that pressing a rotation key during an in-flight drag does not fire a rotation.
  */
 
 const AUTOSAVE_KEY = 'blocksmith.project.autosave.v1';
@@ -147,7 +147,7 @@ test('[ turns the other way (one ] equals three [)', async ({ page }) => {
 
 
 /**
- * A regression for #41 review P1. If a rotation key gets through during a ghost drag, only the rotation is committed,
+ * A regression caught in review. If a rotation key gets through during a ghost drag, only the rotation is committed,
  * the ghost's Document subscription becomes invalidated, and **the drag movement is silently discarded on pointerup**.
  * This pins down that no shortcut which mutates the model gets through during an in-flight gesture.
  */

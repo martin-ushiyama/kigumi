@@ -92,12 +92,12 @@
   --bs-popover-shadow: var(--bs-shadow-popover-light);
   --bs-scrim: var(--bs-scrim-light);
 
-  /* Colors for the 3D side (#144). **CSS is the source of truth** — keeping
+  /* Colors for the 3D side. **CSS is the source of truth** — keeping
      a separate set of constants in three.js could produce a half-broken
      state where the rest of the screen goes dark but only the viewport stays
      light. `scene.ts` reads these via getComputedStyle and re-derives them
      on every theme switch. The grass-theme sky/clouds/grass don't belong
-     here (they don't change with the theme, settled in #144) */
+     here (they don't change with the theme) */
   --bs-3d-background: #e5e7ea;
   --bs-3d-ground-neutral: #d2d5da;
   --bs-3d-grid-main: #858c96;
@@ -112,7 +112,7 @@
 }
 
 /**
- * Dark theme assignments (#144).
+ * Dark theme assignments.
  *
  * This is kept to **just adding primitives and re-pointing semantics**.
  * Feature-level CSS only ever reads semantic tokens, so the theme changes
@@ -175,7 +175,7 @@
   justify-content: center;
   gap: var(--bs-space-1);
   /* `font: inherit` alone would inherit body's 16px, standing out from the 13px
-     surrounding UI. Apply the token explicitly to fix buttons looking oversized (#61) */
+     surrounding UI. Apply the token explicitly to fix buttons looking oversized */
   font-size: var(--bs-font-size-md);
   min-height: var(--bs-control-height-md);
   padding: var(--bs-space-1) var(--bs-space-2);

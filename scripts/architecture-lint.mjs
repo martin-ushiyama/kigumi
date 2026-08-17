@@ -3,7 +3,7 @@
 //
 // Extracting imports with regular expressions can be sidestepped by other spellings —
 // dynamic import / namespace import / ImportTypeNode / a different extension (an explicit
-// `.js`) — as the #18 review demonstrated
+// `.js`) — as review demonstrated
 // (probes: `import('../main')`, `import type * as S from '../state'`,
 // `import type { X } from '../state.js'`). This module parses the AST with the TypeScript
 // Compiler API before deciding the layer, so it holds regardless of how the import is written.
@@ -23,8 +23,8 @@ export const REPO_ROOT = resolve(__dirname, '..');
 // state.ts is the store for global mutable state. Reading and writing it as values and
 // functions from the same tier (input/ui/render/project/export) is a legitimate use — what
 // is forbidden is only the reverse flow of "borrowing a type from state" (clarified after
-// the #17 review). services/ holds aggregate services constructed and injected by main.ts,
-// the composition root (#14: ProjectService and friends) — it may depend on the five
+// review). services/ holds aggregate services constructed and injected by main.ts,
+// the composition root (ProjectService and friends) — it may depend on the five
 // horizontal layers and on state, but they never depend on services/ (only main assembles
 // services/, which keeps the graph acyclic).
 // main.ts is the composition root and is imported by nobody, so it is treated only as a
@@ -68,7 +68,7 @@ export function walkFiles(dir, extensions = CODE_EXTENSIONS) {
  * `unresolvableDynamicImports` counts dynamic imports whose target cannot be determined
  * statically, such as `import(\`../\${x}\`)` where the argument is an interpolated template
  * literal (the project uses no dynamic imports at all, so these are treated as violations
- * across the board — raised again in the #18 review).
+ * across the board — raised again in review).
  */
 function extractDependencies(file) {
   const text = readFileSync(file, 'utf8');
@@ -191,7 +191,7 @@ function layerOf(absPath) {
 /**
  * Resolves a module specifier to a file path. On top of the omitted extension (bundler
  * resolution), an explicit `.js` (`../state.js`) must resolve to the same file, so a known
- * extension is stripped before `.ts` is appended (#18 review: layerOf could be dodged by
+ * extension is stripped before `.ts` is appended (layerOf could be dodged by
  * spelling a different extension).
  */
 function resolveSpecifier(fromFile, spec) {
@@ -237,7 +237,7 @@ export function checkLayerDependencies(srcRoot = SRC_ROOT) {
  * import, a namespace type import, an ImportTypeNode, a type re-export — every spelling).
  * state.ts may be depended on by the five horizontal layers as the provider of values and
  * functions (it is the global store), but types are collected in core/types.ts by convention
- * (#17 review: do not let the render → state type dependency come back; #18 review: close the
+ * (do not let the render → state type dependency come back; also close the
  * namespace-import and `.js`-extension escapes), so types alone are forbidden here.
  * @returns {string[]} the violation messages (empty when there are none)
  */
@@ -257,9 +257,9 @@ export function checkStateTypeImports(srcRoot = SRC_ROOT) {
 }
 
 /**
- * Detects Japanese literals written directly into a display layer (#70 review, round 2).
+ * Detects Japanese literals written directly into a display layer.
  *
- * #70 is the contract that "wording the user sees goes through t()", but in round 1 that
+ * The contract is that "wording the user sees goes through t()", but at first that
  * contract rested on **the author enumerating the sites**. The same hole therefore appeared
  * twice: the 2D pane names (index.html), then the region aria-labels (index.html). Closing it
  * by enumeration guarantees a third occurrence, so it is caught by machine instead.
@@ -271,7 +271,7 @@ export function checkStateTypeImports(srcRoot = SRC_ROOT) {
  *
  * Excluded:
  * - the argument of a `throw` — because **the display boundary is guaranteed by types not to
- *   emit a raw message** (the mandatory fallback in `state.errorText(e, fallback)`, #70
+ *   emit a raw message** (the mandatory fallback in `state.errorText(e, fallback)`
  *   review round 3). Through round 2 this was explained as "a throw is for developers", which
  *   was wrong — the Japanese throw in `persistence.ts` reached a toast through the
  *   `ProjectService` catch. The grounds for the exclusion are not the nature of a throw but
@@ -342,7 +342,7 @@ export function checkDisplayLiterals(srcRoot = SRC_ROOT, htmlFile = resolve(srcR
 }
 
 /**
- * Detects places that read the raw `message` of an exception (#70 review, round 4).
+ * Detects places that read the raw `message` of an exception.
  *
  * What lets `checkDisplayLiterals` leave throws out of its scope is that "the display
  * boundary never emits a raw message". The mandatory fallback in `errorText(e, fallback)` put
@@ -354,7 +354,7 @@ export function checkDisplayLiterals(srcRoot = SRC_ROOT, htmlFile = resolve(srcR
  * machine. Writing the bypass makes CI fail on the spot, so the throw exclusion in
  * `checkDisplayLiterals` keeps its grounds alive.
  *
- * ## Detection scope (#72, a non-blocking note from the #70 review round 4)
+ * ## Detection scope (a non-blocking note from review)
  *
  * **This is a guard that rejects the *syntax* of reading `message`; it does not prove the
  * dataflow of whether an exception value reaches the display.** It cannot be read as "the
@@ -376,7 +376,7 @@ export function checkDisplayLiterals(srcRoot = SRC_ROOT, htmlFile = resolve(srcR
  * These three are **not determined by syntax** (`String(x)` needs to know whether `x` is an
  * exception, `e[key]` needs the value of key, and dataflow needs reachability). Adding type
  * information (`ts.Program`) would still drag legitimate stringification into `String(x)`, so
- * it produces too many false positives and **was judged not worth the cost** (#72).
+ * it produces too many false positives and **was judged not worth the cost**.
  * When adding a display path, do not lean on this guard — go through
  * `state.errorText(e, fallback)`.
  *
@@ -411,7 +411,7 @@ export function checkErrorMessageLeaks(srcRoot = SRC_ROOT) {
     const lines = text.split(/\r?\n/);
     const sourceFile = ts.createSourceFile(file, text, ts.ScriptTarget.ES2022, true, ts.ScriptKind.TS);
 
-    /** Treats `e.message` and `const { message } = e` the same way (#72) */
+    /** Treats `e.message` and `const { message } = e` the same way */
     const readsMessage = (node) => {
       if (ts.isPropertyAccessExpression(node)) return node.name.text === 'message';
       // `e['message']` / `` e[`message`] `` — a string-literal index is statically determined
@@ -450,14 +450,14 @@ export function checkErrorMessageLeaks(srcRoot = SRC_ROOT) {
 }
 
 /**
- * Detects translations baked in at module initialization (#85 review, round 1).
+ * Detects translations baked in at module initialization.
  *
  * `t(key)` resolves in **the language at the moment it is called**. Evaluating it at the top
  * level of a module freezes the value in the language at load time, so an old label survives
  * a language switch and a redraw. `CATEGORY_LABELS` in `blockchangepicker.ts` was exactly
  * this: start in EN, switch to JA, and only the picker categories stayed English.
  *
- * `palette.ts` had already hit the same trap (#70) and left a warning in a comment, but
+ * `palette.ts` had already hit the same trap and left a warning in a comment, but
  * **a comment could not stop the file next door from repeating it**. Close it by machine
  * rather than by the reader's attention.
  *

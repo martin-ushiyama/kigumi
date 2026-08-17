@@ -2,7 +2,7 @@ import * as THREE from 'three';
 
 export type ViewPreset = 'top' | 'front' | 'side';
 
-/** The minimal contract from OrbitControls that the view-preset calculation needs — just target (#14 PR3, flagged in review) */
+/** The minimal contract from OrbitControls that the view-preset calculation needs — just target (flagged in review) */
 export interface OrbitTarget {
   target: THREE.Vector3;
 }

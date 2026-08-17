@@ -44,18 +44,18 @@ export function initInspector(
   selection: SelectionStore,
   getCatalog: () => BlockDef[],
   toast: (msg: string) => void,
-  /** The recipe currently being rolled in the mix palette (null for solid-color mode). Used to paint the selection with a pattern (#64) */
+  /** The recipe currently being rolled in the mix palette (null for solid-color mode). Used to paint the selection with a pattern */
   getActivePattern: () => MixRecipe | null = () => null,
   /** blockId → catalog index (for resolving recipes) */
   indexOfBlock: (blockId: string) => number | undefined = () => undefined,
-  /** Subscription hook for recipe edits. Changing a ratio changes the displayed block, so a re-render is needed (#64 PR-C review) */
+  /** Subscription hook for recipe edits. Changing a ratio changes the displayed block, so a re-render is needed */
   subscribeRecipes: (fn: () => void) => void = () => {},
-  /** Turns the selected group into a component (#69). If not provided, no entry point is shown */
+  /** Turns the selected group into a component. If not provided, no entry point is shown */
   componentActions: {
     createFromSelection: (sel: NormalizedSelection) => void;
     detach: (groupId: string) => void;
     isInstance: (groupId: string) => boolean;
-    /** Jumps in to edit that instance's component (#69). Only the entry point differs; there's only one mode once inside */
+    /** Jumps in to edit that instance's component. Only the entry point differs; there's only one mode once inside */
     editComponentOf: (groupId: string) => void;
   } | null = null,
 ): void {
@@ -175,7 +175,7 @@ export function initInspector(
   }
 
   /**
-   * A row of 3 mirror buttons (X/Y/Z) (#63). Unlike rotation, this is an op that physically
+   * A row of 3 mirror buttons (X/Y/Z). Unlike rotation, this is an op that physically
    * relocates cells, so it works through the same path for both groups and cells selections —
    * the caller just passes the target selection.
    */
@@ -202,7 +202,7 @@ export function initInspector(
   }
 
   /**
-   * The array-duplicate row (#63). Specify direction (axis + sign) / count / gap as numbers
+   * The array-duplicate row. Specify direction (axis + sign) / count / gap as numbers
    * to lay out evenly spaced copies.
    *
    * The offset is **the selection's bbox size + the gap**. A gap of 0 means flush adjacency,
@@ -317,7 +317,7 @@ export function initInspector(
     root.appendChild(nameField);
 
     /**
-     * Moving a group changes **the transform's translate** (#37 design rev.3: group nudge /
+     * Moving a group changes **the transform's translate** (group nudge /
      * drag / inspector move were switched to the `buildTranslateGroup` path in B1b).
      * Unlike the old implementation that physically moved cells one by one, a rotated group's
      * shape doesn't get distorted. Clamping is done by buildTranslateGroup against the
@@ -366,7 +366,7 @@ export function initInspector(
     );
 
     /**
-     * 90-degree rotation around the Y axis (#37 B2). The pivot is the group's pivot (the
+     * 90-degree rotation around the Y axis. The pivot is the group's pivot (the
      * center of the subtree bounds initially). Unlike translation, this can't be clamped, so
      * a rotation that would go out of bounds makes buildRotateGroup90 return an error, which
      * is turned into a toast here.
@@ -423,14 +423,14 @@ export function initInspector(
         },
       }),
     );
-    // Make into / detach from component (#69). **Detach is not undoable**, so it's placed
+    // Make into / detach from component. **Detach is not undoable**, so it's placed
     // here rather than in the right-click flow (to avoid it being triggered accidentally
     // somewhere you didn't mean to click)
     const componentButtons = document.createElement('div');
     componentButtons.className = 'inspector-actions inspector-object-actions';
     if (componentActions) {
       if (componentActions.isInstance(id)) {
-        // Only the entry point differs; there's only one mode once inside (#69)
+        // Only the entry point differs; there's only one mode once inside
         componentButtons.appendChild(
           createButton({
             label: t('insp.editComponent'),
@@ -519,7 +519,7 @@ export function initInspector(
           // Even if the shapes match, the orientation code isn't carried over between two
           // 'full' blocks when only one supports pillar_axis (fixes a bug where, e.g.,
           // replacing a sideways log with stone left the old code behind and caused
-          // VoxelMesh to rotate it incorrectly — #5 review finding)
+          // VoxelMesh to rotate it incorrectly review finding)
           const canCarryOrientation =
             activeDef.shape === def.shape && (activeDef.shape !== 'full' || (isPillarBlock(def) && isPillarBlock(activeDef)));
           const newCode = canCarryOrientation ? code : defaultCode(activeDef.shape);
@@ -585,7 +585,7 @@ export function initInspector(
     });
     root.appendChild(section(t('insp.sectionPosition'), field(t('insp.position'), posRow)));
 
-    // Show mirror and array-duplicate for a single cell too (#67 review P1).
+    // Show mirror and array-duplicate for a single cell too.
     // "Select one block and grow it into evenly spaced pillars or windows" is the most basic
     // use of array duplication, and without it here, the most ordinary operation would be
     // unreachable. buildMirror / buildDuplicate already handle a single cell fine on their
@@ -599,7 +599,7 @@ export function initInspector(
   }
 
   /**
-   * Repaints the selection (#64 PR-C).
+   * Repaints the selection.
    *
    * The existing bulk-replace could only scope to "group × block kind," which meant
    * **changing the texture of just part of a wall** wasn't possible. This is the entry point
@@ -620,7 +620,7 @@ export function initInspector(
     for (const ref of refs) {
       // For live-pattern cells, the raw stored on cells is just a save-time fallback, so
       // count using **the raw actually used for display**. This keeps "the kind you see" and
-      // the count from drifting apart after a ratio edit (#64 PR-C review)
+      // the count from drifting apart after a ratio edit
       const raw = doc.currentLocalRaw(ref);
       if (raw === undefined) continue;
       const { catalogIndex } = unpackCell(raw);
@@ -665,7 +665,7 @@ export function initInspector(
     // render time, while application **re-reads it at click time**. Changes to AppState /
     // RecipeStore also trigger a re-render, but even if a subscription is missed, this
     // guarantees at least that "something different from what's shown gets applied" never
-    // happens (#64 PR-C review)
+    // happens
     const activeDef = catalog[state.activeBlock];
     if (activeDef) {
       const button = actionButton(t('insp.repaintWithBlock', { name: blockName(activeDef) }), () =>
@@ -731,11 +731,11 @@ export function initInspector(
   doc.subscribe(render);
 
   // Also subscribe to AppState and RecipeStore so the repaint section keeps up when the
-  // palette's block / rolling recipe is switched while the selection stays put (#64 PR-C review)
+  // palette's block / rolling recipe is switched while the selection stays put
   onStateChange(render);
   subscribeRecipes(render);
 
-  onLangChange(render); // Block name language switch (#70)
+  onLangChange(render); // Block name language switch
   selection.subscribe(render);
   render();
 }

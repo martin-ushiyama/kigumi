@@ -1,4 +1,4 @@
-/** The read rules for the upstream files (#97 stage 2). Implemented in bedrock-parse.mjs */
+/** The read rules for the upstream files. Implemented in bedrock-parse.mjs */
 
 /** The six faces of a block */
 export const FACES: readonly string[];

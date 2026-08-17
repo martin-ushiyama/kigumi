@@ -93,7 +93,7 @@ describe('createInputRouter', () => {
     const router = createInputRouter({ target, canvas: createFakeCanvas(), shortcuts: [], ctx, cameraKeys: makeCameraKeys(), escapeHandlers: [] });
     router.attach();
     const types = addSpy.mock.calls.map((c) => c[0]);
-    // pointerup is the fallback for when canvas capture is unavailable (#12 PR2), carried over from the old implementation's window pointerup registration
+    // pointerup is the fallback for when canvas capture is unavailable, carried over from the old implementation's window pointerup registration
     expect(types).toEqual(['keydown', 'keyup', 'blur', 'pointerup']);
   });
 
@@ -186,7 +186,7 @@ describe('createInputRouter', () => {
     expect(h1).not.toHaveBeenCalled();
   });
 
-  // #12 PR2: pointer route priority + the claim lifecycle
+  // Pointer route priority + the claim lifecycle
   describe('pointer routes', () => {
     it('array order = priority. Only the first route to return claim/handled processes it; nothing after is tried', () => {
       const canvas = createFakeCanvas();
@@ -249,7 +249,7 @@ describe('createInputRouter', () => {
     });
 
     /**
-     * #41 review P1: allowing a shortcut that changes the Document through during an
+     * A review finding: allowing a shortcut that changes the Document through during an
      * in-progress gesture shifts the basis for the preview, and one of them silently
      * disappears on commit. The judgment is based on activeClaim, which only the router
      * holds, so this pins down the wiring here.

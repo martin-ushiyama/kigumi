@@ -1,7 +1,7 @@
 import { expect, test, type Page } from '@playwright/test';
 
 /**
- * Arrow-key movement is relative to **the view currently on screen** (#147).
+ * Arrow-key movement is relative to **the view currently on screen**.
  *
  * The pure axis rounding is covered by the unit tests. What matters here is **whether pressing a key actually
  * moves the selection in the pressed direction on screen** — confirmed by projecting into screen coordinates.
@@ -85,7 +85,7 @@ const VIEWS = [
 ] as const;
 
 for (const view of VIEWS) {
-  test(`${view.name}: → moves right on screen and ↑ moves away from the viewer (#147)`, async ({ page }) => {
+  test(`${view.name}: → moves right on screen and ↑ moves away from the viewer`, async ({ page }) => {
     if (view.key) await page.keyboard.press(view.key);
     await waitForSettled(page);
 
@@ -105,7 +105,7 @@ for (const view of VIEWS) {
   });
 }
 
-test('height stays screen up/down regardless of the viewpoint (#147)', async ({ page }) => {
+test('height stays screen up/down regardless of the viewpoint', async ({ page }) => {
   await waitForSettled(page);
   const before = await probe(page);
   await page.keyboard.press('PageUp');
@@ -114,7 +114,7 @@ test('height stays screen up/down regardless of the viewpoint (#147)', async ({ 
   expect(after.translate[1], 'the height goes up by 1').toBe(before.translate[1] + 1);
 });
 
-test('rotating the viewpoint makes the same key land on a different axis (#147)', async ({ page }) => {
+test('rotating the viewpoint makes the same key land on a different axis', async ({ page }) => {
   await page.keyboard.press('Shift+Digit1'); // front
   await waitForSettled(page);
   const beforeFront = (await probe(page)).translate;

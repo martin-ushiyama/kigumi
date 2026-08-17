@@ -1,5 +1,5 @@
 /**
- * Reads a PNG and produces its **representative colour** (a follow-on from #134). Pure
+ * Reads a PNG and produces its **representative colour**. Pure
  * functions only.
  *
  * The representative colours used to be picked by hand, but with the textures available a
@@ -163,7 +163,7 @@ export function decodePng(bytes) {
  *   by the caller** — it must not be guessed from the aspect ratio. The source of truth for
  *   "is this animated" is the membership in `flipbook_textures.json`
  *   (`src/data/texture-frames.json`); tall PNGs with an integer ratio that are *not* animated
- *   really do exist (#93)
+ *   really do exist
  * - **Transparent pixels are not counted.** Mixing in the edges of leaves or glass gives a
  *   colour darker than the real one
  * - The average is taken **in sRGB**. Physically it would be correct to convert back to linear

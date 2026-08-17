@@ -37,7 +37,7 @@ describe('SceneTree — insertNode / childrenOf / getNode', () => {
 });
 
 describe('SceneTree — removeNode', () => {
-  // "deleting a group that holds cells throws" was moved to Document's invariant in #37 B1b
+  // "deleting a group that holds cells throws" was moved to Document's invariant
   // (the tree no longer tracks cell ownership so it can't be judged standalone; document.test.ts covers it)
 
   it('deleting a group that has a child group throws', () => {
@@ -107,7 +107,7 @@ describe('SceneTree — reparent', () => {
   });
 });
 
-// #37 B1b: setMembership / groupOfCell / cellsOf / collectCellsDeep / cellCountDeep were removed.
+// setMembership / groupOfCell / cellsOf / collectCellsDeep / cellCountDeep were removed.
 // "the cells a group holds" is now simply OwnerVoxelStore keyed by owner, and aggregation
 // is handled by helpers in core/ownerlocal.ts (refsOfSubtree / countCellsInSubtree)
 // (tests/ops.test.ts / document.test.ts verify the cross-group behavior together).
@@ -243,7 +243,7 @@ describe('SceneTree — setHidden / setLocked / isHiddenEffective / isLockedEffe
   });
 
   // isCellHidden / isCellLocked (judged by looking up ownership from a world key) were removed in
-  // #37 B1b and moved to the WorldIndex facade (isWorldCellHidden / isWorldCellLocked), i.e.
+  // and moved to the WorldIndex facade (isWorldCellHidden / isWorldCellLocked), i.e.
   // "look at the ref's owner directly" (covered by worldindex.test.ts / selection.test.ts)
 });
 
@@ -265,7 +265,7 @@ describe('SceneTree — allNodesPreOrder / nextId', () => {
   });
 });
 
-describe('SceneTree — no leaking mutable references (regression test, prevents recurrence of #19 review finding)', () => {
+describe('SceneTree — no leaking mutable references (regression test, prevents recurrence of a review finding)', () => {
   it("insertNode makes a defensive copy — later mutating the caller's original object doesn't affect internal state", () => {
     const tree = new SceneTree();
     const original = node('g0', 'before', null);
@@ -279,7 +279,7 @@ describe('SceneTree — no leaking mutable references (regression test, prevents
   });
 });
 
-describe('SceneTree — transform (#37)', () => {
+describe('SceneTree — transform', () => {
   it('transformChain: an unset node is identity, and null (root) is identity too', () => {
     const tree = new SceneTree();
     tree.insertNode(node('g0', 'A', null), 0);
@@ -351,7 +351,7 @@ describe('SceneTree — transform (#37)', () => {
   });
 });
 
-describe('SceneTree — setTransform(undefined) restores to unset (#38 review)', () => {
+describe('SceneTree — setTransform(undefined) restores to unset', () => {
   it('passing undefined removes the transform property itself, and transformChain returns to identity', () => {
     const tree = new SceneTree();
     tree.insertNode(node('g0', 'A', null), 0);

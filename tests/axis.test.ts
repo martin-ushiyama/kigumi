@@ -2,7 +2,7 @@ import { describe, expect, it } from 'vitest';
 import { facePlaneAt, faceOf } from '../src/core/axis';
 
 /**
- * Face normal -> axis and sign (#101).
+ * Face normal -> axis and sign.
  *
  * Shape fill works on a "the touched face is the reference" basis, so this decides both how
  * the plane is taken and which direction to extrude. **The sign is needed** because the

@@ -29,7 +29,7 @@ function transform(partial: Partial<GroupTransform>): GroupTransform {
   return { angleSteps: 0, translate: [0, 0, 0], pivot2: [0, 0], ...partial };
 }
 
-describe('transform.ts — composing/inverting coordinate transforms and 90-degree rotation (#37)', () => {
+describe('transform.ts — composing/inverting coordinate transforms and 90-degree rotation', () => {
   it('4 rotations return to identity (single transform, including pivot/translate)', () => {
     const t = transform({ angleSteps: 1, translate: [3, -2, 5], pivot2: [7, 3] });
     const cells: Cell[] = [
@@ -140,7 +140,7 @@ describe('transform.ts — composing/inverting coordinate transforms and 90-degr
   });
 });
 
-describe('transform.ts — computePivot2 parity rules (#37)', () => {
+describe('transform.ts — computePivot2 parity rules', () => {
   it('2×2 (even/even) keeps the true center (2,2)', () => {
     expect(computePivot2({ minX: 0, maxX: 1, minZ: 0, maxZ: 1 })).toEqual([2, 2]);
   });
@@ -186,7 +186,7 @@ describe('transform.ts — computePivot2 parity rules (#37)', () => {
   });
 });
 
-describe('transform.ts — 90-degree rotation of block orientation (rotateRaw) (#37)', () => {
+describe('transform.ts — 90-degree rotation of block orientation (rotateRaw)', () => {
   const shapes: Shape[] = ['full', 'slab', 'stairs'];
   const shapeOf = (catalogIndex: number): Shape | undefined => shapes[catalogIndex];
 
@@ -217,7 +217,7 @@ describe('transform.ts — 90-degree rotation of block orientation (rotateRaw) (
 
   it('stairs: rotating the real-device-measured orientations (0=east / 1=west / 2=south / 3=north) by step 1 gives 0→3→1→2→0', () => {
     // rotating east by +Y 90 degrees gives north, rotating north gives west... this cycle was
-    // pinned down by real-device verification in #114
+    // pinned down by real-device verification
     const rotatedOnce = (d: 0 | 1 | 2 | 3) => {
       const raw = packCell(2, encodeOrientation({ shape: 'stairs', weirdoDirection: d, upsideDown: false }));
       const o = decodeOrientation('stairs', unpackCell(rotateRaw(raw, 1, shapeOf)).code);
@@ -257,7 +257,7 @@ describe('transform.ts — 90-degree rotation of block orientation (rotateRaw) (
   });
 });
 
-describe('composeResolved / inverseResolved / rebaseTransform (#37 B1b)', () => {
+describe('composeResolved / inverseResolved / rebaseTransform', () => {
   const CHAINS: ResolvedTransform[] = [
     IDENTITY_RESOLVED,
     { angleSteps: 1, offsetXZ2: [4, -6], offsetY: 2 },
@@ -321,7 +321,7 @@ describe('composeResolved / inverseResolved / rebaseTransform (#37 B1b)', () => 
   });
 });
 
-describe('transform.ts — mirroring block orientation (mirrorRaw) (#63)', () => {
+describe('transform.ts — mirroring block orientation (mirrorRaw)', () => {
   const shapes: Shape[] = ['full', 'slab', 'stairs'];
   const shapeOf = (catalogIndex: number): Shape | undefined => shapes[catalogIndex];
 
