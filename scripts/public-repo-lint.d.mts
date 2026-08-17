@@ -7,3 +7,5 @@ export function checkCommitAuthors(repoRoot: string, range: string): string[];
 export function checkCommitContents(repoRoot: string, range: string): string[];
 export function checkCommitMessages(repoRoot: string, range: string): string[];
 export function checkText(label: string, text: string): string[];
+export const OWNER_IDENTITY_HASHES: Set<string>;
+export function hashIdentity(name: string, email: string): string;

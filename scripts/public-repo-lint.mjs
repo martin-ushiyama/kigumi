@@ -33,6 +33,35 @@ export const OWNER_NAME = 'martin-ushiyama';
 export const OWNER_EMAIL = '202099411+martin-ushiyama@users.noreply.github.com';
 
 /**
+ * Other spellings of that same account, as SHA-256 of `name <email>` lowercased.
+ *
+ * One account does not always sign its work the same way. A squash merge is attributed to the
+ * profile of whoever pressed the button — display name and profile address — rather than to the
+ * identity the branch's commits carry, so the merge that lands a change can be rejected while
+ * every commit inside it passes.
+ *
+ * Hashed for the same reason the forbidden words are: a profile address written out here would be
+ * published by the very file meant to keep personal details out.
+ *
+ * Prefer not needing this. A GitHub account set to keep its address private signs everything with
+ * the noreply form above, and then there is one spelling to accept.
+ */
+export const OWNER_IDENTITY_HASHES = new Set([
+  '71ef3c5d638f4aa2', // the profile spelling used when a merge is pressed on the web
+]);
+
+/** The hash under which an identity is registered above. */
+export function hashIdentity(name, email) {
+  return hashToken(`${name} <${email}>`);
+}
+
+/** Whether this author is the owner, under any of the spellings that account signs with. */
+function isOwner(name, email) {
+  if (name === OWNER_NAME && email === OWNER_EMAIL) return true;
+  return OWNER_IDENTITY_HASHES.has(hashIdentity(name, email));
+}
+
+/**
  * The forbidden words, as SHA-256 of the lowercased token (first 16 hex characters).
  *
  * **Storing them hashed is the point, not a flourish.** A blocklist of personal names, written
@@ -288,7 +317,7 @@ function commitsIn(repoRoot, range) {
 export function checkCommitAuthors(repoRoot, range) {
   const violations = [];
   for (const commit of commitsIn(repoRoot, range)) {
-    if (commit.authorName === OWNER_NAME && commit.authorEmail === OWNER_EMAIL) continue;
+    if (isOwner(commit.authorName, commit.authorEmail)) continue;
     violations.push(
       `${commit.sha.slice(0, 8)}: the author is ${commit.authorName} <${commit.authorEmail}> — commits here are written with ${OWNER_NAME}`,
     );
@@ -436,7 +465,14 @@ export function checkText(label, text) {
   for (const hit of forbiddenTokens(text)) {
     violations.push(`${label}: a forbidden word (hash ${hit.hash}) — personal names do not go in this repository`);
   }
-  if (COAUTHOR_TRAILER.test(text)) {
+  // A trailer naming the owner's own account is not a second identity. A squash merge writes one
+  // automatically whenever the branch signs its commits differently from the profile pressing the
+  // button, and failing the merge for naming the same person twice says nothing.
+  for (const line of text.split(/\r?\n/)) {
+    const trailer = /^[ \t]*co-authored-by[ \t]*:[ \t]*(.*?)[ \t]*$/i.exec(line);
+    if (!trailer) continue;
+    const identity = /^(.*?)[ \t]*<([^>]*)>$/.exec(trailer[1] ?? '');
+    if (identity && isOwner(identity[1] ?? '', identity[2] ?? '')) continue;
     violations.push(`${label}: a co-author trailer — every commit here is written with a single account`);
   }
   return violations;
