@@ -9,12 +9,15 @@
 //     and Japanese display literals inside src/ (checkDisplayLiterals)
 //   - this module owns *repository* policy: prose files, the whole tracked set, and the commits
 //
-// The two do not overlap. Comments are not re-scanned here, and this module never looks inside
-// src/ for literals.
+// Over the working tree the two do not overlap: comments are not re-scanned here, and this
+// module never looks inside src/ for literals. Over history they combine — `checkCommitContents`
+// runs both, so what a commit added is held to exactly the rules the working tree is held to.
 import { createHash } from 'node:crypto';
 import { execFileSync } from 'node:child_process';
-import { lstatSync, readFileSync, readlinkSync } from 'node:fs';
+import { lstatSync, mkdirSync, mkdtempSync, readFileSync, readlinkSync, rmSync, writeFileSync } from 'node:fs';
+import { tmpdir } from 'node:os';
 import { dirname, join, resolve } from 'node:path';
+import { checkCommentLanguage } from './architecture-lint.mjs';
 import { fileURLToPath, pathToFileURL } from 'node:url';
 
 const __dirname = dirname(fileURLToPath(import.meta.url));
@@ -295,55 +298,77 @@ export function checkCommitAuthors(repoRoot, range) {
 }
 
 /**
- * Rejects Japanese and forbidden words in what the commits in `range` *added*.
+ * Rejects violations anywhere in the range, not only in the tree it ends at.
  *
- * Checking the working tree is not enough. A name added in one commit and taken out again in a
- * later one leaves the final tree clean while the content stays in the branch history, which is
- * as public as the files are once the branch is pushed. Reading the added lines of each patch
- * catches it wherever in the range it was written.
+ * A name added in one commit and taken out again in a later one leaves the final tree clean while
+ * the content stays in the branch history, which is as public as the files are once the branch is
+ * pushed. So each commit is inspected as it stood.
  *
- * Only added lines are read. A line the range removes was already in the history before this
- * work started, and reporting it here would fail a change for something it is cleaning up.
+ * **The patch text is not parsed.** Deciding what a line of a diff means — a header, a hunk, a
+ * line of content that happens to start the same way — is guesswork that keeps producing new
+ * wrong answers, and git escapes non-ASCII paths in that output as well. Instead the files each
+ * commit touched are listed with NUL separators, their blobs at that commit are written to a
+ * scratch directory, and the very same guards that run over the working tree run over it. There
+ * is one definition of a violation, and history is held to it.
  * @param {string} repoRoot
  * @param {string} range a git revision range, e.g. `base..head`
  * @returns {string[]} the violation messages (empty when there are none)
  */
 export function checkCommitContents(repoRoot, range) {
-  const raw = execFileSync(
-    'git',
-    ['log', `--format=${RECORD_END}%H`, '--patch', '--no-color', '--no-textconv', '-M', range],
-    { cwd: repoRoot, encoding: 'utf8', maxBuffer: 256 * 1024 * 1024 },
-  );
+  const shas = execFileSync('git', ['rev-list', range], { cwd: repoRoot, encoding: 'utf8' })
+    .split('\n')
+    .map((line) => line.trim())
+    .filter(Boolean);
 
   const violations = [];
-  for (const record of raw.split(RECORD_END)) {
-    const lines = record.split(/\r?\n/);
-    const sha = (lines.shift() ?? '').trim();
-    if (!sha) continue;
-    const short = sha.slice(0, 8);
-    // One report per distinct finding per commit. A name repeated down a patch is one mistake.
-    const seen = new Set();
-    const report = (message) => {
-      if (seen.has(message)) return;
-      seen.add(message);
-      violations.push(`${short}: ${message}`);
-    };
+  for (const sha of shas) {
+    const paths = execFileSync('git', ['diff-tree', '-r', '--no-commit-id', '--name-only', '-z', sha], {
+      cwd: repoRoot,
+      encoding: 'utf8',
+      maxBuffer: 64 * 1024 * 1024,
+    })
+      .split('\0')
+      .filter(Boolean);
+    if (paths.length === 0) continue;
 
-    let path = null;
-    for (const line of lines) {
-      if (line.startsWith('+++ ')) {
-        const target = line.slice(4).trim();
-        path = target === '/dev/null' ? null : target.replace(/^b\//, '');
-        if (path !== null) {
-          for (const hit of forbiddenTokens(path)) report(`a forbidden word in the path ${path} (hash ${hit.hash})`);
-          if (JAPANESE.test(path)) report(`Japanese in the path ${path}`);
+    const short = sha.slice(0, 8);
+    const dir = mkdtempSync(join(tmpdir(), 'public-repo-lint-'));
+    try {
+      const present = [];
+      for (const rel of paths) {
+        let blob;
+        try {
+          blob = execFileSync('git', ['cat-file', 'blob', `${sha}:${rel}`], {
+            cwd: repoRoot,
+            encoding: 'buffer',
+            maxBuffer: 256 * 1024 * 1024,
+          });
+        } catch {
+          // Not in this commit's tree — the commit deleted it. Whatever it held was already read
+          // at the commit that introduced it.
+          continue;
         }
-        continue;
+        const full = join(dir, rel);
+        try {
+          mkdirSync(dirname(full), { recursive: true });
+          writeFileSync(full, blob);
+        } catch {
+          // A name git accepts but this filesystem does not. Say so rather than pass in silence.
+          violations.push(`${short}: ${rel} could not be materialised for inspection`);
+          continue;
+        }
+        present.push(rel);
       }
-      if (path === null || !line.startsWith('+')) continue;
-      const added = line.slice(1);
-      for (const hit of forbiddenTokens(added)) report(`a forbidden word added to ${path} (hash ${hit.hash})`);
-      if (isProse(path) && JAPANESE.test(added)) report(`Japanese added to the document ${path}`);
+      if (present.length === 0) continue;
+      for (const violation of [
+        ...checkProseLanguage(dir, present),
+        ...checkForbiddenWords(dir, present),
+        ...checkCommentLanguage(dir, present),
+      ]) {
+        violations.push(`${short}: ${violation}`);
+      }
+    } finally {
+      rmSync(dir, { recursive: true, force: true });
     }
   }
   return violations;

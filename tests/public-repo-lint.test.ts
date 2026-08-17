@@ -261,6 +261,29 @@ describe('checkCommitContents', () => {
     expect(violations[0]).toContain('in the path');
   });
 
+  it('rejects a Japanese comment that history keeps, even in a source file', () => {
+    const dir = scratchRepo();
+    commit(dir, 'initial');
+    track(dir, 'labels.ts', "// 日本語のコメント\nexport const label = 'ブロック';\n");
+    commit(dir, 'add labels');
+    track(dir, 'labels.ts', "// an English comment\nexport const label = 'ブロック';\n");
+    commit(dir, 'translate the comment');
+
+    // The final tree passes both working-tree guards; the history does not.
+    expect(checkProseLanguage(dir, ['labels.ts'])).toEqual([]);
+    expect(checkCommitContents(dir, 'HEAD~2..HEAD')).toHaveLength(1);
+  });
+
+  it('handles a path git would escape in patch output', () => {
+    const dir = scratchRepo();
+    commit(dir, 'initial');
+    track(dir, '日本語.md', 'All English inside.\n');
+    commit(dir, 'add a file');
+    const violations = checkCommitContents(dir, 'HEAD~1..HEAD');
+    expect(violations).toHaveLength(1);
+    expect(violations[0]).toContain('Japanese in the path');
+  });
+
   it('does not fail a commit for content it removes', () => {
     const dir = scratchRepo();
     track(dir, 'notes.md', `Reviewed by ${GIVEN_NAME}.\n`);
