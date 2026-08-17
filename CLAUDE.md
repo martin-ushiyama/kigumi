@@ -45,8 +45,9 @@ match on.
 | What the commits *added*, including content a later commit removes | `checkCommitContents` | `scripts/public-repo-lint.mjs` |
 | Pull request title and body | `checkText` | `scripts/public-repo-lint.mjs` |
 
-Commits are checked on pushes as well as on pull requests, because a merge or squash commit is
-created after the pull request was last examined.
+All of it runs in `.github/workflows/public-repo.yml`, on pushes as well as pull requests: a
+merge or squash commit is created after the pull request was last examined. The workflow also
+re-runs when a pull request's title or body is edited, which the rest of CI does not.
 
 Run the file checks locally:
 

@@ -1,0 +1,78 @@
+name: public repository rules
+
+# Its own workflow rather than a job in ci.yml, because it needs one trigger the rest does not:
+# `edited`. A title or body changed after the checks went green would otherwise never be looked
+# at, and on a squash merge the title becomes the commit subject. Putting `edited` on the shared
+# trigger would rebuild and re-run the browser tests every time someone fixes a typo in a
+# description.
+on:
+  pull_request:
+    types: [opened, reopened, synchronize, edited]
+  push:
+    branches: [main]
+
+concurrency:
+  group: public-repo-${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  guard:
+    name: language / names / commit author
+    runs-on: ubuntu-latest
+    steps:
+      # fetch-depth 0 so the commit range of the pull request is present locally. With the
+      # default shallow clone the base commit is missing and the range cannot be resolved.
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version-file: '.nvmrc'
+          cache: 'npm'
+
+      # The history guard runs the comment check over each commit, and that check parses with the
+      # TypeScript compiler, so the dependencies have to be here.
+      - run: npm ci
+
+      - name: tracked files (document language / personal names)
+        run: node scripts/public-repo-lint.mjs
+
+      # Pushes are checked as well as pull requests. A merge or squash commit is created by the
+      # server after the pull request was last checked, so it was never in that range — leaving
+      # push out would let the commit that actually lands go unexamined.
+      - name: commits (author / message language / personal names / contents)
+        run: |
+          set -eu
+          if [ "$GITHUB_EVENT_NAME" = "pull_request" ]; then
+            range="$BASE_SHA..$HEAD_SHA"
+          elif [ -n "$BEFORE_SHA" ] && [ "$BEFORE_SHA" != "$ZERO_SHA" ]; then
+            range="$BEFORE_SHA..$GITHUB_SHA"
+          elif git rev-parse -q --verify "$GITHUB_SHA^" > /dev/null; then
+            # A branch that did not exist before this push has no "before" to compare against.
+            # Fall back to the single commit at its head rather than walking the whole history.
+            range="$GITHUB_SHA~1..$GITHUB_SHA"
+          else
+            # That head has no parent, so there is no single-commit range to name. The commit
+            # itself is the whole history here, and the guard handles a root commit.
+            range="$GITHUB_SHA"
+          fi
+          node scripts/public-repo-lint.mjs --commits "$range"
+        env:
+          BASE_SHA: ${{ github.event.pull_request.base.sha }}
+          HEAD_SHA: ${{ github.event.pull_request.head.sha }}
+          BEFORE_SHA: ${{ github.event.before }}
+          ZERO_SHA: '0000000000000000000000000000000000000000'
+
+      # The title and body are public from the moment the pull request opens, and on a squash
+      # merge the title becomes the commit subject. They are passed through a file because the
+      # text is arbitrary and multi-line; interpolating it into a command would let it run.
+      - name: pull request title and body
+        if: github.event_name == 'pull_request'
+        run: |
+          set -eu
+          printf '%s\n\n%s\n' "$PR_TITLE" "$PR_BODY" > "$RUNNER_TEMP/pr-text.txt"
+          node scripts/public-repo-lint.mjs --text-file "$RUNNER_TEMP/pr-text.txt" --label 'the pull request text'
+        env:
+          PR_TITLE: ${{ github.event.pull_request.title }}
+          PR_BODY: ${{ github.event.pull_request.body }}
