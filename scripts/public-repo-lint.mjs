@@ -1,4 +1,4 @@
-// Guards the rules in CLAUDE.md that a machine can decide (#155).
+// Guards the rules in CLAUDE.md that a machine can decide.
 //
 // The three rules are "write with the owner's account", "write in English", and "do not write
 // personal names". Prose alone cannot hold them — a session that never reads CLAUDE.md still
@@ -104,6 +104,36 @@ function forbiddenTokens(text) {
   return hits;
 }
 
+// Source, markup, config and data. Japanese inside these is either a comment — which
+// architecture-lint's checkCommentLanguage owns — or a string literal holding the shipped UI,
+// which is allowed. Everything else tracked counts as prose.
+const NON_PROSE_EXTENSIONS = new Set([
+  '.ts',
+  '.tsx',
+  '.js',
+  '.mjs',
+  '.cjs',
+  '.mts',
+  '.cts',
+  '.json',
+  '.css',
+  '.html',
+  '.svg',
+  '.yml',
+  '.yaml',
+]);
+const NON_PROSE_NAMES = new Set(['.gitignore', '.gitattributes', '.nvmrc']);
+
+/** Whether this tracked path is a document, i.e. a file whose whole content is writing. */
+function isProse(rel) {
+  const base = rel.split('/').pop() ?? rel;
+  // The `.ja.` marker declares the document's language, on any name rather than on `.md` alone.
+  if (base.includes('.ja.')) return false;
+  if (NON_PROSE_NAMES.has(base)) return false;
+  const dot = base.lastIndexOf('.');
+  return dot <= 0 || !NON_PROSE_EXTENSIONS.has(base.slice(dot));
+}
+
 function trackedFiles(repoRoot) {
   return execFileSync('git', ['ls-files', '-z'], { cwd: repoRoot, encoding: 'utf8' }).split('\0').filter(Boolean);
 }
@@ -117,7 +147,7 @@ function trackedFiles(repoRoot) {
  * **A symlink is read as its own content — the path it points at — not as its target's.** What
  * git tracks for a symlink is the link text, and that is what would be published. Following it
  * instead would check something outside the repository and skip a dangling link silently, so a
- * link whose path spelled out a name would pass (review finding).
+ * link whose path spelled out a name would pass.
  */
 function readText(repoRoot, rel) {
   const full = join(repoRoot, rel);
@@ -137,7 +167,7 @@ function readText(repoRoot, rel) {
 }
 
 /**
- * Rejects Japanese in prose files (#155 rule 2).
+ * Rejects Japanese in prose files (CLAUDE.md rule 2).
  *
  * The rule is "write everything in English", but taken as "no Japanese character anywhere in a
  * tracked file" it would delete the product: this app ships a Japanese UI, so the locale
@@ -151,8 +181,15 @@ function readText(repoRoot, rel) {
  *   - documents — here
  *   - string literals and JSON data — allowed, because that is where the shipped UI lives
  *
- * A document may be written in Japanese when its name says so: `*.ja.md`. That is a naming
- * convention rather than a list of exempt paths, so it does not grow one exception at a time.
+ * A document may be written in Japanese when its name says so — `README.ja.md`, and the same
+ * `.ja.` marker on any other name. That is a naming convention rather than a list of exempt
+ * paths, so it does not grow one exception at a time.
+ *
+ * **"Prose" is decided by exclusion, not by an inventory of document names.** Anything tracked
+ * that is not source, markup, config or data is prose — `LICENSE` has no extension and would be
+ * skipped by a list of suffixes, while no list of document names stays complete as the
+ * repository grows. Excluding the code and data extensions is the bounded side of the split,
+ * because those are the files the comment guard and the display-literal guard already own.
  * @param {string} [repoRoot]
  * @param {readonly string[] | null} [relPaths] the files to check (defaults to every tracked file)
  * @returns {string[]} the violation messages (empty when there are none)
@@ -160,8 +197,7 @@ function readText(repoRoot, rel) {
 export function checkProseLanguage(repoRoot = REPO_ROOT, relPaths = null) {
   const violations = [];
   for (const rel of relPaths ?? trackedFiles(repoRoot)) {
-    if (!rel.endsWith('.md')) continue;
-    if (rel.endsWith('.ja.md')) continue;
+    if (!isProse(rel)) continue;
     const text = readText(repoRoot, rel);
     if (text === null) continue;
     text.split(/\r?\n/).forEach((line, i) => {
@@ -173,7 +209,7 @@ export function checkProseLanguage(repoRoot = REPO_ROOT, relPaths = null) {
 }
 
 /**
- * Rejects personal names and co-author trailers in tracked files (#155 rule 3).
+ * Rejects personal names and co-author trailers in tracked files (CLAUDE.md rule 3).
  *
  * Every tracked text file is read, including generated ones. A name reaches a public repository
  * the same way whether a person typed it or a generator emitted it, and exempting the generated
@@ -185,6 +221,15 @@ export function checkProseLanguage(repoRoot = REPO_ROOT, relPaths = null) {
 export function checkForbiddenWords(repoRoot = REPO_ROOT, relPaths = null) {
   const violations = [];
   for (const rel of relPaths ?? trackedFiles(repoRoot)) {
+    // The path itself is published, in the file listing and in every link to the file. A name
+    // put there rather than in the contents would otherwise be the one place nothing looks.
+    for (const hit of forbiddenTokens(rel)) {
+      violations.push(`${rel}: a forbidden word in the path (hash ${hit.hash}) — personal names do not go in this repository`);
+    }
+    if (JAPANESE.test(rel)) {
+      violations.push(`${rel}: Japanese in the path — file and directory names are written in English`);
+    }
+
     const text = readText(repoRoot, rel);
     if (text === null) continue;
     for (const hit of forbiddenTokens(text)) {
@@ -224,7 +269,7 @@ function commitsIn(repoRoot, range) {
 }
 
 /**
- * Rejects commits whose author is not the owner's account (#155 rule 1).
+ * Rejects commits whose author is not the owner's account (CLAUDE.md rule 1).
  *
  * **The author is checked; the committer is not.** Merging through the GitHub web UI records
  * `GitHub <noreply@github.com>` as the committer, so requiring the owner there would fail every
@@ -246,7 +291,7 @@ export function checkCommitAuthors(repoRoot, range) {
 }
 
 /**
- * Rejects Japanese and forbidden words in commit messages (#155 rules 2 and 3).
+ * Rejects Japanese and forbidden words in commit messages (CLAUDE.md rules 2 and 3).
  *
  * A commit message is prose a person wrote, and it is as public as the files — it shows on the
  * commit list, in blame, and in the release notes. Checking only the working tree would leave
@@ -267,7 +312,7 @@ export function checkCommitMessages(repoRoot, range) {
  * Rejects Japanese, personal names and co-author trailers in a piece of writing that is not a
  * file — a commit message, or the title and body of a pull request.
  *
- * Pull request text needs this as much as the files do (review finding). It is public the moment
+ * Pull request text needs this as much as the files do. It is public the moment
  * it is opened, and on a squash merge the title becomes the commit subject, so leaving it out
  * would let the rule be broken in the one place that later ends up in the history.
  * @param {string} label how to name this text in a violation message

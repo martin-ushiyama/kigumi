@@ -75,10 +75,29 @@ describe('checkProseLanguage', () => {
     expect(checkProseLanguage(dir, ['strings.ts', 'data.json'])).toEqual([]);
   });
 
-  it('exempts the suffix, not the letters — a file simply named ja.md is still checked', () => {
+  it('exempts the marker, not the letters — a file simply named ja.md is still checked', () => {
     const dir = scratchRepo();
     writeFileSync(join(dir, 'ja.md'), '日本語\n', 'utf8');
     expect(checkProseLanguage(dir, ['ja.md'])).toHaveLength(1);
+  });
+
+  it('checks a document with no extension, such as LICENSE', () => {
+    const dir = scratchRepo();
+    writeFileSync(join(dir, 'LICENSE'), 'MIT License\n\n日本語の一文。\n', 'utf8');
+    expect(checkProseLanguage(dir, ['LICENSE'])).toHaveLength(1);
+  });
+
+  it('honours the .ja. marker on names other than .md', () => {
+    const dir = scratchRepo();
+    writeFileSync(join(dir, 'NOTES.ja.txt'), '日本語のメモ。\n', 'utf8');
+    expect(checkProseLanguage(dir, ['NOTES.ja.txt'])).toEqual([]);
+  });
+
+  it('leaves the files the comment guard owns alone, even outside src', () => {
+    const dir = scratchRepo();
+    writeFileSync(join(dir, 'config.yml'), "name: 'ブロック'\n", 'utf8');
+    writeFileSync(join(dir, '.gitignore'), 'dist\n', 'utf8');
+    expect(checkProseLanguage(dir, ['config.yml', '.gitignore'])).toEqual([]);
   });
 });
 
@@ -129,6 +148,21 @@ describe('checkForbiddenWords', () => {
     // The link text carries the name; the target it points at does not.
     expect(checkForbiddenWords(dir, ['link.txt'])).toHaveLength(1);
     expect(checkForbiddenWords(dir, ['target.txt'])).toEqual([]);
+  });
+
+  it('rejects a name that appears only in the path, with clean contents', () => {
+    const dir = scratchRepo();
+    writeFileSync(join(dir, 'notes.txt'), 'clean english text\n', 'utf8');
+    const violations = checkForbiddenWords(dir, [`docs/${GIVEN_NAME}-notes.txt`]);
+    expect(violations).toHaveLength(1);
+    expect(violations[0]).toContain('in the path');
+  });
+
+  it('rejects Japanese in a path', () => {
+    const dir = scratchRepo();
+    const violations = checkForbiddenWords(dir, ['docs/日本語.txt']);
+    expect(violations).toHaveLength(1);
+    expect(violations[0]).toContain('Japanese in the path');
   });
 
   it('skips binary files instead of matching bytes decoded as text', () => {
