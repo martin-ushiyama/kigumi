@@ -5,6 +5,7 @@ import { join } from 'node:path';
 import { afterEach, describe, expect, it } from 'vitest';
 import {
   checkCommitAuthors,
+  checkCommitContents,
   checkCommitMessages,
   checkForbiddenWords,
   checkProseLanguage,
@@ -170,6 +171,18 @@ describe('checkForbiddenWords', () => {
     writeFileSync(join(dir, 'blob.bin'), Buffer.from([0x00, 0x01, 0x02]));
     expect(checkForbiddenWords(dir, ['blob.bin'])).toEqual([]);
   });
+
+  it('reads UTF-16 text rather than mistaking its NUL bytes for a binary file', () => {
+    const dir = scratchRepo();
+    const text = `Reviewed by ${GIVEN_NAME}.\n`;
+    writeFileSync(join(dir, 'le.txt'), Buffer.concat([Buffer.from([0xff, 0xfe]), Buffer.from(text, 'utf16le')]));
+    writeFileSync(
+      join(dir, 'be.txt'),
+      Buffer.concat([Buffer.from([0xfe, 0xff]), Buffer.from(text, 'utf16le').swap16()]),
+    );
+    expect(checkForbiddenWords(dir, ['le.txt'])).toHaveLength(1);
+    expect(checkForbiddenWords(dir, ['be.txt'])).toHaveLength(1);
+  });
 });
 
 describe('checkCommitAuthors', () => {
@@ -194,6 +207,75 @@ describe('checkCommitAuthors', () => {
     commit(dir, 'initial');
     commit(dir, 'second', { author: `${OWNER_NAME} <someone@example.com>` });
     expect(checkCommitAuthors(dir, 'HEAD~1..HEAD')).toHaveLength(1);
+  });
+});
+
+describe('checkCommitContents', () => {
+  function track(dir: string, rel: string, body: string): void {
+    writeFileSync(join(dir, rel), body, 'utf8');
+    execFileSync('git', ['add', rel], { cwd: dir, encoding: 'utf8' });
+  }
+
+  it('passes a range that adds only English, name-free content', () => {
+    const dir = scratchRepo();
+    commit(dir, 'initial');
+    track(dir, 'guide.md', '# Guide\n\nAll English.\n');
+    commit(dir, 'docs: add a guide');
+    expect(checkCommitContents(dir, 'HEAD~1..HEAD')).toEqual([]);
+  });
+
+  it('rejects content added in one commit and removed in a later one', () => {
+    const dir = scratchRepo();
+    commit(dir, 'initial');
+    track(dir, 'notes.md', `Reviewed by ${GIVEN_NAME}.\n`);
+    commit(dir, 'docs: add notes');
+    track(dir, 'notes.md', 'Reviewed internally.\n');
+    commit(dir, 'docs: take the name out again');
+
+    // The final tree is clean, so the working-tree guard sees nothing wrong.
+    expect(checkForbiddenWords(dir, ['notes.md'])).toEqual([]);
+    // The history is not, and that is what stays public.
+    const violations = checkCommitContents(dir, 'HEAD~2..HEAD');
+    expect(violations).toHaveLength(1);
+    expect(violations[0]).toContain('notes.md');
+  });
+
+  it('rejects Japanese added to a document, and allows it in a source literal', () => {
+    const dir = scratchRepo();
+    commit(dir, 'initial');
+    track(dir, 'guide.md', '日本語\n');
+    track(dir, 'labels.ts', "export const label = 'ブロック';\n");
+    commit(dir, 'add both');
+    const violations = checkCommitContents(dir, 'HEAD~1..HEAD');
+    expect(violations).toHaveLength(1);
+    expect(violations[0]).toContain('guide.md');
+  });
+
+  it('rejects a name in a path that a later commit renames away', () => {
+    const dir = scratchRepo();
+    commit(dir, 'initial');
+    track(dir, `${GIVEN_NAME}-notes.md`, 'All English.\n');
+    commit(dir, 'docs: add notes');
+    const violations = checkCommitContents(dir, 'HEAD~1..HEAD');
+    expect(violations).toHaveLength(1);
+    expect(violations[0]).toContain('in the path');
+  });
+
+  it('does not fail a commit for content it removes', () => {
+    const dir = scratchRepo();
+    track(dir, 'notes.md', `Reviewed by ${GIVEN_NAME}.\n`);
+    commit(dir, 'initial');
+    track(dir, 'notes.md', 'Reviewed internally.\n');
+    commit(dir, 'docs: take the name out');
+    expect(checkCommitContents(dir, 'HEAD~1..HEAD')).toEqual([]);
+  });
+
+  it('reports one violation per commit even when the name repeats down the patch', () => {
+    const dir = scratchRepo();
+    commit(dir, 'initial');
+    track(dir, 'notes.md', `${GIVEN_NAME}\n${GIVEN_NAME}\n${GIVEN_NAME}\n`);
+    commit(dir, 'docs: add notes');
+    expect(checkCommitContents(dir, 'HEAD~1..HEAD')).toHaveLength(1);
   });
 });
 

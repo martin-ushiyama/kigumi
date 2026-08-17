@@ -42,6 +42,7 @@ match on.
 | Personal names and co-author trailers, in contents and in paths | `checkForbiddenWords` | `scripts/public-repo-lint.mjs` |
 | Commit author | `checkCommitAuthors` | `scripts/public-repo-lint.mjs` |
 | Commit message language and names | `checkCommitMessages` | `scripts/public-repo-lint.mjs` |
+| What the commits *added*, including content a later commit removes | `checkCommitContents` | `scripts/public-repo-lint.mjs` |
 | Pull request title and body | `checkText` | `scripts/public-repo-lint.mjs` |
 
 Commits are checked on pushes as well as on pull requests, because a merge or squash commit is

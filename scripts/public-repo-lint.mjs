@@ -142,7 +142,9 @@ function trackedFiles(repoRoot) {
  * Reads a tracked file as text, or returns null when it is binary or unreadable.
  *
  * A NUL byte is the test for binary. Decoding a PNG as UTF-8 and running regular expressions
- * over the result produces matches that mean nothing.
+ * over the result produces matches that mean nothing. UTF-16 is decoded from its byte order mark
+ * first, because ordinary UTF-16 text is full of NUL bytes and would otherwise look binary and be
+ * skipped without a word.
  *
  * **A symlink is read as its own content — the path it points at — not as its target's.** What
  * git tracks for a symlink is the link text, and that is what would be published. Following it
@@ -162,6 +164,8 @@ function readText(repoRoot, rel) {
   } catch {
     return null;
   }
+  if (buf.length >= 2 && buf[0] === 0xff && buf[1] === 0xfe) return buf.subarray(2).toString('utf16le');
+  if (buf.length >= 2 && buf[0] === 0xfe && buf[1] === 0xff) return buf.subarray(2).swap16().toString('utf16le');
   if (buf.includes(0)) return null;
   return buf.toString('utf8');
 }
@@ -291,6 +295,61 @@ export function checkCommitAuthors(repoRoot, range) {
 }
 
 /**
+ * Rejects Japanese and forbidden words in what the commits in `range` *added*.
+ *
+ * Checking the working tree is not enough. A name added in one commit and taken out again in a
+ * later one leaves the final tree clean while the content stays in the branch history, which is
+ * as public as the files are once the branch is pushed. Reading the added lines of each patch
+ * catches it wherever in the range it was written.
+ *
+ * Only added lines are read. A line the range removes was already in the history before this
+ * work started, and reporting it here would fail a change for something it is cleaning up.
+ * @param {string} repoRoot
+ * @param {string} range a git revision range, e.g. `base..head`
+ * @returns {string[]} the violation messages (empty when there are none)
+ */
+export function checkCommitContents(repoRoot, range) {
+  const raw = execFileSync(
+    'git',
+    ['log', `--format=${RECORD_END}%H`, '--patch', '--no-color', '--no-textconv', '-M', range],
+    { cwd: repoRoot, encoding: 'utf8', maxBuffer: 256 * 1024 * 1024 },
+  );
+
+  const violations = [];
+  for (const record of raw.split(RECORD_END)) {
+    const lines = record.split(/\r?\n/);
+    const sha = (lines.shift() ?? '').trim();
+    if (!sha) continue;
+    const short = sha.slice(0, 8);
+    // One report per distinct finding per commit. A name repeated down a patch is one mistake.
+    const seen = new Set();
+    const report = (message) => {
+      if (seen.has(message)) return;
+      seen.add(message);
+      violations.push(`${short}: ${message}`);
+    };
+
+    let path = null;
+    for (const line of lines) {
+      if (line.startsWith('+++ ')) {
+        const target = line.slice(4).trim();
+        path = target === '/dev/null' ? null : target.replace(/^b\//, '');
+        if (path !== null) {
+          for (const hit of forbiddenTokens(path)) report(`a forbidden word in the path ${path} (hash ${hit.hash})`);
+          if (JAPANESE.test(path)) report(`Japanese in the path ${path}`);
+        }
+        continue;
+      }
+      if (path === null || !line.startsWith('+')) continue;
+      const added = line.slice(1);
+      for (const hit of forbiddenTokens(added)) report(`a forbidden word added to ${path} (hash ${hit.hash})`);
+      if (isProse(path) && JAPANESE.test(added)) report(`Japanese added to the document ${path}`);
+    }
+  }
+  return violations;
+}
+
+/**
  * Rejects Japanese and forbidden words in commit messages (CLAUDE.md rules 2 and 3).
  *
  * A commit message is prose a person wrote, and it is as public as the files — it shows on the
@@ -376,7 +435,11 @@ if (process.argv[1] && import.meta.url === pathToFileURL(process.argv[1]).href) 
   }
   if (range) {
     checked.push(`commits in ${range}`);
-    violations.push(...checkCommitAuthors(REPO_ROOT, range), ...checkCommitMessages(REPO_ROOT, range));
+    violations.push(
+      ...checkCommitAuthors(REPO_ROOT, range),
+      ...checkCommitMessages(REPO_ROOT, range),
+      ...checkCommitContents(REPO_ROOT, range),
+    );
   }
   if (textFile) {
     checked.push(label);
