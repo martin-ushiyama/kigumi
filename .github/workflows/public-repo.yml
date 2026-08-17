@@ -13,7 +13,10 @@ on:
 
 concurrency:
   group: public-repo-${{ github.workflow }}-${{ github.ref }}
-  cancel-in-progress: true
+  # Cancelling is only safe on a pull request, where a newer run covers the whole branch again.
+  # A push run examines the range since the previous push, so cancelling it drops those commits
+  # from history's only inspection — nothing later goes back for them.
+  cancel-in-progress: ${{ github.event_name == 'pull_request' }}
 
 jobs:
   guard:
