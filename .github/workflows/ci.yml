@@ -85,10 +85,14 @@ jobs:
             range="$BASE_SHA..$HEAD_SHA"
           elif [ -n "$BEFORE_SHA" ] && [ "$BEFORE_SHA" != "$ZERO_SHA" ]; then
             range="$BEFORE_SHA..$GITHUB_SHA"
-          else
+          elif git rev-parse -q --verify "$GITHUB_SHA^" > /dev/null; then
             # A branch that did not exist before this push has no "before" to compare against.
             # Fall back to the single commit at its head rather than walking the whole history.
             range="$GITHUB_SHA~1..$GITHUB_SHA"
+          else
+            # That head has no parent, so there is no single-commit range to name. The commit
+            # itself is the whole history here, and the guard handles a root commit.
+            range="$GITHUB_SHA"
           fi
           node scripts/public-repo-lint.mjs --commits "$range"
         env:
