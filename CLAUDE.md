@@ -7,7 +7,10 @@ Rules for any session that writes to this repository.
 Four rules. Three of them are decided by CI; the fourth is the one left to whoever is working here.
 
 1. **Write with the `martin-ushiyama` account only.** Every commit's author is that account, and
-   no commit carries a co-author trailer.
+   no commit names a second one. That account signs under more than one spelling — a squash merge
+   is attributed to the profile that pressed the button rather than to the identity the branch's
+   commits carry — so the accepted spellings are registered as hashes in the guard, for the same
+   reason the forbidden words are.
 2. **Write everything in English** — comments, documents, commit messages, pull request text.
 3. **Do not write personal names.** Not in files, not in commit messages.
 4. **Do not carry development context in here.** Internal discussion, planning notes, the reasons

@@ -2,7 +2,7 @@ import { execFileSync } from 'node:child_process';
 import { mkdtempSync, rmSync, symlinkSync, writeFileSync } from 'node:fs';
 import { tmpdir } from 'node:os';
 import { join } from 'node:path';
-import { afterEach, describe, expect, it } from 'vitest';
+import { afterEach, beforeEach, describe, expect, it } from 'vitest';
 import {
   checkCommitAuthors,
   checkCommitContents,
@@ -10,6 +10,8 @@ import {
   checkForbiddenWords,
   checkProseLanguage,
   checkText,
+  hashIdentity,
+  OWNER_IDENTITY_HASHES,
   OWNER_EMAIL,
   OWNER_NAME,
   REPO_ROOT,
@@ -437,5 +439,45 @@ describe('the two guards leave no file type unread', () => {
     // The document guard treats SVG as markup, so the comment guard is the one that has to see it.
     expect(checkProseLanguage(dir, ['logo.svg'])).toEqual([]);
     expect(checkCommentLanguage(dir, ['logo.svg'])).toHaveLength(1);
+  });
+});
+
+
+describe('one account, more than one spelling', () => {
+  // A squash merge is attributed to the profile of whoever pressed the button rather than to the
+  // identity the branch's commits carry, and it writes a co-author trailer naming the other one.
+  // Both are the same account, so neither is a violation.
+  //
+  // The registered spelling is a hash, so it cannot be written here — spelling it out is the leak
+  // the hashing exists to prevent. A stand-in is registered for the duration of the test instead,
+  // which exercises the same path.
+  const ALIAS = { name: 'alias', email: 'alias@example.invalid' };
+  const aliasHash = hashIdentity(ALIAS.name, ALIAS.email);
+
+  beforeEach(() => OWNER_IDENTITY_HASHES.add(aliasHash));
+  afterEach(() => OWNER_IDENTITY_HASHES.delete(aliasHash));
+
+  it('accepts a commit authored under a registered spelling', () => {
+    const dir = scratchRepo();
+    commit(dir, 'initial');
+    commit(dir, 'second', { author: `${ALIAS.name} <${ALIAS.email}>` });
+    expect(checkCommitAuthors(dir, 'HEAD~1..HEAD')).toEqual([]);
+  });
+
+  it('rejects it again once the spelling is not registered', () => {
+    const dir = scratchRepo();
+    commit(dir, 'initial');
+    commit(dir, 'second', { author: `${ALIAS.name} <${ALIAS.email}>` });
+    OWNER_IDENTITY_HASHES.delete(aliasHash);
+    expect(checkCommitAuthors(dir, 'HEAD~1..HEAD')).toHaveLength(1);
+  });
+
+  it('accepts a co-author trailer naming the same account', () => {
+    expect(checkText('the commit message', `fix: something\n\nCo-authored-by: ${OWNER_NAME} <${OWNER_EMAIL}>\n`)).toEqual([]);
+    expect(checkText('the commit message', `fix: something\n\nCo-authored-by: ${ALIAS.name} <${ALIAS.email}>\n`)).toEqual([]);
+  });
+
+  it('still rejects a co-author trailer naming anyone else', () => {
+    expect(checkText('the commit message', 'fix: something\n\nCo-authored-by: someone <a@b.c>\n')).toHaveLength(1);
   });
 });
