@@ -54,6 +54,34 @@ jobs:
       - name: 'animated texture frame counts: structural check (depth 0 = committed only)'
         run: npm run gen-texture-frames:check
 
+  public-repo:
+    name: public repository rules (language / names / commit author)
+    runs-on: ubuntu-latest
+    steps:
+      # fetch-depth 0 so the commit range of the pull request is present locally. With the
+      # default shallow clone the base commit is missing and the range cannot be resolved.
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version-file: '.nvmrc'
+
+      # No `npm ci` on purpose. The guard uses only node builtins and git, so it can report a
+      # violation in seconds instead of waiting on an install.
+      - name: tracked files (document language / personal names)
+        run: node scripts/public-repo-lint.mjs
+
+      # Only on a pull request, where the range is unambiguous. On a push the commits have
+      # already been through this check on the pull request that introduced them.
+      - name: commits (author / message language / personal names)
+        if: github.event_name == 'pull_request'
+        run: node scripts/public-repo-lint.mjs --commits "$BASE_SHA..$HEAD_SHA"
+        env:
+          BASE_SHA: ${{ github.event.pull_request.base.sha }}
+          HEAD_SHA: ${{ github.event.pull_request.head.sha }}
+
   e2e:
     name: e2e (Playwright/Chromium)
     runs-on: ubuntu-latest
