@@ -5,3 +5,4 @@ export function checkProseLanguage(repoRoot?: string, relPaths?: readonly string
 export function checkForbiddenWords(repoRoot?: string, relPaths?: readonly string[] | null): string[];
 export function checkCommitAuthors(repoRoot: string, range: string): string[];
 export function checkCommitMessages(repoRoot: string, range: string): string[];
+export function checkText(label: string, text: string): string[];

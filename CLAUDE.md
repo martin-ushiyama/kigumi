@@ -37,6 +37,10 @@ not a list of exempt paths, so it cannot grow one exception at a time.
 | Personal names, co-author trailers | `checkForbiddenWords` | `scripts/public-repo-lint.mjs` |
 | Commit author | `checkCommitAuthors` | `scripts/public-repo-lint.mjs` |
 | Commit message language and names | `checkCommitMessages` | `scripts/public-repo-lint.mjs` |
+| Pull request title and body | `checkText` | `scripts/public-repo-lint.mjs` |
+
+Commits are checked on pushes as well as on pull requests, because a merge or squash commit is
+created after the pull request was last examined.
 
 Run the file checks locally:
 

@@ -285,7 +285,9 @@ export function checkStateTypeImports(srcRoot = SRC_ROOT) {
  * @returns {string[]} the violation messages (empty when there are none)
  */
 const DISPLAY_LAYERS = ['input', 'ui', 'project', 'export', 'services'];
-const JAPANESE = /[぀-ゟ゠-ヿ一-鿿]/;
+// Hiragana, katakana, CJK ideographs, the iteration and closing marks, and half-width katakana.
+// Half-width katakana is easy to leave out and is still Japanese, so it is in.
+const JAPANESE = /[々〆぀-ゟ゠-ヿ一-鿿ｦ-ﾟ]/;
 const ALLOW_MARKER = 'i18n-allow';
 const LITERAL_ALLOWED_FILES = [join('ui', 'help.ts')];
 

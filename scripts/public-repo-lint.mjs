@@ -13,15 +13,16 @@
 // src/ for literals.
 import { createHash } from 'node:crypto';
 import { execFileSync } from 'node:child_process';
-import { readFileSync } from 'node:fs';
+import { lstatSync, readFileSync, readlinkSync } from 'node:fs';
 import { dirname, join, resolve } from 'node:path';
 import { fileURLToPath, pathToFileURL } from 'node:url';
 
 const __dirname = dirname(fileURLToPath(import.meta.url));
 export const REPO_ROOT = resolve(__dirname, '..');
 
-// Mirrors the range used by architecture-lint.mjs so the two guards agree on what "Japanese" is.
-const JAPANESE = /[぀-ゟ゠-ヿ一-鿿]/;
+// The same class architecture-lint.mjs uses, so the two guards agree on what "Japanese" is.
+// Half-width katakana is included: it is Japanese written entirely outside the usual kana blocks.
+const JAPANESE = /[々〆぀-ゟ゠-ヿ一-鿿ｦ-ﾟ]/;
 
 // The account every commit is written with. This one is public by construction — it is the
 // owner segment of the repository URL and the copyright line in LICENSE — so it is spelled out
@@ -112,11 +113,22 @@ function trackedFiles(repoRoot) {
  *
  * A NUL byte is the test for binary. Decoding a PNG as UTF-8 and running regular expressions
  * over the result produces matches that mean nothing.
+ *
+ * **A symlink is read as its own content — the path it points at — not as its target's.** What
+ * git tracks for a symlink is the link text, and that is what would be published. Following it
+ * instead would check something outside the repository and skip a dangling link silently, so a
+ * link whose path spelled out a name would pass (review finding).
  */
 function readText(repoRoot, rel) {
+  const full = join(repoRoot, rel);
+  try {
+    if (lstatSync(full).isSymbolicLink()) return readlinkSync(full);
+  } catch {
+    return null;
+  }
   let buf;
   try {
-    buf = readFileSync(join(repoRoot, rel));
+    buf = readFileSync(full);
   } catch {
     return null;
   }
@@ -246,17 +258,33 @@ export function checkCommitAuthors(repoRoot, range) {
 export function checkCommitMessages(repoRoot, range) {
   const violations = [];
   for (const commit of commitsIn(repoRoot, range)) {
-    const short = commit.sha.slice(0, 8);
-    const firstJapanese = commit.message.split(/\r?\n/).find((line) => JAPANESE.test(line));
-    if (firstJapanese !== undefined) {
-      violations.push(`${short}: a Japanese commit message — write it in English "${firstJapanese.trim().slice(0, 40)}"`);
-    }
-    for (const hit of forbiddenTokens(commit.message)) {
-      violations.push(`${short}: a forbidden word in the commit message (hash ${hit.hash})`);
-    }
-    if (COAUTHOR_TRAILER.test(commit.message)) {
-      violations.push(`${short}: a co-author trailer — every commit here is written with a single account`);
-    }
+    violations.push(...checkText(`${commit.sha.slice(0, 8)}: the commit message`, commit.message));
+  }
+  return violations;
+}
+
+/**
+ * Rejects Japanese, personal names and co-author trailers in a piece of writing that is not a
+ * file — a commit message, or the title and body of a pull request.
+ *
+ * Pull request text needs this as much as the files do (review finding). It is public the moment
+ * it is opened, and on a squash merge the title becomes the commit subject, so leaving it out
+ * would let the rule be broken in the one place that later ends up in the history.
+ * @param {string} label how to name this text in a violation message
+ * @param {string} text
+ * @returns {string[]} the violation messages (empty when there are none)
+ */
+export function checkText(label, text) {
+  const violations = [];
+  const firstJapanese = text.split(/\r?\n/).find((line) => JAPANESE.test(line));
+  if (firstJapanese !== undefined) {
+    violations.push(`${label}: Japanese — write it in English "${firstJapanese.trim().slice(0, 40)}"`);
+  }
+  for (const hit of forbiddenTokens(text)) {
+    violations.push(`${label}: a forbidden word (hash ${hit.hash}) — personal names do not go in this repository`);
+  }
+  if (COAUTHOR_TRAILER.test(text)) {
+    violations.push(`${label}: a co-author trailer — every commit here is written with a single account`);
   }
   return violations;
 }
@@ -275,23 +303,45 @@ if (process.argv[1] && import.meta.url === pathToFileURL(process.argv[1]).href) 
     process.exit(0);
   }
 
-  const commitsAt = args.indexOf('--commits');
-  const range = commitsAt >= 0 ? args[commitsAt + 1] : null;
-  if (commitsAt >= 0 && !range) {
-    console.error('usage: node scripts/public-repo-lint.mjs [--commits <range>]');
-    process.exit(2);
+  const USAGE = 'usage: node scripts/public-repo-lint.mjs [--commits <range>] [--text-file <path> [--label <label>]]';
+
+  const valueOf = (flag) => {
+    const at = args.indexOf(flag);
+    if (at < 0) return null;
+    const value = args[at + 1];
+    if (!value || value.startsWith('--')) {
+      console.error(USAGE);
+      process.exit(2);
+    }
+    return value;
+  };
+
+  const range = valueOf('--commits');
+  const textFile = valueOf('--text-file');
+  const label = valueOf('--label') ?? 'the text';
+
+  // `--text-file` checks that piece of writing on its own. Reading it from a file rather than an
+  // argument is deliberate: pull request text is arbitrary, multi-line, and attacker-influenced,
+  // and putting it on a command line invites the shell to interpret it.
+  const checked = [];
+  const violations = [];
+  if (!textFile) {
+    checked.push('files');
+    violations.push(...checkProseLanguage(), ...checkForbiddenWords());
+  }
+  if (range) {
+    checked.push(`commits in ${range}`);
+    violations.push(...checkCommitAuthors(REPO_ROOT, range), ...checkCommitMessages(REPO_ROOT, range));
+  }
+  if (textFile) {
+    checked.push(label);
+    violations.push(...checkText(label, readFileSync(textFile, 'utf8')));
   }
 
-  const violations = [
-    ...checkProseLanguage(),
-    ...checkForbiddenWords(),
-    ...(range ? checkCommitAuthors(REPO_ROOT, range) : []),
-    ...(range ? checkCommitMessages(REPO_ROOT, range) : []),
-  ];
   if (violations.length > 0) {
     console.error('public-repo-lint: violations found\n');
     for (const v of violations) console.error(`  - ${v}`);
     process.exit(1);
   }
-  console.log(`public-repo-lint: OK${range ? ` (files and commits in ${range})` : ' (files; pass --commits <range> to check commits too)'}`);
+  console.log(`public-repo-lint: OK (${checked.join(', ')})`);
 }

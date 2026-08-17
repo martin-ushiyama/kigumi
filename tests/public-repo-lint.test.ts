@@ -1,5 +1,5 @@
 import { execFileSync } from 'node:child_process';
-import { mkdtempSync, rmSync, writeFileSync } from 'node:fs';
+import { mkdtempSync, rmSync, symlinkSync, writeFileSync } from 'node:fs';
 import { tmpdir } from 'node:os';
 import { join } from 'node:path';
 import { afterEach, describe, expect, it } from 'vitest';
@@ -8,6 +8,7 @@ import {
   checkCommitMessages,
   checkForbiddenWords,
   checkProseLanguage,
+  checkText,
   OWNER_EMAIL,
   OWNER_NAME,
   REPO_ROOT,
@@ -115,6 +116,21 @@ describe('checkForbiddenWords', () => {
     expect(violations[0]).toContain('NOTES:2');
   });
 
+  // Creating a symbolic link needs elevation on Windows, so the assertion runs where it can and
+  // the case is skipped where it cannot. CI is Linux, so the path is covered there.
+  it('reads a symlink as its own link text rather than following it to the target', () => {
+    const dir = scratchRepo();
+    writeFileSync(join(dir, 'target.txt'), 'clean english text\n', 'utf8');
+    try {
+      symlinkSync(`${GIVEN_NAME}-notes.txt`, join(dir, 'link.txt'));
+    } catch {
+      return; // no permission to make one here
+    }
+    // The link text carries the name; the target it points at does not.
+    expect(checkForbiddenWords(dir, ['link.txt'])).toHaveLength(1);
+    expect(checkForbiddenWords(dir, ['target.txt'])).toEqual([]);
+  });
+
   it('skips binary files instead of matching bytes decoded as text', () => {
     const dir = scratchRepo();
     writeFileSync(join(dir, 'blob.bin'), Buffer.from([0x00, 0x01, 0x02]));
@@ -161,7 +177,14 @@ describe('checkCommitMessages', () => {
     commit(dir, 'fix: 書き出しの順序を安定させる');
     const violations = checkCommitMessages(dir, 'HEAD~1..HEAD');
     expect(violations).toHaveLength(1);
-    expect(violations[0]).toContain('a Japanese commit message');
+    expect(violations[0]).toContain('the commit message');
+  });
+
+  it('rejects half-width katakana, which sits outside the usual kana blocks', () => {
+    const dir = scratchRepo();
+    commit(dir, 'initial');
+    commit(dir, 'fix: ﾆﾎﾝｺﾞ');
+    expect(checkCommitMessages(dir, 'HEAD~1..HEAD')).toHaveLength(1);
   });
 
   it('rejects a name and a co-author trailer in the body', () => {
@@ -179,6 +202,21 @@ describe('checkCommitMessages', () => {
     commit(dir, 'feat: 日本語');
     // Only the last commit is at fault; the multi-line one before it must not be miscounted.
     expect(checkCommitMessages(dir, 'HEAD~2..HEAD')).toHaveLength(1);
+  });
+});
+
+describe('checkText — pull request text and anything else that is not a file', () => {
+  it('passes English text with no names in it', () => {
+    expect(checkText('the pull request text', 'Adds a guard for the repository rules.')).toEqual([]);
+  });
+
+  it('rejects Japanese, a name, and a co-author trailer, and names the text in the message', () => {
+    const violations = checkText(
+      'the pull request text',
+      `日本語のタイトル\n\nreviewed by ${GIVEN_NAME}\n\nCo-Authored-By: someone <a@b.c>\n`,
+    );
+    expect(violations).toHaveLength(3);
+    for (const violation of violations) expect(violation).toContain('the pull request text');
   });
 });
 
