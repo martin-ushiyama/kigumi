@@ -12,10 +12,15 @@ on:
     branches: [main]
 
 concurrency:
-  group: public-repo-${{ github.workflow }}-${{ github.ref }}
-  # Cancelling is only safe on a pull request, where a newer run covers the whole branch again.
-  # A push run examines the range since the previous push, so cancelling it drops those commits
-  # from history's only inspection — nothing later goes back for them.
+  # Pull requests share a group per branch, so a newer run replaces an older one — it covers the
+  # whole branch from the base again, so nothing is lost.
+  #
+  # **Each push gets a group of its own.** A push run examines only the range since the previous
+  # push, so it is the sole inspection those commits ever get. Sharing a group would not just
+  # cancel a running one: GitHub keeps a single pending run per group, so a third push arriving
+  # during the first would drop the second outright, and the commits it alone covered would go
+  # unread.
+  group: public-repo-${{ github.workflow }}-${{ github.event_name == 'pull_request' && github.ref || github.sha }}
   cancel-in-progress: ${{ github.event_name == 'pull_request' }}
 
 jobs:
