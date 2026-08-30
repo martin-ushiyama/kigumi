@@ -29,6 +29,7 @@ import { createBrowserFrameClock } from './services/renderscheduler-clock-browse
 import { createRenderScheduler } from './services/renderscheduler';
 import { createTexturePackService, TexturePackError } from './services/texturepack';
 import { initHelp } from './ui/help';
+import { initOnboarding } from './ui/onboarding';
 import { initBlockUsage } from './ui/blockusage';
 import { createBlockChangePicker } from './ui/blockchangepicker';
 import { initInspector } from './ui/inspector';
@@ -693,6 +694,7 @@ window.addEventListener('pagehide', () => texturePackService.dispose(), { once: 
 projectService.restoreAutosave(); // Restore the previous autosave
 
 const helpHandle = initHelp(document.getElementById('help')!);
+initOnboarding();
 
 /** Center coordinates and radius of the build (shared by the F key and view-preset distance calculation) */
 function computeFocus(): { center: THREE.Vector3; radius: number } | null {

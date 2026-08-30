@@ -23,7 +23,10 @@ export default defineConfig({
       origins: [
         {
           origin: 'http://localhost:4319',
-          localStorage: [{ name: 'blocksmith.ui.v1', value: '{"lang":"ja"}' }],
+          localStorage: [
+            { name: 'blocksmith.ui.v1', value: '{"lang":"ja"}' },
+            { name: 'blocksmith.onboarding.v1', value: 'done' },
+          ],
         },
       ],
     },
