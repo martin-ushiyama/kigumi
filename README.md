@@ -6,7 +6,7 @@ with layers and groups, create natural material mixes, and export the result as 
 **[Try Kigumi in your browser](https://martin-ushiyama.github.io/kigumi/)** ·
 **[Japanese](README.ja.md)**
 
-![Building a wall with the cuboid tool, repainting it with a weathered masonry pattern, then exporting it as an mcpack](docs/assets/kigumi-demo.gif)
+![Building a stone wall, repainting it with a random mix of similar stone textures, then exporting it as an mcpack](docs/assets/kigumi-demo.gif)
 
 > Kigumi currently requires a desktop-sized screen, keyboard, and mouse or trackpad.
 
