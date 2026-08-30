@@ -77,7 +77,10 @@ async function textureUv(page: Page): Promise<{ url: string; repeatY: number; of
       return out;
     };
     let found = collect();
-    while (found.length === 0 && Date.now() < deadline) {
+    const hasBlockTextures = () =>
+      found.some((texture) => texture.url.includes('crimson_log_side')) &&
+      found.some((texture) => /\/stone\.png/.test(texture.url));
+    while (!hasBlockTextures() && Date.now() < deadline) {
       await new Promise((r) => setTimeout(r, 100));
       found = collect();
     }

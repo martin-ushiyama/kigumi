@@ -37,6 +37,11 @@ The block catalogue and textures originate from Mojang's
 redistributed in this repository. The hosted editor works with flat-colour fallbacks when those
 assets are unavailable.
 
+To use the original textures without uploading them anywhere, open **View → Textures → Load
+pack** and choose a resource-pack `.zip` or `.mcpack`. Kigumi extracts only matching files below
+`textures/blocks/` and stores them in this browser. The pack can be replaced or removed from the
+same panel.
+
 For local development, the pinned upstream snapshot and textures can be fetched separately:
 
 ```bash

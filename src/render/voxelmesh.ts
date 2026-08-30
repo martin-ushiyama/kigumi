@@ -1,4 +1,4 @@
-import { TEXTURE_BASE, firstFrameUv, frameCountOf } from '../core/textureframe';
+import { firstFrameUv, frameCountOf, staticTextureUrl, type TextureUrlResolver } from '../core/textureframe';
 import * as THREE from 'three';
 import { decodeOrientation, unpackCell, type Orientation } from '../core/orientation';
 import type { BlockDef, DisplayMode } from '../core/types';
@@ -39,6 +39,7 @@ class BlockTypeMesh {
     upsideDown: boolean,
     private loader: THREE.TextureLoader,
     displayMode: DisplayMode,
+    private resolveTextureUrl: TextureUrlResolver,
   ) {
     this.displayMode = displayMode;
     this.geometry = createShapeGeometry(def.shape, upsideDown);
@@ -56,10 +57,10 @@ class BlockTypeMesh {
     const entry = MANIFEST[def.id];
     if (!entry) return; // Blocks with no mapping stay flat-colored
 
-    const loadTex = (path: string): Promise<THREE.Texture> =>
-      new Promise((resolve, reject) => {
+    const loadTex = (path: string): Promise<THREE.Texture> => {
+      const loadFromUrl = (url: string) => new Promise<THREE.Texture>((resolve, reject) => {
         this.loader.load(
-          TEXTURE_BASE + path,
+          url,
           (tex) => {
             tex.magFilter = THREE.NearestFilter;
             tex.minFilter = THREE.NearestFilter;
@@ -80,6 +81,9 @@ class BlockTypeMesh {
           reject,
         );
       });
+      const resolved = this.resolveTextureUrl(path);
+      return typeof resolved === 'string' ? loadFromUrl(resolved) : resolved.then(loadFromUrl);
+    };
 
     const groupCount = def.shape === 'stairs' ? 2 : 6;
 
@@ -290,6 +294,7 @@ export class VoxelMesh {
     private world: WorldReader,
     private catalog: BlockDef[],
     private loader: THREE.TextureLoader = new THREE.TextureLoader(),
+    private resolveTextureUrl: TextureUrlResolver = staticTextureUrl,
   ) {
     this.markDirty();
   }
@@ -298,6 +303,15 @@ export class VoxelMesh {
   setDisplayMode(mode: DisplayMode): void {
     this.displayMode = mode;
     for (const bt of this.byBucket.values()) bt.setDisplayMode(mode);
+  }
+
+  /** Discards loaded materials so imported or removed browser textures are resolved again. */
+  reloadTextures(): void {
+    for (const bt of this.byBucket.values()) bt.dispose();
+    this.byBucket.clear();
+    this.order.clear();
+    this.registry.clear();
+    this.markDirty();
   }
 
   setCatalog(catalog: BlockDef[]): void {
@@ -385,7 +399,7 @@ export class VoxelMesh {
     if (!bt || !order) {
       const def = this.catalog[resolved.catalogIndex];
       if (!def) return;
-      bt = new BlockTypeMesh(this.scene, def, resolved.upsideDown, this.loader, this.displayMode);
+      bt = new BlockTypeMesh(this.scene, def, resolved.upsideDown, this.loader, this.displayMode, this.resolveTextureUrl);
       this.byBucket.set(resolved.bucketKey, bt);
       order = [];
       this.order.set(resolved.bucketKey, order);
@@ -460,7 +474,7 @@ export class VoxelMesh {
       if (!bt) {
         const def = this.catalog[group.catalogIndex];
         if (!def) continue;
-        bt = new BlockTypeMesh(this.scene, def, group.upsideDown, this.loader, this.displayMode);
+        bt = new BlockTypeMesh(this.scene, def, group.upsideDown, this.loader, this.displayMode, this.resolveTextureUrl);
         this.byBucket.set(bucketKey, bt);
       }
       bt.setCount(group.cells.length);

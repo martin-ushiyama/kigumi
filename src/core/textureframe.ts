@@ -17,6 +17,14 @@ import textureFrames from '../data/texture-frames.json';
 /** Base path for texture delivery. If references were scattered, one could break without anyone noticing */
 export const TEXTURE_BASE = 'textures/blocks/';
 
+/** Resolves a manifest-relative texture filename to a browser-loadable URL. */
+export type TextureUrlResolver = (file: string) => string | Promise<string>;
+
+/** Development/default delivery path used when no browser-imported texture exists. */
+export function staticTextureUrl(file: string): string {
+  return TEXTURE_BASE + file;
+}
+
 const FRAMES = textureFrames as Record<string, number>;
 
 /**

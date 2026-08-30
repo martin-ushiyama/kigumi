@@ -238,7 +238,7 @@ test('4. save/load, and the existing work survives loading malformed JSON', asyn
   await expect.poll(() => worldSize(page)).toBe(0);
 
   // Load the saved JSON to restore it
-  const fileInput = page.locator('input[type="file"]');
+  const fileInput = page.locator('input[type="file"][accept*="application/json"]');
   await fileInput.setInputFiles({ name: 'project.blocksmith.json', mimeType: 'application/json', buffer: Buffer.from(savedJson) });
   await expect.poll(() => worldSize(page)).toBe(1);
   await expect.poll(() => worldGet(page, placed!.x, placed!.y, placed!.z)).not.toBeNull();
