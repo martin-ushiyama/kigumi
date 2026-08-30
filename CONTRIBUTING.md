@@ -2,6 +2,8 @@
 
 Bug reports, feature proposals, documentation fixes, and code contributions are welcome.
 
+By participating, you agree to follow the [Code of Conduct](CODE_OF_CONDUCT.md). Please report suspected vulnerabilities through the private process in [SECURITY.md](SECURITY.md), not in a public issue.
+
 ## Before you start
 
 - Search existing issues before opening a new one.
