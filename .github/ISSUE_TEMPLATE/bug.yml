@@ -1,0 +1,53 @@
+name: Bug report
+description: Report something that is broken or behaves unexpectedly
+title: "[Bug]: "
+labels:
+  - bug
+body:
+  - type: markdown
+    attributes:
+      value: Thanks for taking the time to report a bug.
+  - type: textarea
+    id: summary
+    attributes:
+      label: What happened?
+      description: Describe the problem and what you were trying to do.
+    validations:
+      required: true
+  - type: textarea
+    id: steps
+    attributes:
+      label: Steps to reproduce
+      description: Include the smallest set of steps that consistently reproduces the problem.
+      placeholder: |
+        1. Open ...
+        2. Select ...
+        3. See ...
+    validations:
+      required: true
+  - type: textarea
+    id: expected
+    attributes:
+      label: Expected behaviour
+    validations:
+      required: true
+  - type: textarea
+    id: environment
+    attributes:
+      label: Environment
+      description: Include your browser, operating system, and the page URL or commit if known.
+      placeholder: Chromium, Windows, hosted editor
+    validations:
+      required: true
+  - type: textarea
+    id: additional
+    attributes:
+      label: Additional context
+      description: Add screenshots, recordings, or a small project JSON if they help explain the issue.
+  - type: checkboxes
+    id: search
+    attributes:
+      label: Existing issues
+      options:
+        - label: I searched existing issues and did not find a duplicate.
+          required: true

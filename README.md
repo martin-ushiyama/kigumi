@@ -1,53 +1,75 @@
-# blocksmith
+# Kigumi
 
-A browser-based 3D editor for Minecraft Bedrock builders. Place blocks, design in layers and
-groups the way you would in a vector editor, and export a `.mcpack` that imports straight into a
-world.
+A browser-based 3D editor for Minecraft Bedrock builders. Sketch with blocks, organize a build
+with layers and groups, create natural material mixes, and export the result as a `.mcpack`.
 
-The headline feature is the **mix palette**: define a recipe such as 40% stone bricks / 30%
-cobblestone / 20% andesite / 10% mossy cobblestone, and every stroke draws from it at random.
-Weathering a road or a wall stops being five passes with five blocks in hand.
+**[Try Kigumi in your browser](https://martin-ushiyama.github.io/kigumi/)** ·
+**[Japanese](README.ja.md)**
 
-A fuller guide in Japanese: **[README.ja.md](README.ja.md)**
+> Kigumi currently requires a desktop-sized screen, keyboard, and mouse or trackpad.
 
-## Getting started
+## What you can do
+
+- Place, erase, select, move, duplicate, mirror, and fill block shapes in a 3D workspace.
+- Keep larger builds manageable with nested layers, groups, visibility, and locking.
+- Build reusable mix palettes such as 40% stone bricks, 30% cobblestone, 20% andesite, and
+  10% mossy cobblestone. Each stroke draws from the mix by weight.
+- Save an editable project as JSON or export a Minecraft Bedrock behaviour pack in one step.
+- Work entirely in the browser. Project data and pack generation never require a backend.
+
+## Saving a project
+
+Kigumi autosaves in the current browser. Browser storage can be removed when site data is
+cleared, when private browsing ends, or when the device is lost. Download a project JSON
+regularly for backup. The same JSON file can be loaded on another computer or shared with
+another builder; there is no server-side project sharing.
+
+## Bringing a build into Minecraft
+
+1. Choose **Export** and open the downloaded `.mcpack`. Minecraft imports it automatically.
+2. Open the world's settings and enable the imported behaviour pack.
+3. In the world, run `/structure load bs:<project-name>`.
+
+## Textures and upstream data
+
+The block catalogue and textures originate from Mojang's
+[bedrock-samples](https://github.com/Mojang/bedrock-samples). Minecraft assets are not
+redistributed in this repository. The hosted editor works with flat-colour fallbacks when those
+assets are unavailable.
+
+For local development, the pinned upstream snapshot and textures can be fetched separately:
 
 ```bash
-npm install
-npm run dev      # http://localhost:5199 (fixed port; startup fails if it is taken)
-npm test         # unit tests
-npm run build    # typecheck + production build
+npm run fetch-bedrock-snapshot
+npm run fetch-textures
 ```
 
-## Bringing a build into a world
+## Local development
 
-1. **Export** in the top bar, then double-click the downloaded `.mcpack` — Minecraft imports it.
-2. In the world settings, under behaviour packs, apply the imported pack.
-
-## Upstream data
-
-The block catalogue and the textures come from Mojang's
-[bedrock-samples](https://github.com/Mojang/bedrock-samples), which is
-`(c) Mojang AB. All rights reserved.` under the Minecraft EULA. **None of it is redistributed
-here** — fetch it locally instead:
+Node.js 24 or newer is required.
 
 ```bash
-npm run fetch-bedrock-snapshot   # the block catalogue source
-npm run fetch-textures           # the texture images
+npm ci
+npm run dev      # http://localhost:5199
+npm test
+npm run build
 ```
 
-Without them the editor still runs, falling back to flat colours per block.
+See [CONTRIBUTING.md](CONTRIBUTING.md) before opening a pull request.
 
 ## Documentation
 
 | Document | Contents |
 |---|---|
-| [docs/architecture.md](docs/architecture.md) | the layers under `src/` and the dependency rules |
-| [docs/document-api.md](docs/document-api.md) | the read and write boundaries of `Document` / `World` / `SceneTree` |
-| [docs/bedrock-format.md](docs/bedrock-format.md) | the export target: block state meanings, `.mcstructure` ordering, how to verify in game |
-| [docs/design-system.md](docs/design-system.md) | the visual language of the interface |
-| [CLAUDE.md](CLAUDE.md) | the rules for writing to this repository |
+| [docs/architecture.md](docs/architecture.md) | module boundaries and dependency rules |
+| [docs/document-api.md](docs/document-api.md) | read and write boundaries for the editor model |
+| [docs/bedrock-format.md](docs/bedrock-format.md) | Bedrock block states and `.mcstructure` output |
+| [docs/design-system.md](docs/design-system.md) | interface design language |
 
-## Licence
+## License and disclaimer
 
-[MIT](LICENSE). Minecraft assets are not covered by it — see "Upstream data" above.
+The source code is available under the [MIT License](LICENSE). Minecraft assets are not covered
+by that license.
+
+Kigumi is an unofficial fan-made tool. It is not approved by or associated with Mojang or
+Microsoft. Minecraft and its related names, brands, and assets belong to their respective owners.
