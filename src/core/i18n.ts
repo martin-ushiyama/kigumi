@@ -35,6 +35,8 @@ const UI = {
   'rail.theme': ['Theme', '画面テーマ'],
   'rail.themeToDark': ['Switch to dark', 'ダークにする'],
   'rail.themeToLight': ['Switch to light', 'ライトにする'],
+  'rail.github': ['GitHub repository', 'GitHubリポジトリ'],
+  'rail.githubTitle': ['View the source and star on GitHub', 'GitHubでソースを見る・スターする'],
 
   // --- Small-screen guidance ---
   'mobile.title': ['Open on a desktop', 'PCで開いてください'],

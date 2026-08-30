@@ -678,6 +678,13 @@ body {
   letter-spacing: 0.02em;
 }
 
+#sidebar-rail .rail-github {
+  width: 32px;
+  height: 28px;
+  color: var(--text-dim);
+  text-decoration: none;
+}
+
 #sidebar-rail .rail-lang:hover {
   background: var(--bs-surface-control-hover);
   color: var(--bs-content-primary);

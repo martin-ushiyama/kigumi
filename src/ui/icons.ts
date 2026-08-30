@@ -14,6 +14,7 @@ export type IconName =
   | 'eye-off'
   | 'eyedropper'
   | 'grid'
+  | 'github'
   | 'help'
   | 'layers'
   | 'lock'
@@ -42,6 +43,8 @@ export type IconName =
   | 'view-top';
 
 const CONTENT: Record<IconName, string> = {
+  github:
+    '<path d="M10 2.3a7.7 7.7 0 0 0-2.4 15c.4.1.5-.2.5-.4v-1.5c-2.2.5-2.7-1-2.7-1-.4-1-1-1.3-1-1.3-.8-.5.1-.5.1-.5.9.1 1.4.9 1.4.9.8 1.4 2 1 2.5.8.1-.6.3-1 .6-1.2-1.8-.2-3.6-.9-3.6-3.8 0-.8.3-1.5.8-2.1-.1-.2-.3-1 .1-2.1 0 0 .7-.2 2.2.8a7.5 7.5 0 0 1 4 0c1.5-1 2.2-.8 2.2-.8.4 1.1.2 1.9.1 2.1.5.6.8 1.3.8 2.1 0 3-1.8 3.6-3.6 3.8.3.3.6.8.6 1.5v2.3c0 .2.1.5.6.4A7.7 7.7 0 0 0 10 2.3Z" fill="currentColor" stroke="none"/>',
   cursor: '<path d="m5 3 11 8-5 1.5L8.5 17z"/><path d="m11 12.5 3.5 5"/>',
   'square-plus': '<rect x="3.5" y="3.5" width="13" height="13" rx="1.5"/><path d="M10 7v6M7 10h6"/>',
   eraser: '<path d="m4 13 7.5-8a2 2 0 0 1 3 0l1 1a2 2 0 0 1 0 3L9 16H6z"/><path d="m9 8 5 5M9 16h7"/>',
