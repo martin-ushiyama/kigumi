@@ -11,8 +11,20 @@ import { expect, test, type Page } from '@playwright/test';
  * **no Japanese leaking into the strings shown on screen**.
  */
 
-// Unlike the other specs, this starts with localStorage empty = the default (English)
-test.use({ storageState: { cookies: [], origins: [] } });
+// Unlike the other specs, this omits the UI preference so the app starts with the English default.
+// The tour is marked complete because this suite exercises the editor underneath it; the dedicated
+// onboarding spec covers the first-visit path in both UI languages.
+test.use({
+  storageState: {
+    cookies: [],
+    origins: [
+      {
+        origin: 'http://localhost:4319',
+        localStorage: [{ name: 'blocksmith.onboarding.v1', value: 'done' }],
+      },
+    ],
+  },
+});
 
 const JA = /[\u3040-\u30ff\u4e00-\u9fff]/;
 

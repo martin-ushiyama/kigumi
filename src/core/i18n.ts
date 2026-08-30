@@ -46,6 +46,34 @@ const UI = {
   ],
   'mobile.requirements': ['Keyboard + mouse or trackpad', 'キーボード ＋ マウスまたはトラックパッド'],
 
+  // --- First-run quick tour ---
+  'onboarding.dialog': ['Quick tour', 'クイックツアー'],
+  'onboarding.skip': ['Skip', 'スキップ'],
+  'onboarding.next': ['Next', '次へ'],
+  'onboarding.start': ['Start building', 'つくりはじめる'],
+  'onboarding.progress': ['Step', 'ステップ'],
+  'onboarding.step1.eyebrow': ['01 — Build', '01 — つくる'],
+  'onboarding.step1.title': ['Start with blocks', 'ブロックからはじめる'],
+  'onboarding.step1.body': [
+    'Choose a block on the left, then place it in the canvas. Use Shape fill when you want to build volume quickly.',
+    '左でブロックを選び、キャンバスに置きます。まとまった形は「形状フィル」ですばやく作れます。',
+  ],
+  'onboarding.step1.hint': ['Place · Erase · Shape fill', '設置 · 削除 · 形状フィル'],
+  'onboarding.step2.eyebrow': ['02 — Reuse', '02 — くり返す'],
+  'onboarding.step2.title': ['Make repetition effortless', 'くり返しを、かんたんに'],
+  'onboarding.step2.body': [
+    'Patterns combine blocks into repeatable surfaces. Components let you edit one structure and update every copy.',
+    'パターンでブロックの並びを作り、コンポーネントで同じ構造をまとめて編集できます。',
+  ],
+  'onboarding.step2.hint': ['Patterns · Components', 'パターン · コンポーネント'],
+  'onboarding.step3.eyebrow': ['03 — Export', '03 — 書き出す'],
+  'onboarding.step3.title': ['Take it into Minecraft', 'Minecraftへ持っていく'],
+  'onboarding.step3.body': [
+    'Save the editable project whenever you like. When it is ready, export an .mcpack and import it into Minecraft.',
+    '編集用のプロジェクトはいつでも保存できます。完成したら .mcpack を書き出してMinecraftへ。',
+  ],
+  'onboarding.step3.hint': ['Save project · Export .mcpack', 'プロジェクト保存 · .mcpack 書き出し'],
+
   // --- Document bar ---
   'doc.projectName': ['Project name', '作品名'],
   'doc.save': ['Save', '保存'],

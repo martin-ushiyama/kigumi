@@ -179,6 +179,7 @@ const SECTIONS: { title: Bi; rows: readonly (readonly [key: string, desc: Bi])[]
 
 const PANEL_TITLE: Bi = ['Keyboard guide', '操作ガイド'];
 const CLOSE_LABEL: Bi = ['Close (Esc)', '閉じる (Esc)'];
+const TOUR_LABEL: Bi = ['Replay quick tour', 'クイックツアーを見る'];
 
 export interface HelpHandle {
   isVisible: () => boolean;
@@ -221,11 +222,21 @@ export function initHelp(root: HTMLElement): HelpHandle {
       }
     }
 
+    const actions = document.createElement('div');
+    actions.className = 'help-actions';
+    const tour = document.createElement('button');
+    tour.className = 'help-tour';
+    tour.textContent = pick(TOUR_LABEL);
+    tour.addEventListener('click', () => {
+      setVisible(false);
+      window.dispatchEvent(new Event('bs-open-onboarding'));
+    });
     const close = document.createElement('button');
     close.className = 'help-close';
     close.textContent = pick(CLOSE_LABEL);
     close.addEventListener('click', () => setVisible(false));
-    panel.appendChild(close);
+    actions.append(tour, close);
+    panel.appendChild(actions);
   }
 
   function setVisible(visible: boolean): void {
