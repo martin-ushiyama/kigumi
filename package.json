@@ -29,7 +29,7 @@
     "list-uncurated": "node scripts/list-uncurated.mjs",
     "gen-texture-frames": "node scripts/gen-texture-frames.mjs",
     "gen-texture-frames:check": "node scripts/gen-texture-frames.mjs --check",
-    "check-block-states": "vite-node scripts/check-block-states.mjs",
+    "check-block-states": "tsx scripts/check-block-states.mjs",
     "gen-texture-colors": "node scripts/gen-texture-colors.mjs"
   },
   "dependencies": {
@@ -45,6 +45,7 @@
     "@vitest/coverage-v8": "^4.1.10",
     "eslint": "^10.7.0",
     "globals": "^17.7.0",
+    "tsx": "^4.23.13",
     "typescript": "npm:@typescript/typescript6@^6.0.2",
     "typescript-eslint": "^8.64.0",
     "vite": "^8.1.5",

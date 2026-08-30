@@ -36,6 +36,12 @@ jobs:
       - name: Regenerate the block catalog
         run: npm run gen-blocks
 
+      # The updated catalog must only emit block states that exist in the same pinned
+      # Mojang snapshot. Fail the manual regeneration before publishing its artifacts
+      # when upstream changes make an exported state invalid.
+      - name: Validate exported block states against the snapshot
+        run: npm run check-block-states
+
       # Includes rebuilding the unified DB (the manifest is a projection of the DB, so the DB
       # comes first). Any unresolved ambiguity or lossy projection fails here.
       - name: Regenerate the texture manifest (rebuilding the unified DB along the way)

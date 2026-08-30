@@ -2,7 +2,7 @@
  * Cross-checks that the block states blocksmith writes out exist in Mojang's official block
  * definitions.
  *
- *   npx vite-node scripts/check-block-states.mjs
+ *   npm run check-block-states
  *
  * It mechanically checks **whether we emit a state the destination does not accept**. The
  * stair orientation was a
@@ -14,14 +14,9 @@
  * because of the EULA. **When it is absent, this skips and exits successfully**, so it does
  * nothing in CI.
  *
- * **Nothing calls this automatically.** It is not in any workflow — not even
- * `regen-from-upstream`, which updates the snapshot and regenerates the catalogue. It runs
- * only when someone types `npm run check-block-states` in an environment where
- * `npm run fetch-bedrock-snapshot` has been run.
- *
- * That is how the pillar_axis cross-check could cover zero blocks for as long as it did: the
- * one thing that would have caught it was never invoked. If this check is worth keeping, it
- * belongs in `regen-from-upstream`.
+ * The manual `regen-from-upstream` workflow runs this after regenerating the block catalogue,
+ * while the updated snapshot is available. Local runs need `npm run fetch-bedrock-snapshot`
+ * first; without the snapshot the command exits successfully after reporting that it skipped.
  *
  * The meaning of the values (whether 0 of weirdo_direction is east or north) cannot be known
  * here. The measured table in `docs/bedrock-format.md` holds that.
