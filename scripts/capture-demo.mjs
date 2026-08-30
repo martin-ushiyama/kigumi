@@ -106,9 +106,9 @@ async function main() {
 
     await snap(FPS);
     await page.evaluate(() => {
-      const stoneBricks = window.__bs.CATALOG.findIndex((block) => block.id === 'minecraft:stone_bricks');
-      if (stoneBricks < 0) throw new Error('Stone bricks are missing from the catalog');
-      window.__bs.setActiveBlock(stoneBricks);
+      const stone = window.__bs.CATALOG.findIndex((block) => block.id === 'minecraft:stone');
+      if (stone < 0) throw new Error('Stone is missing from the catalog');
+      window.__bs.setActiveBlock(stone);
     });
     await page.keyboard.press('3');
     await snap(Math.round(FPS / 2));
@@ -135,15 +135,15 @@ async function main() {
 
     await page.evaluate(() => {
       const ids = [
-        ['minecraft:stone_bricks', 6],
-        ['minecraft:mossy_stone_bricks', 2],
-        ['minecraft:cracked_stone_bricks', 2],
+        ['minecraft:stone', 7],
+        ['minecraft:andesite', 2],
+        ['minecraft:tuff', 1],
         ['minecraft:cobblestone', 1],
       ];
       window.__bs.recipeStore.replaceAll([
         {
           id: 'demo-wall',
-          name: 'Weathered masonry',
+          name: 'Natural stone mix',
           entries: ids.map(([blockId, weight]) => ({ blockId, weight })),
         },
       ]);
@@ -188,7 +188,7 @@ async function main() {
     });
     await snap(Math.round(FPS / 2));
 
-    const repaint = page.getByRole('button', { name: 'Repaint with pattern (Weathered masonry)' });
+    const repaint = page.getByRole('button', { name: 'Repaint with pattern (Natural stone mix)' });
     await repaint.scrollIntoViewIfNeeded();
     await snap(Math.round(FPS / 2));
     await repaint.click();
@@ -196,7 +196,7 @@ async function main() {
     await page.keyboard.press('Escape');
     await snap(FPS);
 
-    await page.getByRole('textbox', { name: 'Project name' }).fill('Weathered wall');
+    await page.getByRole('textbox', { name: 'Project name' }).fill('Stone wall');
     const exportButton = page.getByRole('button', { name: 'Export' });
     await exportButton.focus();
     await snap(Math.round(FPS / 2));
