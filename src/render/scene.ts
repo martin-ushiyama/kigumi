@@ -1,9 +1,7 @@
 import * as THREE from 'three';
 import { OrbitControls } from 'three/addons/controls/OrbitControls.js';
 import ENV_TEXTURES from '../data/env-textures.json';
-
-/** Same serving root as block textures (kept in sync with render/voxelmesh.ts) */
-const TEXTURE_BASE = 'textures/blocks/';
+import { staticTextureUrl, type TextureUrlResolver } from '../core/textureframe';
 
 export type GroundTheme = 'neutral' | 'grass';
 
@@ -16,6 +14,8 @@ export interface SceneCtx {
   setGroundTheme: (theme: GroundTheme) => void;
   /** Re-reads the 3D-side colors when the UI theme changes */
   refreshTheme: () => void;
+  /** Re-resolves the grass texture after a browser resource pack is imported or removed. */
+  reloadTextureAssets: () => void;
   getGroundTheme: () => GroundTheme;
 }
 
@@ -104,7 +104,10 @@ function buildCloudsGroup(): THREE.Group {
   return group;
 }
 
-export function createScene(canvas: HTMLCanvasElement): SceneCtx {
+export function createScene(
+  canvas: HTMLCanvasElement,
+  resolveTextureUrl: TextureUrlResolver = staticTextureUrl,
+): SceneCtx {
   // The canvas's own clientWidth/Height ends up following the inline style that
   // renderer.setSize() writes, effectively becoming a fixed value (so it can no longer detect
   // the parent resizing), so instead read the actual size of the parent element
@@ -207,23 +210,37 @@ export function createScene(canvas: HTMLCanvasElement): SceneCtx {
   // doesn't 404; it silently becomes "decode failure → silent fallback" (this was the cause
   // of a bug where grass never appeared)
   let grassTexture: THREE.Texture | null = null;
-  new THREE.TextureLoader().load(
-    TEXTURE_BASE + ENV_TEXTURES.grassTop,
-    (tex) => {
-      tex.wrapS = THREE.RepeatWrapping;
-      tex.wrapT = THREE.RepeatWrapping;
-      tex.repeat.set(64, 64); // Match the scale of the 64-square ground = one repeat per block
-      tex.magFilter = THREE.NearestFilter;
-      tex.minFilter = THREE.NearestFilter;
-      tex.colorSpace = THREE.SRGBColorSpace;
-      grassTexture = tex;
-      if (groundTheme === 'grass') applyGroundAppearance();
-    },
-    undefined,
-    () => {
-      // Not fetched → stays flat-colored (same fallback policy as other block textures)
-    },
-  );
+  let grassLoadVersion = 0;
+
+  function reloadTextureAssets(): void {
+    const version = ++grassLoadVersion;
+    grassTexture?.dispose();
+    grassTexture = null;
+    applyGroundAppearance();
+    void Promise.resolve(resolveTextureUrl(ENV_TEXTURES.grassTop)).then((url) => {
+      new THREE.TextureLoader().load(
+        url,
+        (tex) => {
+          if (version !== grassLoadVersion) {
+            tex.dispose();
+            return;
+          }
+          tex.wrapS = THREE.RepeatWrapping;
+          tex.wrapT = THREE.RepeatWrapping;
+          tex.repeat.set(64, 64);
+          tex.magFilter = THREE.NearestFilter;
+          tex.minFilter = THREE.NearestFilter;
+          tex.colorSpace = THREE.SRGBColorSpace;
+          grassTexture = tex;
+          if (groundTheme === 'grass') applyGroundAppearance();
+        },
+        undefined,
+        () => {
+          // Missing assets stay flat-colored.
+        },
+      );
+    });
+  }
 
   function applyGroundAppearance(): void {
     if (groundTheme === 'grass' && grassTexture) {
@@ -235,6 +252,8 @@ export function createScene(canvas: HTMLCanvasElement): SceneCtx {
     }
     groundMaterial.needsUpdate = true;
   }
+
+  reloadTextureAssets();
 
   function setGroundTheme(theme: GroundTheme): void {
     groundTheme = theme;
@@ -282,6 +301,7 @@ export function createScene(canvas: HTMLCanvasElement): SceneCtx {
     resizeIfNeeded,
     setGroundTheme,
     refreshTheme,
+    reloadTextureAssets,
     getGroundTheme: () => groundTheme,
   };
 

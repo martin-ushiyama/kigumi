@@ -307,6 +307,28 @@ const UI = {
   'toolbar.flat': ['Flat', 'フラット'],
   'toolbar.displayTextured': ['Display: textured', '表示: テクスチャ'],
   'toolbar.displayFlat': ['Display: flat', '表示: フラット'],
+  'texture.label': ['Textures', 'テクスチャ'],
+  'texture.load': ['Load pack', 'パック読込'],
+  'texture.replace': ['Replace', '入れ替え'],
+  'texture.remove': ['Remove', '削除'],
+  'texture.loadTitle': [
+    'Load a resource pack (.zip or .mcpack). You can also drop it here.',
+    'リソースパック (.zip / .mcpack) を読み込む。ここへのドロップも可能',
+  ],
+  'texture.removeTitle': ['Remove imported textures from this browser', 'このブラウザから取り込み済みテクスチャを削除'],
+  'texture.removeConfirm': ['Remove imported textures from this browser?', '取り込み済みテクスチャをこのブラウザから削除する？'],
+  'texture.loadedCount': ['{count} loaded', '{count}件読込済み'],
+  'texture.notLoaded': ['Flat fallback', '未読込時はフラット'],
+  'texture.imported': [
+    'Loaded {count} of {total} required textures into this browser',
+    '必要なテクスチャ {total} 件中 {count} 件をこのブラウザに読み込んだ',
+  ],
+  'texture.removed': ['Imported textures removed', '取り込み済みテクスチャを削除した'],
+  'texture.error.archiveTooLarge': ['The resource pack is too large', 'リソースパックのサイズが大きすぎる'],
+  'texture.error.invalidArchive': ['The file is not a readable ZIP or MCPACK', 'ZIP / MCPACK として読み込めないファイルだった'],
+  'texture.error.noMatches': ['No supported block textures were found', '対応するブロックテクスチャが見つからなかった'],
+  'texture.error.textureTooLarge': ['The extracted textures are too large', '展開後のテクスチャ容量が大きすぎる'],
+  'texture.error.storage': ['Could not save textures in this browser', 'このブラウザにテクスチャを保存できなかった'],
 
   // --- Static region names in index.html (for screen readers, looked up from data-i18n-aria) ---
   'aria.rail': ['Switch panels', 'パネル切替'],

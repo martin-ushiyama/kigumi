@@ -23,7 +23,7 @@ test('the app starts and the Figma-style shell and viewport are displayed', asyn
   // 2 stacked swatches + the swap + 5 edit tools + the shape dropdown caret + undo / redo.
   // Adding shapes does not add tool buttons (a single caret folds all the shapes away)
   await expect(page.locator('#toolbar button')).toHaveCount(11);
-  await expect(page.locator('#world-controls button')).toHaveCount(6); // 3 viewpoints + ground + texture
+  await expect(page.locator('#world-controls button')).toHaveCount(7); // 3 viewpoints + ground + display + void + texture-pack load
 
   const editor = await page.locator('#editor-area').boundingBox();
   const toolbar = await page.locator('#toolbar').boundingBox();
@@ -381,8 +381,8 @@ test('View controls stay grouped by orientation and appearance', async ({ page }
   await expect(page.locator('#viewport')).toBeVisible();
 
   const controls = page.locator('#world-controls');
-  await expect(controls.locator('.world-control-row')).toHaveCount(2);
-  await expect(controls.locator('.world-control-label')).toHaveText(['視点', '表示']);
+  await expect(controls.locator('.world-control-row')).toHaveCount(3);
+  await expect(controls.locator('.world-control-label')).toHaveText(['視点', '表示', 'テクスチャ']);
   await expect(controls.locator('.view-tools button')).toHaveCount(3);
   await expect(controls.locator('.display-tools button')).toHaveCount(3);
 

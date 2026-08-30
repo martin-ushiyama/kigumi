@@ -27,6 +27,7 @@ import { createBackupReminder } from './services/backup-reminder';
 import { serializeComponentTemplate, validateComponents } from './project/persistence';
 import { createBrowserFrameClock } from './services/renderscheduler-clock-browser';
 import { createRenderScheduler } from './services/renderscheduler';
+import { createTexturePackService, TexturePackError } from './services/texturepack';
 import { initHelp } from './ui/help';
 import { initBlockUsage } from './ui/blockusage';
 import { createBlockChangePicker } from './ui/blockchangepicker';
@@ -52,6 +53,7 @@ import { initAxisGizmo } from './ui/axisgizmo';
 import { initSidebarTabs } from './ui/sidebar';
 import { initStaticLabels } from './ui/staticlabels';
 import { initToolbar, SHAPES, type ToolbarHandle } from './ui/toolbar';
+import { configureTextureUrlResolver, refreshTextureElements } from './ui/textureframe';
 import { toast } from './ui/toast';
 import { blockName, cyclePendingFacing, defaultName, errorText, onStateChange, opError, setActiveBlock, setPendingComponent, setActiveRecipe, setLang, setShowVoidEdges, setThemePreference, resolvedTheme, notifySystemThemeChanged, setDisplayMode, setShape, setTool, state, swapActiveAndSpare, t, togglePendingFlip, type Lang, type ThemePreference, type DisplayMode } from './state';
 
@@ -72,7 +74,9 @@ const statusbar = document.getElementById('statusbar')!;
 const inspectorRoot = document.getElementById('inspector')!;
 const blockUsageRoot = document.getElementById('block-usage')!;
 
-const ctx = createScene(canvas);
+const texturePackService = createTexturePackService();
+configureTextureUrlResolver(texturePackService.resolveUrl);
+const ctx = createScene(canvas, texturePackService.resolveUrl);
 
 /**
  * Source of truth for the edit model. Document owns the EditorScene (owner-local
@@ -119,7 +123,7 @@ const doc = new Document(
  */
 const world = doc.world;
 
-const voxelMesh = new VoxelMesh(ctx.scene, world, CATALOG);
+const voxelMesh = new VoxelMesh(ctx.scene, world, CATALOG, new THREE.TextureLoader(), texturePackService.resolveUrl);
 const voxelEdges = new VoxelEdges(ctx.scene, world, CATALOG);
 // Void never wins and is never drawn, so show a position hint via outline edges
 const voidEdges = new VoidEdges(ctx.scene, doc.index);
@@ -527,6 +531,23 @@ function loadProjectFromFile(file: File): void {
     .catch((e) => toast(t('toast.loadFailed', { message: errorText(e, 'err.loadFailed') })));
 }
 
+function refreshImportedTextures(): void {
+  refreshTextureElements();
+  voxelMesh.reloadTextures();
+  ctx.reloadTextureAssets();
+}
+
+function textureImportError(error: unknown): string {
+  if (!(error instanceof TexturePackError)) return t('texture.error.storage');
+  const key = {
+    'archive-too-large': 'texture.error.archiveTooLarge',
+    'invalid-archive': 'texture.error.invalidArchive',
+    'no-matching-textures': 'texture.error.noMatches',
+    'texture-too-large': 'texture.error.textureTooLarge',
+  } as const;
+  return t(key[error.code]);
+}
+
 initPalette(paletteRoot, CATALOG);
 initRecipes(recipesRoot, CATALOG, recipeStore);
 // A component placed from the list **appears at the origin, selected**.
@@ -641,7 +662,33 @@ toolbarHandle = initToolbar(toolbarRoot, documentRoot, worldControlsRoot, fileMe
   setView,
   toggleGround: () => ctx.setGroundTheme(ctx.getGroundTheme() === 'neutral' ? 'grass' : 'neutral'),
   getGroundLabel: () => (ctx.getGroundTheme() === 'neutral' ? t('ground.neutral') : t('ground.grass')),
+  loadTexturePackFile: (file) => {
+    void texturePackService
+      .importFile(file)
+      .then((result) => {
+        refreshImportedTextures();
+        toolbarHandle?.setTextureCount(result.imported);
+        toast(t('texture.imported', { count: result.imported, total: result.required }));
+      })
+      .catch((error) => toast(textureImportError(error)));
+  },
+  clearTexturePack: () => {
+    void texturePackService
+      .clear()
+      .then(() => {
+        refreshImportedTextures();
+        toolbarHandle?.setTextureCount(0);
+        toast(t('texture.removed'));
+      })
+      .catch(() => toast(t('texture.error.storage')));
+  },
 }, CATALOG, blockChangePicker);
+
+void texturePackService
+  .count()
+  .then((count) => toolbarHandle?.setTextureCount(count))
+  .catch(() => toolbarHandle?.setTextureCount(0));
+window.addEventListener('pagehide', () => texturePackService.dispose(), { once: true });
 
 projectService.restoreAutosave(); // Restore the previous autosave
 

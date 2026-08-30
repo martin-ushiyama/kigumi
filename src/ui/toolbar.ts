@@ -67,6 +67,8 @@ export type SaveState = { kind: 'pending' } | { kind: 'saved'; at: Date };
 export interface ToolbarHandle {
   /** Updates the document bar's save state in response to ProjectService's autosave notifications */
   setSaveState: (kind: SaveState['kind']) => void;
+  /** Updates the browser-imported texture count after IndexedDB changes. */
+  setTextureCount: (count: number) => void;
 }
 
 export interface ToolbarActions {
@@ -79,6 +81,8 @@ export interface ToolbarActions {
   setView: (preset: ViewPreset) => void;
   toggleGround: () => void;
   getGroundLabel: () => string;
+  loadTexturePackFile: (file: File) => void;
+  clearTexturePack: () => void;
 }
 
 function group(className?: string): HTMLDivElement {
@@ -109,6 +113,7 @@ export function initToolbar(
 ): ToolbarHandle {
   // render() gets rebuilt by onStateChange, so the save state is kept outside the DOM and redrawn
   let saveState: SaveState | null = null;
+  let textureCount = 0;
   const fileInput = document.createElement('input');
   fileInput.type = 'file';
   fileInput.accept = '.json,application/json';
@@ -117,6 +122,38 @@ export function initToolbar(
     const file = fileInput.files?.[0];
     if (file) actions.loadProjectFile(file);
     fileInput.value = '';
+  });
+
+  const textureInput = document.createElement('input');
+  textureInput.type = 'file';
+  textureInput.accept = '.zip,.mcpack,application/zip,application/octet-stream';
+  textureInput.hidden = true;
+  textureInput.addEventListener('change', () => {
+    const file = textureInput.files?.[0];
+    if (file) actions.loadTexturePackFile(file);
+    textureInput.value = '';
+  });
+  document.body.append(textureInput);
+
+  function droppedTexturePack(event: DragEvent): File | null {
+    const file = event.dataTransfer?.files[0];
+    if (!file) return null;
+    const lower = file.name.toLowerCase();
+    return lower.endsWith('.zip') || lower.endsWith('.mcpack') ? file : null;
+  }
+
+  worldControlsRoot.addEventListener('dragover', (event) => {
+    if (!event.dataTransfer?.types.includes('Files')) return;
+    event.preventDefault();
+    worldControlsRoot.classList.add('texture-drop-active');
+  });
+  worldControlsRoot.addEventListener('dragleave', () => worldControlsRoot.classList.remove('texture-drop-active'));
+  worldControlsRoot.addEventListener('drop', (event) => {
+    worldControlsRoot.classList.remove('texture-drop-active');
+    const file = droppedTexturePack(event);
+    if (!file) return;
+    event.preventDefault();
+    actions.loadTexturePackFile(file);
   });
 
   /**
@@ -497,7 +534,42 @@ export function initToolbar(
       }),
     );
     displayRow.append(displayLabel, displayGroup);
-    worldControlsRoot.append(worldTitle, viewRow, displayRow);
+
+    const textureRow = document.createElement('div');
+    textureRow.className = 'world-control-row texture-pack-row';
+    const textureLabel = document.createElement('span');
+    textureLabel.className = 'world-control-label';
+    textureLabel.textContent = t('texture.label');
+    const textureGroup = group('texture-pack-tools');
+    textureGroup.append(
+      createButton({
+        label: textureCount > 0 ? t('texture.replace') : t('texture.load'),
+        ariaLabel: t('texture.loadTitle'),
+        title: t('texture.loadTitle'),
+        icon: createIcon('texture'),
+        className: 'world-control-button texture-pack-load',
+        onClick: () => textureInput.click(),
+      }),
+    );
+    if (textureCount > 0) {
+      textureGroup.append(
+        createButton({
+          label: t('texture.remove'),
+          ariaLabel: t('texture.removeTitle'),
+          title: t('texture.removeTitle'),
+          icon: createIcon('trash'),
+          className: 'world-control-button texture-pack-remove',
+          onClick: () => {
+            if (window.confirm(t('texture.removeConfirm'))) actions.clearTexturePack();
+          },
+        }),
+      );
+    }
+    const textureStatus = document.createElement('span');
+    textureStatus.className = 'texture-pack-status';
+    textureStatus.textContent = textureCount > 0 ? t('texture.loadedCount', { count: textureCount }) : t('texture.notLoaded');
+    textureRow.append(textureLabel, textureGroup, textureStatus);
+    worldControlsRoot.append(worldTitle, viewRow, displayRow, textureRow);
   }
 
   // onStateChange fires for **every** state change, including lang, so adding onLangChange
@@ -518,6 +590,10 @@ export function initToolbar(
       if (!el) return;
       el.dataset.state = kind;
       el.textContent = saveStateText(saveState, state.lang);
+    },
+    setTextureCount: (count) => {
+      textureCount = count;
+      render();
     },
   };
 }

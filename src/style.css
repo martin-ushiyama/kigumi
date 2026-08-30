@@ -826,6 +826,20 @@ body {
   text-overflow: ellipsis;
 }
 
+#world-controls .texture-pack-tools {
+  width: fit-content;
+}
+
+#world-controls .texture-pack-status {
+  color: var(--bs-content-secondary);
+  font-size: var(--bs-font-size-xs);
+}
+
+#world-controls.texture-drop-active {
+  outline: 2px solid var(--bs-border-focus);
+  outline-offset: -3px;
+}
+
 /* Block usage list. Fixed at the bottom of the right panel, scrolls internally as rows grow */
 #block-usage {
   /* **Don't shrink this.** The inspector can scroll on its own, so it's the

@@ -129,7 +129,7 @@ async function loadFile(page: Page, name: string, body: string): Promise<void> {
   await page.locator('#sidebar-rail .rail-logo').click();
   await page.locator('.document-file-menu button', { hasText: 'Load' }).click();
   await page
-    .locator('input[type="file"]')
+    .locator('input[type="file"][accept*="application/json"]')
     .setInputFiles({ name, mimeType: 'application/json', buffer: Buffer.from(body) });
 }
 
