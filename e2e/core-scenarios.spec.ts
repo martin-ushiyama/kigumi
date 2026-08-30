@@ -219,12 +219,10 @@ test('4. save/load, and the existing work survives loading malformed JSON', asyn
   const placed = await findAnyCell(page);
   expect(placed).not.toBeNull();
 
-  // Save → grab the downloaded JSON (save lives inside the file menu).
-  // The hasText strings are the Japanese UI labels of the default locale, so they stay as-is
-  await page.locator('.rail-logo').click();
+  // Save and grab the downloaded JSON from the always-visible backup action.
   const [download] = await Promise.all([
     page.waitForEvent('download'),
-    page.locator('.document-file-menu button', { hasText: '保存' }).click(),
+    page.locator('.document-save').click(),
   ]);
   const savedPath = await download.path();
   expect(savedPath).not.toBeNull();

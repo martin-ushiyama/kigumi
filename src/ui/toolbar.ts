@@ -314,11 +314,14 @@ export function initToolbar(
     saveStateEl.textContent = saveStateText(saveState, state.lang);
     saveStateEl.setAttribute('role', 'status');
 
-    // The only thing always shown is **"export," the final exit point**. Save / load / clear
-    // fold into a menu next to the project name. Lining up all 4 would use 74px just
-    // for the button row within the 248px width, crowding the header into the canvas. Tucking
-    // away the 3 low-frequency ones that can be grouped as "operations on the project file"
-    // gives the same shape as Figma's file menu.
+    // JSON save stays visible because it is the portable backup. Browser autosave can
+    // disappear with site data, while load and clear remain low-frequency actions.
+    const saveButton = createButton({
+      label: t('doc.save'),
+      title: t('doc.saveTitle'),
+      className: 'document-save',
+      onClick: actions.saveProject,
+    });
     const exportButton = createButton({
       label: t('doc.export'),
       title: t('doc.exportTitle'),
@@ -343,7 +346,6 @@ export function initToolbar(
         },
       });
     fileMenu.append(
-      menuItem(t('doc.save'), t('doc.saveTitle'), actions.saveProject),
       menuItem(t('doc.load'), t('doc.loadTitle'), () => fileInput.click()),
       menuItem(t('doc.clear'), t('doc.clearTitle'), actions.clearAll, 'danger'),
     );
@@ -371,15 +373,18 @@ export function initToolbar(
     nameRow.className = 'document-name-row';
     nameRow.append(projectName);
 
-    // Places the save state and "export" on the same row. A full-width filled button would
-    // be a 223x30 ≈ 6,700px² solid block, making it the strongest element in the white panel.
-    // Figma's Share button uses the same saturated blue but is only 60px wide —
-    // **strength comes from area, not color**
+    const storageNote = document.createElement('p');
+    storageNote.className = 'document-storage-note';
+    storageNote.textContent = t('doc.storageNote');
+
     const statusRow = document.createElement('div');
     statusRow.className = 'document-status-row';
-    statusRow.append(saveStateEl, exportButton);
+    const actionGroup = document.createElement('div');
+    actionGroup.className = 'document-actions';
+    actionGroup.append(saveButton, exportButton);
+    statusRow.append(saveStateEl, actionGroup);
 
-    documentBarRoot.append(nameRow, statusRow, fileMenu, fileInput);
+    documentBarRoot.append(nameRow, statusRow, storageNote, fileMenu, fileInput);
 
     // The stacked swatch sits at the left edge of the tool row. "What to paint with" is
     // decided before tool selection, so it's placed ahead of the tool row

@@ -21,6 +21,90 @@ body {
   background: var(--bs-surface-canvas);
 }
 
+#mobile-guidance {
+  display: none;
+}
+
+@media (max-width: 960px) {
+  #mobile-guidance {
+    position: fixed;
+    z-index: 1000;
+    inset: 0;
+    display: grid;
+    place-items: center;
+    padding: 28px;
+    background: var(--bs-surface-canvas);
+  }
+
+  .mobile-guidance-card {
+    width: min(100%, 360px);
+    color: var(--text);
+    text-align: center;
+  }
+
+  .mobile-guidance-mark {
+    position: relative;
+    width: 36px;
+    height: 26px;
+    margin: 0 auto 22px;
+    border: 2px solid currentColor;
+    border-radius: 5px;
+  }
+
+  .mobile-guidance-mark::before {
+    position: absolute;
+    top: 26px;
+    left: 15px;
+    width: 2px;
+    height: 5px;
+    background: currentColor;
+    content: '';
+  }
+
+  .mobile-guidance-mark::after {
+    position: absolute;
+    top: 31px;
+    left: 8px;
+    width: 16px;
+    height: 2px;
+    background: currentColor;
+    content: '';
+  }
+
+  .mobile-guidance-eyebrow {
+    margin-bottom: 10px;
+    color: var(--text-dim);
+    font-size: 12px;
+    font-weight: 600;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+  }
+
+  #mobile-guidance-title {
+    font-size: clamp(24px, 8vw, 34px);
+    line-height: 1.2;
+    letter-spacing: -0.03em;
+  }
+
+  #mobile-guidance-description {
+    margin-top: 14px;
+    color: var(--text-dim);
+    font-size: 14px;
+    line-height: 1.7;
+  }
+
+  .mobile-guidance-requirements {
+    display: inline-block;
+    margin-top: 24px;
+    padding: 8px 12px;
+    border: 1px solid var(--panel-border);
+    border-radius: 999px;
+    background: var(--bs-surface-panel);
+    font-size: 12px;
+    font-weight: 600;
+  }
+}
+
 /* Figma-style fixed shell: left panel (includes document bar) / canvas / right inspector. */
 #app-grid {
   position: fixed;
@@ -197,7 +281,7 @@ body {
   line-height: 14px;
 }
 
-/* Save state (grows) + export (content width) on a single row */
+/* Save state (grows) + portable/final export actions on a single row */
 #sidebar-left .document-status-row {
   display: flex;
   align-items: center;
@@ -213,8 +297,23 @@ body {
   white-space: nowrap;
 }
 
+#sidebar-left .document-actions {
+  display: flex;
+  flex: 0 0 auto;
+  gap: 4px;
+}
+
+#sidebar-left .document-save,
 #sidebar-left .document-export {
   flex: 0 0 auto;
+}
+
+#sidebar-left .document-storage-note {
+  margin: 0;
+  padding-inline: 2px;
+  color: var(--text-dim);
+  font-size: 10px;
+  line-height: 13px;
 }
 
 /* Project name + the ▼ for the file menu. The name field grows, ▼ stays a fixed width at the right edge */
