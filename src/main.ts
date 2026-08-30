@@ -23,6 +23,7 @@ import { VoxelMesh } from './render/voxelmesh';
 import { createPickingService } from './services/picking';
 import { createBrowserProjectIO } from './services/project-io-browser';
 import { createProjectService } from './services/project';
+import { createBackupReminder } from './services/backup-reminder';
 import { serializeComponentTemplate, validateComponents } from './project/persistence';
 import { createBrowserFrameClock } from './services/renderscheduler-clock-browser';
 import { createRenderScheduler } from './services/renderscheduler';
@@ -250,12 +251,13 @@ recipeStore.subscribe(() => {
 });
 
 // Document events are dedicated to autosave / UI (status, layers, inspector) only
-doc.subscribe(() => {
+doc.subscribe((change) => {
   updateStatus();
   // projectService is created further down, but subscribe only registers the
   // callback without executing it immediately, so by the time an actual doc change
   // occurs (after projectService exists), the reference is safe
   projectService.scheduleAutosave();
+  backupReminder.consider(change, world.size);
 });
 
 // ---- Display mode (texture ⇔ flat color). Persisted to localStorage `blocksmith.ui.v1` ----
@@ -508,6 +510,10 @@ const projectService = createProjectService({
   io: createBrowserProjectIO(),
 });
 let toolbarHandle: ToolbarHandle | null = null;
+const backupReminder = createBackupReminder({
+  storage: sessionStorage,
+  notify: () => toast(t('project.backupReminder')),
+});
 
 /** Reading the File's contents (`file.text()`) is the composition root's responsibility
  *  (ProjectService's public API doesn't take a File type review). Toast with the same
@@ -624,7 +630,10 @@ toolbarHandle = initToolbar(toolbarRoot, documentRoot, worldControlsRoot, fileMe
   getName: projectService.getName,
   setName: projectService.setName,
   exportMcpack: projectService.exportMcpack,
-  saveProject: projectService.saveProjectFile,
+  saveProject: () => {
+    projectService.saveProjectFile();
+    backupReminder.markBackedUp();
+  },
   loadProjectFile: loadProjectFromFile,
   clearAll: () => {
     if (world.size === 0 || window.confirm(t('confirm.clearAll', { count: world.size }))) doc.clearAll();

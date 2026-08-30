@@ -50,26 +50,29 @@ test('the document bar fits inside the left sidebar, and the canvas and right pa
   const sidebar = page.locator('#sidebar-left');
   expect(await sidebar.evaluate((el) => el.scrollWidth > el.clientWidth)).toBe(false);
 
-  // Only "export" is permanently visible. Save / load / clear live inside the menu.
+  // Save and export are permanently visible. Load / clear stay inside the menu.
   // The menu itself is a child of documentBar (so it is thrown away together when render rebuilds it),
   // hence counting by "is it permanently visible"
   const bar = (await page.locator('#sidebar-left .sidebar-document').boundingBox())!;
-  await expect(page.locator('#sidebar-left .sidebar-document .bs-button:visible')).toHaveCount(1);
+  await expect(page.locator('#sidebar-left .sidebar-document .bs-button:visible')).toHaveCount(2);
 
   // The weight of a filled button comes from its area, not its color. At full width it would be the strongest
   // element in a white panel, so it sits on the same row as the save state at content width
   const exportBox = (await page.locator('#sidebar-left .document-export').boundingBox())!;
   expect(exportBox.width).toBeLessThan(bar.width * 0.45);
+  const saveBox = (await page.locator('#sidebar-left .document-save').boundingBox())!;
   const stateBox = (await page.locator('#sidebar-left .document-save-state').boundingBox())!;
   expect(Math.abs(exportBox.y - stateBox.y)).toBeLessThan(20); // the same row
+  expect(Math.abs(saveBox.y - exportBox.y)).toBeLessThan(2);
   expect(exportBox.height).toBeLessThanOrEqual(32); // it did not wrap
+  await expect(page.locator('#sidebar-left .document-storage-note')).toContainText('自動保存はこのブラウザ内のみ');
 
   // The header must not squeeze the canvas. Back when 4 buttons were always expanded with horizontal tabs
   // it was 260px, which felt heavy next to Figma's rail
   const headerBottom = await page
     .locator('#sidebar-left .sidebar-document')
     .evaluate((el) => Math.round(el.getBoundingClientRect().bottom));
-  expect(headerBottom).toBeLessThanOrEqual(120);
+  expect(headerBottom).toBeLessThanOrEqual(140);
 });
 
 test('panel switching happens on the icon rail at the far left', async ({ page }) => {
@@ -224,7 +227,7 @@ test('the file menu opens next to the logo on the rail and closes on toggle', as
 
   await button.click();
   await expect(menu).toBeVisible();
-  await expect(menu.locator('button')).toHaveCount(3);
+  await expect(menu.locator('button')).toHaveCount(2);
 
   const anchor = (await button.boundingBox())!;
   const box = (await menu.boundingBox())!;
@@ -357,7 +360,7 @@ test('Tab works as the browser standard focus movement and no 2D UI appears', as
   await page.keyboard.press('Tab');
 
   // Focus really advanced to the next element in tab order (swallow + blur would drop to body and fail here)
-  await expect(page.locator('.document-export')).toBeFocused();
+  await expect(page.locator('.document-save')).toBeFocused();
   // The three-view container does not exist in the DOM at all (a secondary assertion)
   await expect(page.locator('#panes2d')).toHaveCount(0);
 });

@@ -36,6 +36,14 @@ const UI = {
   'rail.themeToDark': ['Switch to dark', 'ダークにする'],
   'rail.themeToLight': ['Switch to light', 'ライトにする'],
 
+  // --- Small-screen guidance ---
+  'mobile.title': ['Open on a desktop', 'PCで開いてください'],
+  'mobile.description': [
+    'Kigumi editing is designed for a larger screen and is not available on phones yet.',
+    'Kigumiの編集は大きな画面向けです。現在、スマートフォンには対応していません。',
+  ],
+  'mobile.requirements': ['Keyboard + mouse or trackpad', 'キーボード ＋ マウスまたはトラックパッド'],
+
   // --- Document bar ---
   'doc.projectName': ['Project name', '作品名'],
   'doc.save': ['Save', '保存'],
@@ -48,6 +56,7 @@ const UI = {
   'doc.exportTitle': ['Export as a behavior pack', 'ビヘイビアパックとして書き出す'],
   'doc.unsaved': ['Unsaved changes', '未保存の変更あり'],
   'doc.autosavedAt': ['Autosaved {time}', '自動保存 {time}'],
+  'doc.storageNote': ['Autosave stays in this browser. Save JSON for backup.', '自動保存はこのブラウザ内のみ。JSON保存でバックアップできます。'],
 
   // --- Palette ---
   'palette.stone': ['Stone', '石系'],
@@ -284,6 +293,10 @@ const UI = {
   'sel.nothingToCopy': ['Nothing selected to copy', 'コピーする選択がない'],
   'sel.clipboardEmpty': ['Clipboard is empty', 'クリップボードが空'],
   'project.saved': ['Project saved', 'プロジェクトを保存した'],
+  'project.backupReminder': [
+    'Your build is taking shape. Save a JSON backup so it does not live only in this browser.',
+    '作品が育ってきました。ブラウザだけに残さず、JSON保存でバックアップしましょう。',
+  ],
 
   // --- Toolbar / ground & display ---
   'toolbar.ground': ['Ground', '地面'],
