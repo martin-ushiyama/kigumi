@@ -217,6 +217,17 @@ test('the rail is pinned to the far left of the three-column layout', async ({ p
   expect(await page.evaluate(() => document.documentElement.scrollWidth <= document.documentElement.clientWidth)).toBe(true);
 });
 
+test('the rail links to the public GitHub repository', async ({ page }) => {
+  await page.goto('/');
+
+  const link = page.locator('#sidebar-rail .rail-github');
+  await expect(link).toBeVisible();
+  await expect(link).toHaveAttribute('href', 'https://github.com/martin-ushiyama/kigumi');
+  await expect(link).toHaveAttribute('target', '_blank');
+  await expect(link).toHaveAttribute('rel', 'noopener noreferrer');
+  await expect(link).toHaveAttribute('aria-label', 'GitHubリポジトリ');
+});
+
 test('the file menu opens next to the logo on the rail and closes on toggle', async ({ page }) => {
   await page.goto('/');
   await expect(page.locator('#viewport')).toBeVisible();

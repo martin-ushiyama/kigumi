@@ -75,6 +75,8 @@ export function initSidebarTabs(root: HTMLElement, railRoot: HTMLElement): Sideb
     helpButton.setAttribute('aria-label', t('rail.help'));
     helpButton.title = t('rail.helpTitle');
     langButton.setAttribute('aria-label', t('rail.blockNameLang'));
+    githubLink.setAttribute('aria-label', t('rail.github'));
+    githubLink.title = t('rail.githubTitle');
     syncRail();
     langButton.textContent = ja ? 'JA' : 'EN';
     // i18n-allow: only the language-toggle button shows both languages (unreadable target language = unusable button)
@@ -112,6 +114,15 @@ export function initSidebarTabs(root: HTMLElement, railRoot: HTMLElement): Sideb
     className: 'rail-help',
     onClick: () => window.dispatchEvent(new CustomEvent('bs-toggle-help')),
   });
+
+  const githubLink = document.createElement('a');
+  githubLink.href = 'https://github.com/martin-ushiyama/kigumi';
+  githubLink.target = '_blank';
+  githubLink.rel = 'noopener noreferrer';
+  githubLink.className = 'bs-icon-button rail-github';
+  githubLink.setAttribute('aria-label', t('rail.github'));
+  githubLink.title = t('rail.githubTitle');
+  githubLink.append(createIcon('github'));
 
   const documentBar = document.createElement('div');
   documentBar.className = 'sidebar-document';
@@ -206,7 +217,7 @@ export function initSidebarTabs(root: HTMLElement, railRoot: HTMLElement): Sideb
     railButtons.get(active)!.focus();
   });
 
-  railRoot.append(fileMenuAnchor, railNav, themeButton, langButton, helpButton);
+  railRoot.append(fileMenuAnchor, railNav, githubLink, themeButton, langButton, helpButton);
   // Runs the first sync only after every referenced element exists (function declarations hoist, but `const` is in the TDZ)
   syncLang();
   onLangChange(syncLang);
